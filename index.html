@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>留学生/大学生职业测评与规划系统</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Career Planning Assessment</p>
+          <h1>职业测评与规划系统</h1>
+          <p class="subhead">基于背景、能力与性格三层模型，生成可执行的职业路径建议。</p>
+        </div>
+        <div class="score-chip" id="stepBadge">1 / 5</div>
+      </header>
+
+      <section class="progress-wrap" aria-label="测评进度">
+        <div class="progress-line">
+          <span id="progressBar"></span>
+        </div>
+        <nav class="step-tabs" id="stepTabs"></nav>
+      </section>
+
+      <section class="panel active" id="panel-background">
+        <div class="section-head">
+          <p class="eyebrow">Background</p>
+          <h2>背景信息</h2>
+          <p>用于判断不同职业方向的可进入性。若没有对应学历，可留空。</p>
+        </div>
+
+        <form class="grid-form" id="profileForm">
+          <label>
+            <span>本科学校</span>
+            <input name="undergradSchool" placeholder="如：UCL / 复旦大学 / 普通一本" />
+          </label>
+          <label>
+            <span>本科专业</span>
+            <input name="undergradMajor" placeholder="如：经济学 / 计算机 / 传媒" />
+          </label>
+          <label>
+            <span>本科GPA区间</span>
+            <select name="undergradGpa">
+              <option value="75">3.5-3.79 / 80-84</option>
+              <option value="95">3.8+ / 85+</option>
+              <option value="65">3.2-3.49 / 75-79</option>
+              <option value="50">3.0-3.19 / 70-74</option>
+              <option value="30">&lt;3.0 / &lt;70</option>
+            </select>
+          </label>
+
+          <label>
+            <span>研究生学校</span>
+            <input name="gradSchool" placeholder="如：LSE / 港大 / 无" />
+          </label>
+          <label>
+            <span>研究生专业</span>
+            <input name="gradMajor" placeholder="如：市场营销 / 金融 / 数据科学" />
+          </label>
+          <label>
+            <span>研究生GPA区间</span>
+            <select name="gradGpa">
+              <option value="0">无研究生学历</option>
+              <option value="75">3.5-3.79 / 80-84</option>
+              <option value="95">3.8+ / 85+</option>
+              <option value="65">3.2-3.49 / 75-79</option>
+              <option value="50">3.0-3.19 / 70-74</option>
+              <option value="30">&lt;3.0 / &lt;70</option>
+            </select>
+          </label>
+
+          <label>
+            <span>博士学校</span>
+            <input name="phdSchool" placeholder="如：无 / Cambridge" />
+          </label>
+          <label>
+            <span>博士专业</span>
+            <input name="phdMajor" placeholder="如：公共政策 / 生物统计" />
+          </label>
+          <label>
+            <span>博士GPA/表现</span>
+            <select name="phdGpa">
+              <option value="0">无博士学历</option>
+              <option value="90">优秀</option>
+              <option value="75">良好</option>
+              <option value="60">一般</option>
+            </select>
+          </label>
+
+          <div class="form-note">
+            <span>学校层级</span>
+            <p>系统会根据你填写的本科、研究生、博士学校名称自动估算学校层级；未识别学校会按中性分处理。</p>
+          </div>
+          <label>
+            <span>实习经历</span>
+            <select name="internship">
+              <option value="80">有2段以上相关实习</option>
+              <option value="65">有1段相关实习</option>
+              <option value="50">有泛商业/校园项目经历</option>
+              <option value="35">暂无相关经历</option>
+            </select>
+          </label>
+          <fieldset class="interest-field">
+            <legend>目标方向兴趣，可多选</legend>
+            <label><input type="checkbox" name="interest" value="internet" checked />互联网产品/运营/数据</label>
+            <label><input type="checkbox" name="interest" value="consulting" />战略/管理咨询</label>
+            <label><input type="checkbox" name="interest" value="finance" />金融投行/行研/投资</label>
+            <label><input type="checkbox" name="interest" value="fmcg" />快消品牌/市场</label>
+            <label><input type="checkbox" name="interest" value="soe" />国央企/事业单位</label>
+            <label><input type="checkbox" name="interest" value="creative" />文娱/策展/内容创意</label>
+            <label><input type="checkbox" name="interest" value="ba" />商业分析/数据分析</label>
+            <label><input type="checkbox" name="interest" value="policy" />政策/公共事务</label>
+          </fieldset>
+        </form>
+      </section>
+
+      <section class="panel" id="panel-capability">
+        <div class="section-head">
+          <p class="eyebrow">Capability</p>
+          <h2>能力测评</h2>
+          <p>请基于真实倾向选择，不需要选择“看起来最好”的答案。</p>
+        </div>
+        <div class="question-list" id="capabilityQuestions"></div>
+      </section>
+
+      <section class="panel" id="panel-personality">
+        <div class="section-head">
+          <p class="eyebrow">Personality</p>
+          <h2>职场性格测评</h2>
+          <p>所有题目都对应工作场景，用于判断长期适配度。</p>
+        </div>
+        <div class="question-list" id="personalityQuestions"></div>
+      </section>
+
+      <section class="panel" id="panel-result">
+        <div class="section-head">
+          <p class="eyebrow">Report</p>
+          <h2>职业规划报告</h2>
+          <p>结果会根据你的背景、能力和性格自动生成。</p>
+        </div>
+        <div id="reportRoot" class="report-empty">
+          完成前面测评后，点击“生成报告”查看结果。
+        </div>
+      </section>
+
+      <footer class="actions">
+        <button class="ghost" id="prevBtn" type="button">上一步</button>
+        <div class="action-group">
+          <button class="ghost export-btn" id="exportBtn" type="button">导出PDF</button>
+          <button class="primary" id="nextBtn" type="button">下一步</button>
+        </div>
+      </footer>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
