@@ -129,7 +129,7 @@ h3 {
 
 .step-tabs {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   margin-top: 14px;
 }
@@ -179,6 +179,33 @@ h3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
+}
+
+.intro-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.intro-grid article,
+.hint-card {
+  padding: 18px;
+  background: #fbfcfd;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.intro-grid h3,
+.hint-card h3 {
+  margin-bottom: 8px;
+}
+
+.hint-card {
+  margin-bottom: 16px;
+  color: #34424f;
+  line-height: 1.75;
+  background: #eef7f5;
+  border-color: #c9e6e1;
 }
 
 label span {
@@ -406,6 +433,34 @@ button:disabled {
   grid-column: 1 / -1;
 }
 
+.insight-list {
+  display: grid;
+  gap: 10px;
+}
+
+.insight-item {
+  padding: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.prob-table {
+  display: grid;
+  gap: 8px;
+}
+
+.prob-row {
+  display: grid;
+  grid-template-columns: 1fr 96px 1.2fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
 .metric-row {
   display: grid;
   grid-template-columns: 128px 1fr 48px;
@@ -520,8 +575,10 @@ ul {
   .grid-form,
   .option-grid,
   .path-list,
+  .intro-grid,
   .step-tabs,
-  .interest-field {
+  .interest-field,
+  .prob-row {
     grid-template-columns: 1fr;
   }
 

@@ -24,11 +24,57 @@
         <nav class="step-tabs" id="stepTabs"></nav>
       </section>
 
-      <section class="panel active" id="panel-background">
+      <section class="panel active" id="panel-intro">
+        <div class="section-head">
+          <p class="eyebrow">Before Start</p>
+          <h2>开始测评前</h2>
+          <p>本测评面向正在做留学后就业、转专业求职、校招准备或职业方向选择的学生，帮助你把“我感兴趣什么”转化为“我更适合申请什么、现在差在哪里、下一步怎么补”。</p>
+        </div>
+        <div class="intro-grid">
+          <article>
+            <h3>适合人群</h3>
+            <ul>
+              <li>海外本科、硕士、博士留学生</li>
+              <li>国内本科/研究生，正在准备校招或实习</li>
+              <li>专业与目标岗位不完全一致，需要判断转向路径</li>
+              <li>已有兴趣方向，但不确定成功率和准备重点</li>
+            </ul>
+          </article>
+          <article>
+            <h3>测评价值</h3>
+            <ul>
+              <li>判断教育背景会支持哪些职业路径</li>
+              <li>识别目标岗位最看重的能力证据</li>
+              <li>发现兴趣、能力、性格之间的冲突点</li>
+              <li>避免盲目投递高门槛岗位或低匹配岗位</li>
+            </ul>
+          </article>
+          <article>
+            <h3>你会获得</h3>
+            <ul>
+              <li>背景竞争力等级与顾问解读话术</li>
+              <li>六大能力画像与企业视角解释</li>
+              <li>目标方向匹配度、进入难度和风险提示</li>
+              <li>未来3个月求职行动计划与资料建议</li>
+            </ul>
+          </article>
+          <article>
+            <h3>测评依据</h3>
+            <ul>
+              <li>校招筛选中的学校、专业、GPA、经历逻辑</li>
+              <li>咨询、金融、互联网、国央企等岗位能力要求</li>
+              <li>企业性格测评对工作方式和团队环境的判断</li>
+              <li>顾问可复用的职业路径与岗位门槛解释</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-background">
         <div class="section-head">
           <p class="eyebrow">Background</p>
           <h2>背景信息</h2>
-          <p>用于判断不同职业方向的可进入性。若没有对应学历，可留空。</p>
+          <p>不同教育背景会影响可选择的职业路径。请尽量填写真实信息，系统会结合学校、专业、GPA、实习和项目经历生成建议。</p>
         </div>
 
         <form class="grid-form" id="profileForm">
@@ -39,6 +85,16 @@
           <label>
             <span>本科专业</span>
             <input name="undergradMajor" placeholder="如：经济学 / 计算机 / 传媒" />
+          </label>
+          <label>
+            <span>本科专业类型</span>
+            <select name="undergradMajorType">
+              <option value="business">商科/经济/管理</option>
+              <option value="stem">理工科/数据/计算机</option>
+              <option value="social">社科/公共政策/法律</option>
+              <option value="media">传媒/语言/艺术/人文</option>
+              <option value="other">其他或暂不确定</option>
+            </select>
           </label>
           <label>
             <span>本科GPA区间</span>
@@ -58,6 +114,17 @@
           <label>
             <span>研究生专业</span>
             <input name="gradMajor" placeholder="如：市场营销 / 金融 / 数据科学" />
+          </label>
+          <label>
+            <span>研究生专业类型</span>
+            <select name="gradMajorType">
+              <option value="none">无研究生学历</option>
+              <option value="business">商科/经济/管理</option>
+              <option value="stem">理工科/数据/计算机</option>
+              <option value="social">社科/公共政策/法律</option>
+              <option value="media">传媒/语言/艺术/人文</option>
+              <option value="other">其他或暂不确定</option>
+            </select>
           </label>
           <label>
             <span>研究生GPA区间</span>
@@ -94,16 +161,25 @@
             <p>系统会根据你填写的本科、研究生、博士学校名称自动估算学校层级；未识别学校会按中性分处理。</p>
           </div>
           <label>
-            <span>实习经历</span>
+            <span>专业/目标岗位相关实习</span>
             <select name="internship">
               <option value="80">有2段以上相关实习</option>
               <option value="65">有1段相关实习</option>
-              <option value="50">有泛商业/校园项目经历</option>
+              <option value="50">有泛商业或弱相关实习</option>
               <option value="35">暂无相关经历</option>
             </select>
           </label>
           <fieldset class="interest-field">
-            <legend>目标方向兴趣，可多选</legend>
+            <legend>校园项目经历，可多选</legend>
+            <label><input type="checkbox" name="projects" value="case" />商赛/咨询case/行业研究</label>
+            <label><input type="checkbox" name="projects" value="data" />数据分析/建模/量化项目</label>
+            <label><input type="checkbox" name="projects" value="marketing" />品牌/新媒体/活动策划</label>
+            <label><input type="checkbox" name="projects" value="leadership" />社团管理/大型活动统筹</label>
+            <label><input type="checkbox" name="projects" value="research" />论文/课题/政策研究</label>
+            <label><input type="checkbox" name="projects" value="startup" />创业/产品/商业化项目</label>
+          </fieldset>
+          <fieldset class="interest-field">
+            <legend>未来就业目标方向，可多选</legend>
             <label><input type="checkbox" name="interest" value="internet" checked />互联网产品/运营/数据</label>
             <label><input type="checkbox" name="interest" value="consulting" />战略/管理咨询</label>
             <label><input type="checkbox" name="interest" value="finance" />金融投行/行研/投资</label>
@@ -120,8 +196,9 @@
         <div class="section-head">
           <p class="eyebrow">Capability</p>
           <h2>能力测评</h2>
-          <p>请基于真实倾向选择，不需要选择“看起来最好”的答案。</p>
+          <p>题目会根据你选择的未来就业方向自动调整，覆盖目标岗位常见的工作场景。请基于真实倾向选择，不需要选择“看起来最好”的答案。</p>
         </div>
+        <div class="hint-card" id="capabilityHint"></div>
         <div class="question-list" id="capabilityQuestions"></div>
       </section>
 
@@ -129,7 +206,7 @@
         <div class="section-head">
           <p class="eyebrow">Personality</p>
           <h2>职场性格测评</h2>
-          <p>所有题目都对应工作场景，用于判断长期适配度。</p>
+          <p>性格不会决定你只能做哪个行业，它主要影响你更适合怎样的工作方式、沟通密度、组织环境和压力来源。企业校招使用性格测评，通常是为了判断候选人与岗位节奏、团队协作方式是否匹配。</p>
         </div>
         <div class="question-list" id="personalityQuestions"></div>
       </section>
