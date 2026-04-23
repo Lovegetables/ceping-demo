@@ -15,6 +15,112 @@ const dimensions = {
   business: "商业敏感度"
 };
 
+const schoolDirectory = [
+  { name: "University College London", aliases: ["ucl", "伦敦大学学院"] },
+  { name: "London School of Economics and Political Science", aliases: ["lse", "伦敦政治经济学院", "伦敦政经"] },
+  { name: "University of Oxford", aliases: ["oxford", "牛津", "牛津大学"] },
+  { name: "University of Cambridge", aliases: ["cambridge", "剑桥", "剑桥大学"] },
+  { name: "Imperial College London", aliases: ["imperial", "icl", "帝国理工"] },
+  { name: "King's College London", aliases: ["kcl", "king's", "伦敦国王学院"] },
+  { name: "University of Edinburgh", aliases: ["edinburgh", "爱丁堡", "爱丁堡大学"] },
+  { name: "University of Manchester", aliases: ["manchester", "曼大", "曼彻斯特大学"] },
+  { name: "University of Warwick", aliases: ["warwick", "华威", "华威大学"] },
+  { name: "University of Bristol", aliases: ["bristol", "布里斯托大学"] },
+  { name: "University of Melbourne", aliases: ["melbourne", "墨尔本大学"] },
+  { name: "University of Sydney", aliases: ["sydney", "悉尼大学"] },
+  { name: "University of New South Wales", aliases: ["unsw", "新南威尔士大学"] },
+  { name: "Monash University", aliases: ["monash", "莫纳什大学"] },
+  { name: "University of Toronto", aliases: ["toronto", "多伦多大学"] },
+  { name: "University of British Columbia", aliases: ["ubc", "英属哥伦比亚大学"] },
+  { name: "McGill University", aliases: ["mcgill", "麦吉尔大学"] },
+  { name: "Harvard University", aliases: ["harvard", "哈佛", "哈佛大学"] },
+  { name: "Stanford University", aliases: ["stanford", "斯坦福", "斯坦福大学"] },
+  { name: "Massachusetts Institute of Technology", aliases: ["mit", "麻省理工"] },
+  { name: "Princeton University", aliases: ["princeton", "普林斯顿", "普林斯顿大学"] },
+  { name: "Yale University", aliases: ["yale", "耶鲁", "耶鲁大学"] },
+  { name: "Columbia University", aliases: ["columbia", "哥伦比亚大学"] },
+  { name: "University of Pennsylvania", aliases: ["upenn", "penn", "宾大", "宾夕法尼亚大学"] },
+  { name: "University of Chicago", aliases: ["uchicago", "芝加哥大学"] },
+  { name: "California Institute of Technology", aliases: ["caltech", "加州理工"] },
+  { name: "University of California, Berkeley", aliases: ["uc berkeley", "berkeley", "加州伯克利", "加州大学伯克利分校"] },
+  { name: "Cornell University", aliases: ["cornell", "康奈尔", "康奈尔大学"] },
+  { name: "Brown University", aliases: ["brown", "布朗大学"] },
+  { name: "Dartmouth College", aliases: ["dartmouth", "达特茅斯"] },
+  { name: "Duke University", aliases: ["duke", "杜克", "杜克大学"] },
+  { name: "Northwestern University", aliases: ["northwestern", "西北大学"] },
+  { name: "Johns Hopkins University", aliases: ["johns hopkins", "jhu", "约翰霍普金斯"] },
+  { name: "Carnegie Mellon University", aliases: ["cmu", "carnegie mellon", "卡内基梅隆"] },
+  { name: "University of Michigan, Ann Arbor", aliases: ["umich", "michigan", "密歇根大学安娜堡", "密歇根大学"] },
+  { name: "New York University", aliases: ["nyu", "纽约大学"] },
+  { name: "University of California, Los Angeles", aliases: ["ucla", "加州大学洛杉矶分校"] },
+  { name: "University of Southern California", aliases: ["usc", "南加大", "南加州大学"] },
+  { name: "University of Virginia", aliases: ["uva", "弗吉尼亚大学"] },
+  { name: "University of North Carolina at Chapel Hill", aliases: ["unc", "unc chapel hill", "北卡教堂山"] },
+  { name: "University of California, San Diego", aliases: ["ucsd", "加州大学圣地亚哥分校"] },
+  { name: "University of California, Davis", aliases: ["uc davis", "ucd", "加州大学戴维斯分校"] },
+  { name: "University of California, Irvine", aliases: ["uci", "加州大学欧文分校"] },
+  { name: "University of California, Santa Barbara", aliases: ["ucsb", "加州大学圣塔芭芭拉分校"] },
+  { name: "University of Washington", aliases: ["uw", "uw seattle", "华盛顿大学"] },
+  { name: "University of Illinois Urbana-Champaign", aliases: ["uiuc", "illinois urbana champaign", "伊利诺伊大学香槟分校"] },
+  { name: "University of Texas at Austin", aliases: ["ut austin", "utaustin", "德州大学奥斯汀分校"] },
+  { name: "Georgia Institute of Technology", aliases: ["gatech", "georgia tech", "佐治亚理工"] },
+  { name: "University of Wisconsin-Madison", aliases: ["uw madison", "wisconsin madison", "威斯康星大学麦迪逊分校"] },
+  { name: "Boston University", aliases: ["bu", "波士顿大学"] },
+  { name: "Boston College", aliases: ["bc", "波士顿学院"] },
+  { name: "Northeastern University", aliases: ["neu", "northeastern", "东北大学"] },
+  { name: "Emory University", aliases: ["emory", "埃默里大学"] },
+  { name: "Rice University", aliases: ["rice", "莱斯大学"] },
+  { name: "Vanderbilt University", aliases: ["vanderbilt", "范德堡大学"] },
+  { name: "Washington University in St. Louis", aliases: ["wustl", "washu", "圣路易斯华盛顿大学"] },
+  { name: "Georgetown University", aliases: ["georgetown", "乔治城大学"] },
+  { name: "University of Notre Dame", aliases: ["notre dame", "圣母大学"] },
+  { name: "Tufts University", aliases: ["tufts", "塔夫茨大学"] },
+  { name: "University of Rochester", aliases: ["rochester", "罗切斯特大学"] },
+  { name: "Case Western Reserve University", aliases: ["case western", "cwru", "凯斯西储大学"] },
+  { name: "Purdue University", aliases: ["purdue", "普渡大学"] },
+  { name: "Pennsylvania State University", aliases: ["penn state", "宾州州立"] },
+  { name: "Ohio State University", aliases: ["osu", "ohio state", "俄亥俄州立大学"] },
+  { name: "University of Minnesota Twin Cities", aliases: ["umn", "minnesota twin cities", "明尼苏达大学双城分校"] },
+  { name: "Indiana University Bloomington", aliases: ["iu bloomington", "indiana university", "印第安纳大学伯明顿"] },
+  { name: "Michigan State University", aliases: ["michigan state", "msu", "密歇根州立大学"] },
+  { name: "University of Maryland, College Park", aliases: ["umd", "maryland college park", "马里兰大学帕克分校"] },
+  { name: "Texas A&M University", aliases: ["tamu", "texas a&m", "德州农工"] },
+  { name: "Arizona State University", aliases: ["asu", "亚利桑那州立大学"] },
+  { name: "University of Florida", aliases: ["uf", "佛罗里达大学"] },
+  { name: "Rutgers University", aliases: ["rutgers", "罗格斯大学"] },
+  { name: "Syracuse University", aliases: ["syracuse", "雪城大学"] },
+  { name: "Fordham University", aliases: ["fordham", "福特汉姆大学"] },
+  { name: "Baruch College", aliases: ["baruch", "巴鲁克学院"] },
+  { name: "University of Connecticut", aliases: ["uconn", "康涅狄格大学"] },
+  { name: "George Washington University", aliases: ["gwu", "乔治华盛顿大学"] },
+  { name: "American University", aliases: ["american university", "美利坚大学"] },
+  { name: "Brandeis University", aliases: ["brandeis", "布兰迪斯大学"] },
+  { name: "National University of Singapore", aliases: ["nus", "新加坡国立", "新加坡国立大学"] },
+  { name: "Nanyang Technological University", aliases: ["ntu", "南洋理工", "南洋理工大学"] },
+  { name: "The University of Hong Kong", aliases: ["hku", "港大", "香港大学"] },
+  { name: "The Hong Kong University of Science and Technology", aliases: ["hkust", "港科", "港科大", "香港科技大学"] },
+  { name: "The Chinese University of Hong Kong", aliases: ["cuhk", "港中文", "香港中文大学"] },
+  { name: "Tsinghua University", aliases: ["清华", "清华大学", "tsinghua"] },
+  { name: "Peking University", aliases: ["北大", "北京大学", "peking university", "pku"] },
+  { name: "Fudan University", aliases: ["复旦", "复旦大学", "fudan"] },
+  { name: "Shanghai Jiao Tong University", aliases: ["上海交通", "上海交通大学", "上交", "sjtu"] },
+  { name: "Zhejiang University", aliases: ["浙大", "浙江大学"] },
+  { name: "Renmin University of China", aliases: ["人大", "中国人民大学"] },
+  { name: "Nanjing University", aliases: ["南大", "南京大学"] },
+  { name: "University of Science and Technology of China", aliases: ["中科大", "中国科学技术大学"] },
+  { name: "Tongji University", aliases: ["同济", "同济大学"] },
+  { name: "Beihang University", aliases: ["北航", "北京航空航天大学"] },
+  { name: "Nankai University", aliases: ["南开", "南开大学"] },
+  { name: "Xiamen University", aliases: ["厦大", "厦门大学"] },
+  { name: "Wuhan University", aliases: ["武大", "武汉大学"] },
+  { name: "Sun Yat-sen University", aliases: ["中山大学", "sysu"] }
+];
+
+const allSchoolDirectory = mergeSchoolDirectories(
+  schoolDirectory,
+  typeof window !== "undefined" ? window.externalSchoolDirectory || [] : []
+);
+
 const capabilityQuestions = [
   ["analytical", "业务数据下滑分析", "你在实习中发现某产品本月用户转化率下降了15%，负责人让你初步分析原因。", [["先拆分转化漏斗，比较不同渠道、用户群、时间段的数据变化", 3], ["先询问运营和销售同事近期是否有异常情况", 2], ["先查看竞品是否有类似活动或价格变化", 2], ["先根据直觉判断可能是活动力度不够", 1]]],
   ["analytical", "复杂商业问题", "你被要求分析“某品牌为什么在年轻人中增长放缓”。你会如何展开？", [["拆成用户、渠道、产品、价格、竞品、品牌认知几个模块逐一验证", 3], ["先做用户访谈，看看年轻人真实怎么评价这个品牌", 2], ["先研究行业报告，了解整体趋势", 2], ["先看社交媒体上大家怎么讨论该品牌", 1]]],
@@ -286,6 +392,54 @@ function getFormData() {
   return data;
 }
 
+function mergeSchoolDirectories(primary, external) {
+  const merged = new Map();
+  [...external, ...primary].forEach((school) => {
+    const name = (school.name || "").trim();
+    if (!name) return;
+    const key = name.toLowerCase();
+    const existing = merged.get(key) || { name, aliases: [], country: school.country, region: school.region };
+    const aliases = [...(existing.aliases || []), ...(school.aliases || [])]
+      .map((alias) => String(alias).trim())
+      .filter(Boolean);
+    merged.set(key, {
+      ...existing,
+      ...school,
+      name,
+      aliases: Array.from(new Set(aliases))
+    });
+  });
+  return Array.from(merged.values()).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function setupSchoolAutocomplete() {
+  const dataList = document.getElementById("schoolOptions");
+  if (dataList) {
+    dataList.innerHTML = allSchoolDirectory
+      .map((school) => `<option value="${school.name}">${[school.region || school.country, ...(school.aliases || []).slice(0, 2)].filter(Boolean).join(" / ")}</option>`)
+      .join("");
+  }
+  document.querySelectorAll('input[name="undergradSchool"], input[name="gradSchool"], input[name="phdSchool"]').forEach((input) => {
+    input.addEventListener("blur", () => {
+      input.value = normalizeSchoolName(input.value);
+    });
+  });
+}
+
+function normalizeSchoolName(value) {
+  const raw = value.trim();
+  if (!raw || ["无", "none", "n/a", "na"].includes(raw.toLowerCase())) return raw;
+  const query = raw.toLowerCase();
+  const exact = allSchoolDirectory.find((school) =>
+    school.name.toLowerCase() === query || school.aliases.some((alias) => alias.toLowerCase() === query)
+  );
+  if (exact) return exact.name;
+  const matches = allSchoolDirectory.filter((school) =>
+    school.name.toLowerCase().includes(query) || school.aliases.some((alias) => alias.toLowerCase().includes(query) || query.includes(alias.toLowerCase()))
+  );
+  return matches.length === 1 ? matches[0].name : raw;
+}
+
 function refreshCapabilityQuestions() {
   const profile = getFormData();
   const common = capabilityQuestions.filter((q) => q.tags.includes("all"));
@@ -371,43 +525,159 @@ function scorePersonality() {
 }
 
 function scoreBackground(profile) {
-  const school = inferSchoolScore([profile.phdSchool, profile.gradSchool, profile.undergradSchool]);
+  const schoolResult = inferSchoolScore([
+    normalizeSchoolName(profile.phdSchool || ""),
+    normalizeSchoolName(profile.gradSchool || ""),
+    normalizeSchoolName(profile.undergradSchool || "")
+  ]);
+  const school = schoolResult.score;
   const gpas = [profile.undergradGpa, profile.gradGpa, profile.phdGpa].map(Number).filter(Boolean);
   const gpa = gpas.length ? Math.max(...gpas) : 65;
   const internship = Number(profile.internship || 50);
   const projectBoost = Math.min((profile.projects || []).length * 3, 12);
   const score = Math.min(100, Math.round(school * 0.42 + gpa * 0.23 + internship * 0.28 + projectBoost));
   const level = score >= 85 ? "T1" : score >= 70 ? "T2" : score >= 55 ? "T3" : score >= 40 ? "T4" : "T5";
-  return { score, level, schoolScore: school, projectBoost };
+  return {
+    score,
+    level,
+    schoolScore: school,
+    schoolTier: schoolResult.tier,
+    schoolTierLabel: schoolResult.label,
+    rankingScore: schoolResult.rankingScore,
+    rankingConfidence: schoolResult.rankingConfidence,
+    rankingRefs: schoolResult.rankingRefs,
+    projectBoost
+  };
 }
 
 function inferSchoolScore(schools) {
+  const results = schools.filter(Boolean).map(scoreSingleSchool).filter(Boolean);
+  if (results.length) return results.sort((a, b) => b.score - a.score)[0];
   const text = schools.filter(Boolean).join(" ").toLowerCase();
-  if (!text.trim()) return 65;
+  if (!text.trim()) return { score: 65, tier: "T4", label: "未填写学校" };
   const tier1 = [
     "harvard", "stanford", "mit", "massachusetts institute", "oxford", "cambridge",
     "princeton", "yale", "columbia", "upenn", "pennsylvania", "chicago", "berkeley",
-    "caltech", "imperial", "lse", "ucl", "清华", "北大", "北京大学", "清华大学",
+    "caltech", "california institute", "brown", "dartmouth", "cornell", "duke",
+    "northwestern", "johns hopkins", "carnegie mellon", "cmu", "imperial", "lse", "ucl", "清华", "北大", "北京大学", "清华大学",
     "复旦", "上海交通", "交大", "浙江大学", "港大", "香港大学", "港科", "香港科技",
     "港中文", "新加坡国立", "nus", "南洋理工", "ntu"
   ];
   const tier2 = [
-    "duke", "northwestern", "cornell", "johns hopkins", "michigan", "nyu",
-    "carnegie", "cmu", "edinburgh", "manchester", "warwick", "kcl", "king's",
+    "michigan", "ann arbor", "nyu", "new york university", "ucla", "southern california",
+    "usc", "virginia", "chapel hill", "ucsd", "washington", "uiuc", "urbana-champaign",
+    "texas at austin", "ut austin", "georgia tech", "wisconsin-madison", "emory",
+    "rice", "vanderbilt", "washington university in st. louis", "wustl", "georgetown",
+    "notre dame", "tufts", "rochester", "case western", "edinburgh", "manchester", "warwick", "kcl", "king's",
     "bristol", "melbourne", "sydney", "unsw", "多伦多", "toronto", "ubc",
     "麦吉尔", "mcgill", "人大", "中国人民大学", "南京大学", "中科大", "中国科学技术",
     "同济", "北航", "南开", "厦门大学", "武汉大学", "中山大学", "985"
   ];
   const tier3 = [
     "211", "qs100", "qs 100", "qs前100", "qs200", "qs 200", "qs前200",
-    "一本", "双一流", "queen mary", "glasgow", "leeds", "birmingham",
+    "一本", "双一流", "uc davis", "uc irvine", "uc santa barbara", "boston university",
+    "boston college", "northeastern", "purdue", "penn state", "ohio state",
+    "minnesota", "indiana university", "michigan state", "maryland", "texas a&m",
+    "arizona state", "florida", "rutgers", "syracuse", "fordham", "baruch",
+    "uconn", "george washington", "american university", "brandeis",
+    "queen mary", "glasgow", "leeds", "birmingham",
     "southampton", "sheffield", "nottingham", "monash", "queensland"
   ];
-  if (tier1.some((item) => text.includes(item))) return 90;
-  if (tier2.some((item) => text.includes(item))) return 80;
-  if (tier3.some((item) => text.includes(item))) return 65;
-  if (text.includes("普通") || text.includes("双非") || text.includes("college")) return 50;
-  return 62;
+  if (tier1.some((item) => text.includes(item))) return { score: 90, tier: "T2", label: "关键词识别强目标校" };
+  if (tier2.some((item) => text.includes(item))) return { score: 80, tier: "T3", label: "关键词识别目标校" };
+  if (tier3.some((item) => text.includes(item))) return { score: 65, tier: "T4", label: "关键词识别强认可院校" };
+  if (text.includes("普通") || text.includes("双非") || text.includes("college")) return { score: 50, tier: "T5", label: "普通院校/区域院校" };
+  return { score: 62, tier: "T4", label: "未进入层级库，按中性分处理" };
+}
+
+function scoreSingleSchool(rawName) {
+  const name = normalizeSchoolName(rawName);
+  if (!name || ["无", "none", "n/a", "na"].includes(name.toLowerCase())) return null;
+  const rankingResult = scoreSchoolByRanking(name);
+  if (rankingResult) return rankingResult;
+  const tierData = typeof window !== "undefined" ? window.schoolTierData : null;
+  const canonical = tierData?.aliases?.[name] || name;
+  if (tierData?.tiers) {
+    for (const tier of tierData.tiers) {
+      if (tier.schools.includes(canonical) || tier.schools.includes(name)) {
+        return { score: tier.score, tier: tier.tier, label: tier.label, matchedSchool: canonical };
+      }
+    }
+  }
+  const school = allSchoolDirectory.find((item) => item.name === canonical || item.name === name || (item.aliases || []).includes(name));
+  if (school?.region === "中国") {
+    if ((school.level || "").includes("成人")) return { score: 38, tier: "T6", label: "成人高等学校", matchedSchool: school.name };
+    if ((school.level || "").includes("专科")) return { score: 45, tier: "T6", label: "高职/专科院校", matchedSchool: school.name };
+    if ((school.level || "").includes("本科")) return { score: 58, tier: "T5", label: "普通本科院校", matchedSchool: school.name };
+    return { score: 55, tier: "T5", label: "中国大陆院校", matchedSchool: school.name };
+  }
+  if (school) return { score: 62, tier: "T4", label: `${school.region || school.country}院校，未进入层级库`, matchedSchool: school.name };
+  return null;
+}
+
+function scoreSchoolByRanking(rawName) {
+  const rankingData = typeof window !== "undefined" ? window.schoolRankingData : null;
+  if (!rankingData?.schools) return null;
+  const canonical = rankingData.aliases?.[rawName] || rawName;
+  const school = rankingData.schools.find((item) => item.name === canonical || item.name === rawName);
+  if (!school) return null;
+  const rankingParts = [
+    ["qs", 0.3],
+    ["the", 0.25],
+    ["usnews", 0.25],
+    ["arwu", 0.2]
+  ].filter(([key]) => Number(school[key]));
+  if (!rankingParts.length) return null;
+  const weightSum = rankingParts.reduce((sum, [, weight]) => sum + weight, 0);
+  const rankingScore = Math.round(
+    rankingParts.reduce((sum, [key, weight]) => sum + rankToScore(Number(school[key])) * weight, 0) / weightSum
+  );
+  const confidence = rankingParts.length >= 3 ? "高" : rankingParts.length === 2 ? "中" : "低";
+  const employer = Number(school.employer || rankingScore);
+  const labelBoost = school.labels?.some((label) => ["C9", "985", "211", "双一流", "G5", "Ivy", "港前三"].includes(label)) ? 3 : 0;
+  const finalScore = Math.min(100, Math.round(rankingScore * 0.45 + employer * 0.35 + tierLabelScore(school.labels || []) * 0.2 + labelBoost));
+  return {
+    score: finalScore,
+    tier: scoreToTier(finalScore),
+    label: `四榜综合评估，置信度${confidence}`,
+    matchedSchool: school.name,
+    rankingScore,
+    rankingConfidence: confidence,
+    rankingRefs: {
+      qs: school.qs,
+      the: school.the,
+      usnews: school.usnews,
+      arwu: school.arwu
+    }
+  };
+}
+
+function rankToScore(rank) {
+  if (rank <= 20) return 98;
+  if (rank <= 50) return 92;
+  if (rank <= 100) return 85;
+  if (rank <= 200) return 76;
+  if (rank <= 300) return 68;
+  if (rank <= 500) return 60;
+  if (rank <= 800) return 52;
+  if (rank <= 1000) return 45;
+  return 40;
+}
+
+function tierLabelScore(labels) {
+  if (labels.some((label) => ["C9", "全球顶尖"].includes(label))) return 98;
+  if (labels.some((label) => ["985", "G5", "Ivy", "港前三", "新加坡顶尖"].includes(label))) return 92;
+  if (labels.some((label) => ["211", "双一流", "澳洲八大", "加拿大强校", "公立强校"].includes(label))) return 82;
+  return 65;
+}
+
+function scoreToTier(score) {
+  if (score >= 95) return "T1";
+  if (score >= 88) return "T2";
+  if (score >= 78) return "T3";
+  if (score >= 68) return "T4";
+  if (score >= 50) return "T5";
+  return "T6";
 }
 
 function majorFit(profile, job) {
@@ -660,7 +930,8 @@ function generateReport() {
   document.getElementById("reportRoot").innerHTML = `
     <section class="report-block">
       <h3>用户画像总结</h3>
-      <p>你的背景竞争力为 <strong>${background.level}</strong>，背景分 <strong>${background.score}/100</strong>。学校识别分为 <strong>${background.schoolScore}/100</strong>，校园项目加成为 <strong>${background.projectBoost}</strong> 分。</p>
+      <p>你的背景竞争力为 <strong>${background.level}</strong>，背景分 <strong>${background.score}/100</strong>。学校层级为 <strong>${background.schoolTier} · ${background.schoolTierLabel}</strong>，学校分为 <strong>${background.schoolScore}/100</strong>，校园项目加成为 <strong>${background.projectBoost}</strong> 分。</p>
+      ${background.rankingScore ? `<p class="small-note">学校排名参考：四榜综合分 ${background.rankingScore}/100，数据置信度${background.rankingConfidence}。参考字段：QS ${background.rankingRefs.qs || "-"} / THE ${background.rankingRefs.the || "-"} / U.S. News Global ${background.rankingRefs.usnews || "-"} / ARWU ${background.rankingRefs.arwu || "-"}。</p>` : ""}
       <p>${profileNarrative(profile, background, top[0])}</p>
       <p>${personalitySummary(personality)}</p>
     </section>
@@ -971,6 +1242,7 @@ document.getElementById("exportBtn").addEventListener("click", () => {
   window.print();
 });
 
+setupSchoolAutocomplete();
 refreshCapabilityQuestions();
 renderQuestions("personalityQuestions", personalityQuestions, "personality");
 initTabs();

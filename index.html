@@ -80,7 +80,7 @@
         <form class="grid-form" id="profileForm">
           <label>
             <span>本科学校</span>
-            <input name="undergradSchool" placeholder="如：UCL / 复旦大学 / 普通一本" />
+            <input name="undergradSchool" list="schoolOptions" autocomplete="off" placeholder="如：UCL / 复旦大学 / 普通一本" />
           </label>
           <label>
             <span>本科专业</span>
@@ -109,7 +109,7 @@
 
           <label>
             <span>研究生学校</span>
-            <input name="gradSchool" placeholder="如：LSE / 港大 / 无" />
+            <input name="gradSchool" list="schoolOptions" autocomplete="off" placeholder="如：LSE / 港大 / 无" />
           </label>
           <label>
             <span>研究生专业</span>
@@ -140,7 +140,7 @@
 
           <label>
             <span>博士学校</span>
-            <input name="phdSchool" placeholder="如：无 / Cambridge" />
+            <input name="phdSchool" list="schoolOptions" autocomplete="off" placeholder="如：无 / Cambridge" />
           </label>
           <label>
             <span>博士专业</span>
@@ -197,6 +197,7 @@
             <label><input type="checkbox" name="interest" value="crossborder" />跨境电商/海外市场/国际商务</label>
           </fieldset>
         </form>
+        <datalist id="schoolOptions"></datalist>
       </section>
 
       <section class="panel" id="panel-capability">
@@ -238,6 +239,9 @@
       </footer>
     </main>
 
+    <script src="./schools-data.js"></script>
+    <script src="./school-tier-data.js"></script>
+    <script src="./school-ranking-data.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
