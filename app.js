@@ -56,7 +56,14 @@ const capabilityQuestions = [
   ["stability", "国央企流程推进", "你在大型组织实习，需要推动一个跨部门流程，但审批链条较长。", [["先明确审批节点、材料要求和关键联系人，再按节奏推进", 3], ["找熟悉的同事帮忙加快流程", 2], ["直接催所有相关方尽快处理", 1], ["等流程自然推进，避免出错", 2]], ["soe"]],
   ["communication", "公共事务沟通", "你要向不同立场的利益相关方说明一个政策或项目方案。", [["分别识别关注点，用事实、影响和风险边界组织表达", 3], ["强调方案的正面意义，争取认同", 2], ["尽量避免谈敏感分歧", 1], ["把正式材料发给对方自行理解", 1]], ["policy", "soe"]],
   ["creativity", "策展内容选择", "你负责一个青年文化展览，需要确定内容线索。", [["先定义受众、主题叙事、作品关系和传播亮点", 3], ["先选自己最喜欢、最有审美感的内容", 2], ["参考成熟展览结构做改编", 2], ["优先选择执行最简单的内容", 1]], ["creative"]],
-  ["execution", "作品集推进", "你想申请内容/策展/品牌岗位，但作品集一直没有完成。", [["拆成选题、素材、结构、视觉、复盘，每周固定交付", 3], ["等有灵感时集中完成", 1], ["先做最容易展示的部分", 2], ["找朋友一起督促推进", 2]], ["creative", "fmcg"], true]
+  ["execution", "作品集推进", "你想申请内容/策展/品牌岗位，但作品集一直没有完成。", [["拆成选题、素材、结构、视觉、复盘，每周固定交付", 3], ["等有灵感时集中完成", 1], ["先做最容易展示的部分", 2], ["找朋友一起督促推进", 2]], ["creative", "fmcg"], true],
+  ["stability", "审计底稿复核", "你在审计/风险咨询项目中负责复核底稿，发现凭证和表格口径不一致。", [["逐项核对凭证、口径、公式和引用，记录问题后同步负责人", 3], ["先修正明显错误，其余等经理复核", 2], ["只要总数能对上就先提交", 1], ["请同组同事一起交叉检查", 3]], ["big4", "financial_services", "legal_compliance"]],
+  ["analytical", "银行风险判断", "你需要初步判断一个企业客户是否存在信用风险。", [["看现金流、负债结构、行业周期、抵押物和历史履约情况", 3], ["重点看企业规模和品牌知名度", 1], ["先查公开新闻和工商信息", 2], ["主要参考客户经理的判断", 1]], ["financial_services", "legal_compliance"]],
+  ["communication", "HR候选人沟通", "你负责推进一个校招候选人的面试流程，但业务部门和候选人时间反复冲突。", [["同时管理双方预期，给出可选时间和流程节点", 3], ["先满足业务部门时间，候选人再协调", 2], ["让候选人自己多提供几个时间", 1], ["把问题升级给主管处理", 2]], ["hr"]],
+  ["execution", "供应链交付异常", "供应商延期导致新品上线可能受影响，你需要协调解决。", [["确认影响范围、替代方案、库存情况和新时间表，同步相关团队", 3], ["先催供应商尽快交付", 1], ["优先通知销售和市场延期", 2], ["等待采购负责人统一处理", 1]], ["supply_chain"]],
+  ["analytical", "合规政策解读", "公司准备上线一个新业务，你需要判断其中的数据或合同风险。", [["拆解业务流程、适用规则、风险点和可调整方案", 3], ["先查类似公司的公开案例", 2], ["直接建议暂缓上线，避免风险", 1], ["把问题全部交给外部律师判断", 1]], ["legal_compliance"]],
+  ["creativity", "科研选题推进", "你准备申请博士或研究助理，需要确定一个研究选题。", [["从文献缺口、方法可行性、数据来源和导师方向综合判断", 3], ["选择自己最感兴趣的话题", 2], ["沿用导师已有课题，降低风险", 2], ["先大量阅读，不急着确定问题", 1]], ["academic"], true],
+  ["business", "海外市场进入", "你要判断一个中国品牌是否适合进入某个海外市场。", [["分析当地需求、渠道、竞品、价格带、合规和获客成本", 3], ["先看当地社媒是否有人讨论该品类", 2], ["先找海外达人试投放", 2], ["觉得产品在国内卖得好，海外也应该有机会", 1]], ["crossborder", "fmcg"]]
 ].map((q, index) => ({ id: `C${index + 1}`, dimension: q[0], title: q[1], scene: q[2], options: q[3], tags: q[4] || ["all"], lead: Boolean(q[5]) }));
 
 let activeCapabilityQuestions = capabilityQuestions.slice(0, 24);
@@ -105,7 +112,7 @@ const jobProfiles = {
     majors: ["business", "stem"]
   },
   internet: {
-    name: "互联网产品/运营/数据",
+    name: "互联网产品/用户增长",
     weights: { analytical: 4, communication: 4, execution: 4, creativity: 4, stability: 2, business: 5 },
     traits: { decision: "rational", social: "neutral", risk: "adventurous", structure: "free" },
     gate: "中高",
@@ -113,7 +120,7 @@ const jobProfiles = {
     majors: ["business", "stem", "media"]
   },
   fmcg: {
-    name: "快消品牌/市场",
+    name: "快消/消费品品牌市场",
     weights: { analytical: 3, communication: 5, execution: 4, creativity: 5, stability: 2, business: 4 },
     traits: { decision: "neutral", social: "extrovert", risk: "neutral", structure: "free" },
     gate: "中高",
@@ -137,7 +144,7 @@ const jobProfiles = {
     majors: ["media", "social", "business"]
   },
   ba: {
-    name: "商业分析/数据分析",
+    name: "数据分析/商业分析",
     weights: { analytical: 5, communication: 3, execution: 3, creativity: 2, stability: 4, business: 4 },
     traits: { decision: "rational", social: "introvert", risk: "neutral", structure: "rule" },
     gate: "中高",
@@ -151,6 +158,62 @@ const jobProfiles = {
     gate: "中高",
     jobs: "公共事务、政策研究、国际组织项目、政府关系",
     majors: ["social", "business", "media"]
+  },
+  financial_services: {
+    name: "银行/资管/保险/金融中后台",
+    weights: { analytical: 4, communication: 3, execution: 4, creativity: 1, stability: 5, business: 4 },
+    traits: { decision: "rational", social: "neutral", risk: "conservative", structure: "rule" },
+    gate: "中高",
+    jobs: "银行管培、资管产品、风险管理、金融科技、运营管理",
+    majors: ["business", "stem", "social"]
+  },
+  big4: {
+    name: "四大/审计/税务/风险咨询",
+    weights: { analytical: 4, communication: 4, execution: 5, creativity: 2, stability: 5, business: 3 },
+    traits: { decision: "rational", social: "neutral", risk: "neutral", structure: "rule" },
+    gate: "中高",
+    jobs: "审计、税务、风险咨询、交易咨询、管理咨询助理",
+    majors: ["business", "stem", "social"]
+  },
+  hr: {
+    name: "人力资源/组织发展",
+    weights: { analytical: 3, communication: 5, execution: 3, creativity: 2, stability: 4, business: 3 },
+    traits: { decision: "neutral", social: "extrovert", risk: "conservative", structure: "rule" },
+    gate: "中",
+    jobs: "HRBP助理、招聘、组织发展、培训发展、雇主品牌",
+    majors: ["business", "social", "media"]
+  },
+  supply_chain: {
+    name: "供应链/采购/物流",
+    weights: { analytical: 4, communication: 3, execution: 5, creativity: 2, stability: 5, business: 4 },
+    traits: { decision: "rational", social: "neutral", risk: "conservative", structure: "rule" },
+    gate: "中",
+    jobs: "供应链管培、采购、物流计划、需求预测、运营管理",
+    majors: ["stem", "business"]
+  },
+  legal_compliance: {
+    name: "法务/合规/风控",
+    weights: { analytical: 4, communication: 3, execution: 4, creativity: 1, stability: 5, business: 3 },
+    traits: { decision: "rational", social: "introvert", risk: "conservative", structure: "rule" },
+    gate: "中高",
+    jobs: "法务助理、合规、内控、风控、数据合规",
+    majors: ["social", "business", "stem"]
+  },
+  academic: {
+    name: "科研/学术/博士发展",
+    weights: { analytical: 5, communication: 3, execution: 4, creativity: 5, stability: 4, business: 1 },
+    traits: { decision: "rational", social: "introvert", risk: "neutral", structure: "free" },
+    gate: "高",
+    jobs: "研究助理、博士申请、科研项目、实验室/课题组、智库研究",
+    majors: ["stem", "social", "media"]
+  },
+  crossborder: {
+    name: "跨境电商/海外市场/国际商务",
+    weights: { analytical: 3, communication: 5, execution: 4, creativity: 4, stability: 2, business: 5 },
+    traits: { decision: "neutral", social: "extrovert", risk: "adventurous", structure: "free" },
+    gate: "中",
+    jobs: "海外市场、跨境运营、国际商务、渠道拓展、品牌出海",
+    majors: ["business", "media", "social", "stem"]
   }
 };
 
@@ -382,6 +445,201 @@ function difficulty(job, backgroundLevel) {
   return table[backgroundLevel][job.gate];
 }
 
+function buildStrategicRecommendations(ranked, capabilities, background, profile) {
+  const enriched = ranked.map((job) => enrichJobForStrategy(job, capabilities, background, profile));
+  const mainPool = enriched
+    .filter((job) => job.canMain)
+    .sort((a, b) => b.strategyScore - a.strategyScore);
+  const mainJob = mainPool[0] || enriched.slice().sort((a, b) => b.lowRiskScore - a.lowRiskScore)[0];
+
+  const stretchPool = enriched
+    .filter((job) => job.key !== mainJob.key && job.canStretch)
+    .sort((a, b) => b.stretchScore - a.stretchScore);
+  const stretchJob = stretchPool[0] || enriched.filter((job) => job.key !== mainJob.key).sort((a, b) => b.match - a.match)[0];
+
+  const backupPool = enriched
+    .filter((job) => job.key !== mainJob.key && job.key !== stretchJob.key && job.canBackup)
+    .sort((a, b) => b.backupScore - a.backupScore);
+  const backupJob = backupPool[0] || enriched.filter((job) => job.key !== mainJob.key && job.key !== stretchJob.key).sort((a, b) => b.backupScore - a.backupScore)[0];
+
+  return {
+    main: {
+      title: "主推荐路径",
+      job: mainJob,
+      summary: "推荐性质：优先投入方向。它不是简单分数最高，而是综合考虑了匹配度、进入难度、专业解释度和核心短板风险。",
+      reason: pathStrategyReason("main", mainJob),
+      nextStep: mainJob.nextSteps.main
+    },
+    stretch: {
+      title: "冲刺路径",
+      job: stretchJob,
+      summary: "推荐性质：高上限或兴趣驱动方向。可以冲，但不建议作为唯一选择，需要明确补强条件。",
+      reason: pathStrategyReason("stretch", stretchJob),
+      nextStep: stretchJob.nextSteps.stretch
+    },
+    backup: {
+      title: "保底路径",
+      job: backupJob,
+      summary: "推荐性质：现实落点与跳板方向。它的价值不是降低目标，而是帮助你先进入相关赛道。",
+      reason: pathStrategyReason("backup", backupJob),
+      nextStep: backupJob.nextSteps.backup
+    }
+  };
+}
+
+function enrichJobForStrategy(job, capabilities, background, profile) {
+  const entryDifficulty = difficulty(job, background.level);
+  const coreWeaknesses = Object.entries(job.weights)
+    .filter(([key, weight]) => weight >= 4 && capabilities[key] < 60)
+    .map(([key]) => dimensions[key]);
+  const interested = profile.interests.includes(job.key);
+  const hardDifficulty = ["高", "极高"].includes(entryDifficulty);
+  const mediumDifficulty = ["中", "中高"].includes(entryDifficulty);
+  const majorMismatch = job.majorScore < 62;
+  const interestBoost = interested ? 8 : 0;
+  const difficultyPenalty = entryDifficulty === "极高" ? 18 : entryDifficulty === "高" ? 12 : entryDifficulty === "中高" ? 6 : 0;
+  const weaknessPenalty = coreWeaknesses.length * 8;
+  const majorPenalty = majorMismatch ? 10 : 0;
+  const strategyScore = job.match + interestBoost - difficultyPenalty - weaknessPenalty - majorPenalty;
+  const lowRiskScore = job.match - difficultyPenalty * 1.3 - weaknessPenalty * 1.2 - majorPenalty;
+  const stretchScore = job.match + (interested ? 14 : 4) + (job.gate === "高" ? 7 : 0) - weaknessPenalty * 0.6 - majorPenalty * 0.5;
+  const backupScore = job.match + backupValue(job.key) - difficultyPenalty * 1.6 - weaknessPenalty - (majorMismatch ? 6 : 0);
+  const canMain = job.match >= 68 && !hardDifficulty && coreWeaknesses.length === 0 && !majorMismatch;
+  const canStretch = interested || job.gate === "高" || job.match >= 70;
+  const canBackup = !hardDifficulty && job.match >= 55 && coreWeaknesses.length <= 1;
+  return {
+    ...job,
+    entryDifficulty,
+    coreWeaknesses,
+    interested,
+    hardDifficulty,
+    majorMismatch,
+    mediumDifficulty,
+    strategyScore,
+    lowRiskScore,
+    stretchScore,
+    backupScore,
+    canMain,
+    canStretch,
+    canBackup,
+    nextSteps: nextStepsByJob(job.key)
+  };
+}
+
+function backupValue(key) {
+  return {
+    internet: 10,
+    ba: 9,
+    fmcg: 7,
+    financial_services: 8,
+    big4: 8,
+    soe: 8,
+    hr: 8,
+    supply_chain: 8,
+    legal_compliance: 7,
+    crossborder: 7,
+    policy: 6,
+    creative: 5,
+    academic: 4,
+    finance: 3,
+    consulting: 3
+  }[key] || 5;
+}
+
+function pathStrategyReason(type, job) {
+  const weaknessText = job.coreWeaknesses.length ? `当前风险是${job.coreWeaknesses.join("、")}还需要补强` : "核心能力短板不明显";
+  const interestText = job.interested ? "且属于你主动选择的目标方向" : "虽然不是你主动选择的方向，但与当前能力结构有连接";
+  if (type === "main") {
+    return `为什么推荐：${job.name}的进入难度为${job.entryDifficulty}，专业匹配为${job.majorScore}/100，${weaknessText}，${interestText}，适合作为当前优先投入方向。`;
+  }
+  if (type === "stretch") {
+    const risk = job.hardDifficulty ? "背景或招聘门槛较高" : job.majorMismatch ? "专业解释度需要加强" : weaknessText;
+    return `为什么可以冲：该方向有较高成长价值或与你的兴趣有关；为什么有风险：${risk}。建议把它作为冲刺目标，并设置明确补强条件。`;
+  }
+  return `为什么保底：该方向进入难度为${job.entryDifficulty}，能力迁移空间较好，可以帮助你先获得相关实习或第一份工作经验；为什么不浪费：后续仍可向主线方向转移。`;
+}
+
+function nextStepsByJob(key) {
+  const map = {
+    consulting: {
+      main: "完成10个商业case训练，申请咨询PTA或战略实习。",
+      stretch: "完成20个case训练，加做1份行业进入策略报告。",
+      backup: "先申请商业分析、战略运营或咨询PTA作为跳板。"
+    },
+    finance: {
+      main: "补齐财务建模、估值和1份行研报告。",
+      stretch: "先从券商研究、四大交易咨询或精品投行实习切入。",
+      backup: "选择财务分析、商业分析或金融数据分析积累相关经历。"
+    },
+    internet: {
+      main: "完成1份产品分析或用户增长复盘，申请产品/运营实习。",
+      stretch: "补SQL、漏斗分析和产品面试案例，冲刺头部互联网。",
+      backup: "先从产品运营、内容运营、商业运营拿到相关履历。"
+    },
+    fmcg: {
+      main: "准备1份品牌campaign复盘，申请品牌/市场实习。",
+      stretch: "强化英文表达、群面和消费者洞察，冲刺外企管培。",
+      backup: "先从企业市场、活动运营或新媒体市场岗位切入。"
+    },
+    soe: {
+      main: "筛选专业对口岗位，准备笔试、材料写作和稳定性表达。",
+      stretch: "关注银行总行、核心央企和高门槛管培批次。",
+      backup: "选择地方国企、事业单位项目岗或综合管理岗位积累稳定履历。"
+    },
+    creative: {
+      main: "整理作品集，完成1个策展或内容项目复盘。",
+      stretch: "冲刺头部文娱、艺术机构或品牌内容岗位。",
+      backup: "先从内容运营、品牌内容、活动策划获得项目经验。"
+    },
+    ba: {
+      main: "补SQL/Excel/BI，完成1个经营分析或数据分析作品。",
+      stretch: "用商业分析作品冲刺咨询、互联网策略或金融分析方向。",
+      backup: "先从数据运营、经营分析助理或商业运营切入。"
+    },
+    policy: {
+      main: "完成1份政策简报或公共议题研究样本。",
+      stretch: "冲刺国际组织、公共事务或企业GR实习。",
+      backup: "先从研究助理、项目执行或机构运营岗位积累经历。"
+    },
+    financial_services: {
+      main: "准备银行/资管/保险方向简历，补风险、产品或运营案例。",
+      stretch: "冲刺银行总行、资管产品或金融科技管培项目。",
+      backup: "先从分行管培、运营管理、风控助理或保险管培切入。"
+    },
+    big4: {
+      main: "准备审计/税务/风险咨询简历，补会计、Excel和项目细节表达。",
+      stretch: "冲刺四大咨询线、交易咨询或风险咨询项目。",
+      backup: "先从审计、税务或内控实习获取可验证履历。"
+    },
+    hr: {
+      main: "准备招聘、组织发展或HRBP相关项目案例，突出沟通和流程推进。",
+      stretch: "冲刺外企HR管培、组织发展或雇主品牌方向。",
+      backup: "先从招聘实习、培训运营或HR共享服务岗位切入。"
+    },
+    supply_chain: {
+      main: "补供应链基础、Excel建模和交付异常复盘案例。",
+      stretch: "冲刺外企供应链管培、采购或需求计划岗位。",
+      backup: "先从运营管理、物流计划或采购助理获得履历。"
+    },
+    legal_compliance: {
+      main: "整理合同、合规、风控或数据合规相关项目经历。",
+      stretch: "冲刺金融合规、互联网数据合规或头部企业法务岗。",
+      backup: "先从合规助理、内控、风控运营或法务实习切入。"
+    },
+    academic: {
+      main: "明确研究方向，准备文献综述、研究计划和导师匹配清单。",
+      stretch: "冲刺博士项目、顶尖实验室或智库研究助理。",
+      backup: "先从研究助理、课题助理或数据整理岗位积累研究经历。"
+    },
+    crossborder: {
+      main: "完成1份海外市场进入分析或跨境店铺运营复盘。",
+      stretch: "冲刺品牌出海、国际商务或海外增长岗位。",
+      backup: "先从跨境运营、海外社媒、渠道助理或商务支持切入。"
+    }
+  };
+  return map[key];
+}
+
 function generateReport() {
   const profile = getFormData();
   const capabilities = scoreCapabilities();
@@ -391,7 +649,8 @@ function generateReport() {
     .map(([key, job]) => ({ key, ...job, ...scoreJob(job, capabilities, personality, background, profile) }))
     .sort((a, b) => b.match - a.match);
   const interestJobs = ranked.filter((job) => profile.interests.includes(job.key));
-  const top = ranked.slice(0, 3);
+  const recommendations = buildStrategicRecommendations(ranked, capabilities, background, profile);
+  const top = [recommendations.main.job, recommendations.stretch.job, recommendations.backup.job];
   const strong = Object.entries(capabilities).sort((a, b) => b[1] - a[1]).slice(0, 2);
   const weak = Object.entries(capabilities).sort((a, b) => a[1] - b[1]).slice(0, 2);
   const leadSignals = activeCapabilityQuestions
@@ -427,16 +686,18 @@ function generateReport() {
     <section class="report-block wide">
       <h3>职业路径推荐</h3>
       <div class="path-list">
-        ${top.map((job, index) => `
+        ${Object.values(recommendations).map((item) => `
           <article class="path-card">
-            <strong>${index === 0 ? "主推荐：" : index === 1 ? "冲刺路径：" : "保底路径："}${job.name}</strong>
-            <p>${pathReason(job, capabilities, personality, profile)}</p>
+            <strong>${item.title}：${item.job.name}</strong>
+            <p>${item.summary}</p>
             <div class="path-meta">
-              <span class="pill">匹配度 ${job.match}/100</span>
-              <span class="pill">进入难度 ${difficulty(job, background.level)}</span>
-              <span class="pill">专业匹配 ${job.majorScore}/100</span>
+              <span class="pill">匹配度 ${item.job.match}/100</span>
+              <span class="pill">进入难度 ${item.job.entryDifficulty}</span>
+              <span class="pill">专业匹配 ${item.job.majorScore}/100</span>
             </div>
-            <p class="small-note">适合岗位：${job.jobs}</p>
+            <p>${item.reason}</p>
+            <p class="small-note">适合岗位：${item.job.jobs}</p>
+            <p class="small-note">下一步：${item.nextStep}</p>
           </article>
         `).join("")}
       </div>
@@ -496,13 +757,6 @@ function generateReport() {
       <p>如果你出现了方向过多、经历包装不足、投递节奏不清晰等情况，建议进入系统求职规划服务，重点完成方向收敛、简历重构、项目补强和面试训练。${leadSignals.length ? `本次测评识别到的规划线索：${leadSignals.join("、")}。` : "本次未出现明显强转化线索，可先以资料领取和方向答疑承接。"}</p>
     </section>
   `;
-}
-
-function pathReason(job, capabilities, personality, profile) {
-  const strongest = Object.entries(job.weights).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([key]) => dimensions[key]);
-  const userStrong = Object.entries(capabilities).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([key]) => dimensions[key]);
-  const majorText = job.majorScore >= 80 ? "专业背景对该方向有支撑" : job.majorScore >= 65 ? "专业背景可迁移，但需要项目证明" : "专业背景关联度偏弱，需要跳板经历";
-  return `该方向核心要求为${strongest.join("、")}，与你当前的${userStrong.join("、")}有一定重合。${majorText}，建议围绕${profile.projects && profile.projects.length ? "已有项目经历" : "1个新项目作品"}补充岗位证据。`;
 }
 
 function conflictText(job, capabilities, background, profile) {
@@ -638,6 +892,55 @@ function conflictAdviceByJob(key) {
       major: "建议用政策研究、法律/公共议题项目补足关联。",
       ability: "建议补文字表达、利益相关方分析和材料严谨度。",
       neutral: "适合作为专业相关方向，但需要明确公共部门、企业GR或国际组织路径。"
+    },
+    financial_services: {
+      good: "下一步应补金融产品、风险管理或银行业务案例。",
+      background: "银行总行和头部资管较看重学校与专业，建议同时配置分行、保险、风控或运营管理岗位。",
+      major: "可通过金融产品分析、风险案例或数据项目补足专业关联。",
+      ability: "建议补稳定性、数据分析和材料严谨度。",
+      neutral: "适合作为金融方向中更稳健的落点。"
+    },
+    big4: {
+      good: "下一步应准备审计/税务/风险咨询相关简历和群面案例。",
+      background: "四大相对更看重英语、细致度、实习和面试表现，可作为商科学生常见跳板。",
+      major: "建议补会计、审计、税务或内控相关项目证明。",
+      ability: "建议补细节检查、执行抗压和客户沟通案例。",
+      neutral: "可作为通往财务、内控、咨询或企业战略的跳板。"
+    },
+    hr: {
+      good: "下一步应补招聘、组织发展或雇主品牌项目案例。",
+      background: "HR方向对学校门槛相对温和，但看重沟通、流程意识和对人的判断。",
+      major: "心理学、管理、社科、传媒都可迁移，但需要具体项目证明。",
+      ability: "建议补结构化沟通、项目执行和数据化招聘意识。",
+      neutral: "适合关注人和组织问题的学生，但要避免只停留在“喜欢和人打交道”。"
+    },
+    supply_chain: {
+      good: "下一步应补供应链基础、Excel分析和交付异常复盘案例。",
+      background: "供应链岗位更看重专业/行业理解和执行稳定性，外企管培竞争会更高。",
+      major: "理工、商科和运营管理背景更容易解释，其他专业需补流程和数据项目。",
+      ability: "建议补执行、稳定性、数据分析和跨部门协调。",
+      neutral: "适合作为实用型、稳定型商业岗位方向。"
+    },
+    legal_compliance: {
+      good: "下一步应补合同、合规、风控或数据合规相关经历。",
+      background: "法务合规对专业相关性较敏感，金融和互联网合规也看重规则意识。",
+      major: "法律、公共政策、金融、数据背景更好解释，其他专业需要项目或证书补充。",
+      ability: "建议补规则理解、材料严谨度和风险判断。",
+      neutral: "适合偏理性、稳健、重视规则边界的学生。"
+    },
+    academic: {
+      good: "下一步应明确研究方向、导师匹配和研究计划。",
+      background: "科研路径更看重学术训练、研究成果、推荐信和长期投入。",
+      major: "需要和研究方向形成连续性，跨方向申请要提前补研究经历。",
+      ability: "建议补文献综述、研究方法、数据或实验能力。",
+      neutral: "适合作为长期深耕路径，但要同时评估学术机会成本。"
+    },
+    crossborder: {
+      good: "下一步应补海外市场分析、跨境运营或品牌出海项目。",
+      background: "跨境方向更看重语言、市场敏感度、执行和商业结果，学校门槛相对灵活。",
+      major: "商科、传媒、语言、国际关系都可迁移，但需要运营或市场作品。",
+      ability: "建议补海外用户洞察、渠道分析和数据复盘。",
+      neutral: "适合想连接语言/海外经历和商业岗位的学生。"
     }
   };
   return map[key];
