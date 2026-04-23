@@ -87,14 +87,20 @@
             <input name="undergradMajor" placeholder="如：经济学 / 计算机 / 传媒" />
           </label>
           <label>
-            <span>本科专业类型</span>
+            <span>本科专业类型（系统自动识别，可手动修改）</span>
             <select name="undergradMajorType">
-              <option value="business">商科/经济/管理</option>
-              <option value="stem">理工科/数据/计算机</option>
-              <option value="social">社科/公共政策/法律</option>
-              <option value="media">传媒/语言/艺术/人文</option>
+              <option value="business">商科/管理/市场</option>
+              <option value="finance">金融/经济/会计</option>
+              <option value="data">数据/计算机/数学</option>
+              <option value="engineering">工程/制造/供应链</option>
+              <option value="social">法律/公共政策/社科</option>
+              <option value="media">传媒/语言/人文</option>
+              <option value="arts">艺术/设计/创意</option>
+              <option value="science">医药/生物/自然科学</option>
+              <option value="education">教育/心理</option>
               <option value="other">其他或暂不确定</option>
             </select>
+            <small class="field-tip">填写具体专业后，系统会自动匹配专业类型；如果识别不准，你可以手动修改。</small>
           </label>
           <label>
             <span>本科GPA区间</span>
@@ -116,15 +122,21 @@
             <input name="gradMajor" placeholder="如：市场营销 / 金融 / 数据科学" />
           </label>
           <label>
-            <span>研究生专业类型</span>
+            <span>研究生专业类型（系统自动识别，可手动修改）</span>
             <select name="gradMajorType">
               <option value="none">无研究生学历</option>
-              <option value="business">商科/经济/管理</option>
-              <option value="stem">理工科/数据/计算机</option>
-              <option value="social">社科/公共政策/法律</option>
-              <option value="media">传媒/语言/艺术/人文</option>
+              <option value="business">商科/管理/市场</option>
+              <option value="finance">金融/经济/会计</option>
+              <option value="data">数据/计算机/数学</option>
+              <option value="engineering">工程/制造/供应链</option>
+              <option value="social">法律/公共政策/社科</option>
+              <option value="media">传媒/语言/人文</option>
+              <option value="arts">艺术/设计/创意</option>
+              <option value="science">医药/生物/自然科学</option>
+              <option value="education">教育/心理</option>
               <option value="other">其他或暂不确定</option>
             </select>
+            <small class="field-tip">填写研究生专业后，系统会自动匹配专业类型；如果识别不准，你可以手动修改。</small>
           </label>
           <label>
             <span>研究生GPA区间</span>
@@ -145,6 +157,23 @@
           <label>
             <span>博士专业</span>
             <input name="phdMajor" placeholder="如：公共政策 / 生物统计" />
+          </label>
+          <label>
+            <span>博士专业类型（系统自动识别，可手动修改）</span>
+            <select name="phdMajorType">
+              <option value="none">无博士学历</option>
+              <option value="business">商科/管理/市场</option>
+              <option value="finance">金融/经济/会计</option>
+              <option value="data">数据/计算机/数学</option>
+              <option value="engineering">工程/制造/供应链</option>
+              <option value="social">法律/公共政策/社科</option>
+              <option value="media">传媒/语言/人文</option>
+              <option value="arts">艺术/设计/创意</option>
+              <option value="science">医药/生物/自然科学</option>
+              <option value="education">教育/心理</option>
+              <option value="other">其他或暂不确定</option>
+            </select>
+            <small class="field-tip">填写博士专业后，系统会自动匹配专业类型；如果识别不准，你可以手动修改。</small>
           </label>
           <label>
             <span>博士GPA/表现</span>
@@ -196,6 +225,11 @@
             <label><input type="checkbox" name="interest" value="academic" />科研/学术/博士发展</label>
             <label><input type="checkbox" name="interest" value="crossborder" />跨境电商/海外市场/国际商务</label>
           </fieldset>
+          <label class="full-span">
+            <span>当前最想优先尝试的方向</span>
+            <select name="primaryInterest" id="primaryInterestSelect"></select>
+            <small class="field-tip">专项题会优先围绕你的主方向出题；如果你选择了多个方向，专项题数量会增加，最多 15 题。</small>
+          </label>
         </form>
         <datalist id="schoolOptions"></datalist>
       </section>
@@ -214,7 +248,7 @@
         <div class="section-head">
           <p class="eyebrow">Personality</p>
           <h2>职场性格测评</h2>
-          <p>性格不会决定你只能做哪个行业，它主要影响你更适合怎样的工作方式、沟通密度、组织环境和压力来源。企业校招使用性格测评，通常是为了判断候选人与岗位节奏、团队协作方式是否匹配。</p>
+          <p>这部分不是给你贴“性格标签”，而是看你在真实职场场景中的工作方式偏好。性格不会直接决定你能不能做某个行业，但会影响你更适合怎样的沟通密度、团队节奏、组织环境和反馈方式。企业校招使用性格测评，通常也是为了判断候选人与岗位协作方式、管理风格和工作节奏是否匹配。</p>
         </div>
         <div class="question-list" id="personalityQuestions"></div>
       </section>

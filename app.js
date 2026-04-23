@@ -175,29 +175,29 @@ const capabilityQuestions = [
 let activeCapabilityQuestions = capabilityQuestions.slice(0, 24);
 
 const personalityQuestions = [
-  ["decision", "选择实习机会", "你同时拿到两个实习offer：A公司平台更好但工作内容一般，B公司团队氛围很好但平台较小。", [["比较行业认可度、岗位含金量、后续跳槽价值后决定", "rational"], ["更看重团队氛围和自己是否喜欢", "emotional"], ["询问前辈建议后综合判断", "neutral"], ["选择让自己压力更小、体验更舒服的那个", "emotional"]]],
-  ["decision", "项目方案选择", "团队讨论两个方案，一个数据证明更稳，一个更有创意但结果不确定。", [["选择数据更稳的方案", "rational"], ["选择更有创意的方案", "emotional"], ["小范围测试后再决定", "rational"], ["看团队大多数人更支持哪个", "neutral"]]],
-  ["decision", "面试失利复盘", "你面试失败后，第一反应通常是？", [["复盘岗位要求和自己的回答差距", "rational"], ["会明显受到情绪影响，先缓一缓", "emotional"], ["找人聊聊，听听外部反馈", "neutral"], ["重新整理简历和面试话术", "rational"]]],
-  ["decision", "接受反馈", "领导指出你的方案“不够好”。你更可能？", [["追问具体标准和修改方向", "rational"], ["先感到受挫，再慢慢调整", "emotional"], ["观察领导过去喜欢什么风格", "neutral"], ["立刻对照目标重新改方案", "rational"]]],
-  ["decision", "职业选择依据", "你选择职业方向时，最看重什么？", [["行业前景、薪资、成长路径和简历价值", "rational"], ["自己是否喜欢、是否有意义感", "emotional"], ["家庭、前辈、朋友的综合建议", "neutral"], ["工作氛围和生活状态是否舒服", "emotional"]]],
+  ["decision", "选择实习机会", "你同时拿到两个实习机会：A岗位工作内容更贴近目标方向，但团队节奏较快；B岗位氛围更轻松，但和未来求职的相关度一般。", [["先比较岗位内容、成长路径和后续求职价值，再做决定", "rational"], ["更看重自己是否喜欢团队氛围、做起来是否舒服", "emotional"], ["会综合前辈建议和自己的感受再判断", "neutral"], ["会优先选择当下压力更小、体验更好的那个", "emotional"]]],
+  ["decision", "汇报方案取舍", "你在实习中准备周汇报，手里有两个版本：一个逻辑清晰、数据完整；另一个表达更有感染力，但论据还不够扎实。", [["优先用逻辑更完整、证据更充分的版本", "rational"], ["优先用更能打动人的表达方式", "emotional"], ["先保留核心数据，再补一些更容易被接受的表达", "neutral"], ["看汇报对象平时更偏好哪种风格再决定", "neutral"]]],
+  ["decision", "面试失利复盘", "一场你很重视的面试没有通过，接下来你通常会怎么做？", [["先拆岗位要求和自己的回答差距，再针对性调整", "rational"], ["会先消化情绪，等状态恢复后再考虑下一步", "emotional"], ["会找前辈或朋友聊聊，听听外部反馈", "neutral"], ["先把简历和面试案例快速重做一版", "rational"]]],
+  ["decision", "接受修改意见", "带教同事看完你的材料后说“方向不太对，需要重来”。你第一反应更接近哪种？", [["先确认判断标准和目标，再重做", "rational"], ["会先有些受挫，需要缓一下再继续", "emotional"], ["会先理解对方担心的点，再判断怎么调整", "neutral"], ["直接按目标重新搭结构，尽快交新版", "rational"]]],
+  ["decision", "职业方向判断", "当你决定未来重点投递哪个方向时，你通常最看重什么？", [["行业前景、岗位成长路径和简历含金量", "rational"], ["是否符合自己的兴趣、价值感和长期喜欢程度", "emotional"], ["会把前辈建议、市场情况和个人偏好放在一起考虑", "neutral"], ["会优先考虑自己做起来是否有动力、不容易内耗", "emotional"]]],
 
-  ["social", "高强度沟通岗位", "如果一份工作每天需要大量开会、客户沟通和跨部门协调，你会觉得？", [["可以接受，甚至会觉得有动力", "extrovert"], ["可以完成，但会消耗比较大", "introvert"], ["取决于沟通对象和议题", "neutral"], ["更希望有独立思考和产出的时间", "introvert"]]],
-  ["social", "Networking场景", "参加行业交流活动时，你通常会？", [["主动认识新朋友，交换信息", "extrovert"], ["和熟悉的人一起行动", "introvert"], ["有目标地认识几位关键人士", "neutral"], ["更愿意会后通过邮件或LinkedIn联系", "introvert"]]],
-  ["social", "团队合作方式", "你更喜欢哪种工作方式？", [["团队头脑风暴，边讨论边推进", "extrovert"], ["先独立思考，再带着观点讨论", "introvert"], ["根据任务性质选择合作方式", "neutral"], ["多人协作能让我更有状态", "extrovert"]]],
-  ["social", "客户汇报", "如果需要你向客户做正式汇报，你会？", [["愿意承担，展示成果也是影响力的一部分", "extrovert"], ["可以做，但需要充分准备", "neutral"], ["更希望由表达更强的同事主讲", "introvert"], ["如果内容是自己负责的，可以接受", "neutral"]]],
-  ["social", "工作能量恢复", "忙碌一周后，你更倾向于如何恢复状态？", [["参加社交活动，换换环境", "extrovert"], ["独处、整理、休息", "introvert"], ["和少数亲近朋友见面", "neutral"], ["做一些不需要太多沟通的事情", "introvert"]]],
+  ["social", "高频协作场景", "如果一份工作每天都需要开会、推进项目、和不同团队反复沟通，你通常会怎么感受？", [["会觉得节奏快但有参与感，越做越有状态", "extrovert"], ["可以完成，但连续高频沟通会消耗比较大", "introvert"], ["取决于沟通是否高效、议题是否有价值", "neutral"], ["更希望每天保留相对完整的独立工作时间", "introvert"]]],
+  ["social", "行业交流活动", "参加招聘宣讲会或行业交流活动时，你通常更像哪种状态？", [["会主动认识人、提问、交换信息", "extrovert"], ["更倾向先观察，不会主动和太多人交流", "introvert"], ["只会有目标地和少数关键对象交流", "neutral"], ["更喜欢会后单独联系，而不是现场频繁社交", "introvert"]]],
+  ["social", "项目合作方式", "做团队项目时，你更容易进入状态的方式是？", [["边讨论边推进，和人互动会激发想法", "extrovert"], ["先自己想清楚，再参加讨论", "introvert"], ["看任务性质决定，有些任务适合独立，有些适合协作", "neutral"], ["只要团队节奏快、反馈多，我会更投入", "extrovert"]]],
+  ["social", "正式汇报场景", "如果需要你代表小组向老师、客户或面试官做正式汇报，你通常会？", [["愿意承担主讲角色，表达本身也是影响力", "extrovert"], ["可以讲，但会更依赖充分准备", "neutral"], ["如果能不主讲，通常会更愿意负责内容支持", "introvert"], ["如果内容是自己主导完成的，可以接受出面汇报", "neutral"]]],
+  ["social", "一周后的恢复方式", "一周高密度实习或求职准备结束后，你通常用什么方式恢复状态？", [["和朋友见面、聊天或参加活动，换个环境会更快恢复", "extrovert"], ["更想一个人安静休息、整理情绪和节奏", "introvert"], ["会找少数熟人简单见面，不会安排太密集", "neutral"], ["更希望做一些不需要太多互动的事情", "introvert"]]],
 
-  ["risk", "初创公司机会", "你拿到一个早期创业公司的offer，薪资一般但成长空间大。", [["如果商业模式和团队靠谱，愿意尝试", "adventurous"], ["更倾向选择大公司或稳定平台", "conservative"], ["看是否有其他更稳的offer", "conservative"], ["短期试试看，但会设置止损点", "neutral"]]],
-  ["risk", "转专业求职", "你想转向一个和专业不完全相关的行业，但需要重新积累。", [["如果方向有潜力，愿意投入时间转型", "adventurous"], ["优先选择和专业更相关的方向", "conservative"], ["先做相关项目或实习验证", "neutral"], ["担心沉没成本，不轻易转", "conservative"]]],
-  ["risk", "高薪高压选择", "一份工作薪资高、成长快，但工作强度明显高。", [["年轻阶段可以接受，用几年换成长", "adventurous"], ["会谨慎考虑身体和生活状态", "conservative"], ["取决于是否能带来明显职业跃迁", "neutral"], ["不太愿意长期高压", "conservative"]]],
-  ["risk", "不确定任务", "领导给你一个没人做过的新项目，没有明确方法。", [["兴奋，愿意从0到1探索", "adventurous"], ["希望先有明确目标和资源支持", "conservative"], ["可以做，但会先拆风险和边界", "neutral"], ["更适合执行成熟任务", "conservative"]]],
-  ["risk", "职业城市选择", "如果一个城市机会更多但生活成本高、竞争激烈，你会？", [["愿意去，机会密度更重要", "adventurous"], ["更看重生活稳定和综合成本", "conservative"], ["先看行业机会和收入是否覆盖成本", "neutral"], ["会选择自己熟悉、支持系统更强的城市", "conservative"]]],
+  ["risk", "新团队机会", "你拿到一个成长很快但流程还不完善的团队机会，岗位空间不错，但不确定性也更高。", [["如果方向和人都靠谱，愿意去试，边做边看", "adventurous"], ["更倾向选制度成熟、路径稳定的平台", "conservative"], ["可以尝试，但会先想清楚退出机制和阶段目标", "neutral"], ["除非没有更稳的选择，否则不会优先考虑", "conservative"]]],
+  ["risk", "跨专业转向", "你想申请一个和现有专业不完全一致的方向，需要补项目、补认知、重新包装经历。", [["只要方向值得，愿意花时间重新搭证据", "adventurous"], ["更倾向先走和原专业更接近的路径", "conservative"], ["会先通过项目或实习试一试，再决定要不要重投入", "neutral"], ["会担心试错成本太高，不会轻易转向", "conservative"]]],
+  ["risk", "高压高回报岗位", "有个岗位能明显拉高履历和成长速度，但强度大、节奏快、淘汰也快。", [["如果能带来明显跃迁，愿意在前几年冲一冲", "adventurous"], ["会优先考虑自己的身体状态和可持续性", "conservative"], ["要看这份高压是否真的能换来后续机会", "neutral"], ["不太愿意把自己长期放在高压环境里", "conservative"]]],
+  ["risk", "从0到1任务", "带教让你接一个没有成熟模板的新任务，只给了目标，没有具体做法。", [["会觉得有挑战，愿意自己摸索推进", "adventurous"], ["希望先明确边界、资源和标准再开始", "conservative"], ["可以做，但会先把风险和关键假设列清楚", "neutral"], ["更希望接已经有成熟流程的任务", "conservative"]]],
+  ["risk", "城市与机会选择", "如果一个城市岗位更多、上升更快，但生活成本高、竞争也更激烈，你会怎么选？", [["会优先看机会密度，只要值得就愿意去", "adventurous"], ["会更看重生活稳定和长期可承受性", "conservative"], ["会先算清楚收入、成本和成长收益再决定", "neutral"], ["更倾向选择自己更熟悉、支持系统更强的城市", "conservative"]]],
 
-  ["structure", "工作流程", "你更喜欢哪种工作环境？", [["目标、流程、分工清楚，知道标准是什么", "rule"], ["有较大自主空间，可以自己定义方法", "free"], ["关键节点清楚，但执行方式灵活", "neutral"], ["不喜欢流程过多，希望快速试错", "free"]]],
-  ["structure", "绩效评价", "你更希望绩效如何被评价？", [["有明确指标和评价标准", "rule"], ["看实际影响力和创新价值", "free"], ["指标和主观评价结合", "neutral"], ["不希望被过细流程束缚", "free"]]],
-  ["structure", "入职培训", "刚进入一家公司时，你更希望？", [["有系统培训、流程文档和明确导师", "rule"], ["快速进入真实项目，边做边学", "free"], ["先了解基本规则，再实践", "neutral"], ["希望有清晰边界，避免踩坑", "rule"]]],
-  ["structure", "任务管理", "你通常如何管理任务？", [["用清单、日程、优先级管理", "rule"], ["根据灵感和状态灵活安排", "free"], ["重要任务会计划，其他灵活处理", "neutral"], ["不喜欢太死的计划，但会保证结果", "free"]]],
-  ["structure", "公司制度", "如果公司制度较多、审批较慢，但资源稳定，你会？", [["可以接受，稳定组织需要规则", "rule"], ["会觉得效率低，影响发挥", "free"], ["取决于制度是否合理", "neutral"], ["如果长期发展好，可以适应", "rule"]]]
+  ["structure", "接到新任务", "刚到一段新实习时，主管给你安排了一个新任务。你更希望得到哪种支持？", [["目标、流程、标准和交付时间都比较明确", "rule"], ["只给目标和结果，具体方法可以自己设计", "free"], ["关键节点讲清楚，执行方式保留一定灵活度", "neutral"], ["希望先知道边界和常见坑，避免做无用功", "rule"]]],
+  ["structure", "绩效判断方式", "如果要评价你的工作表现，你更希望依据什么？", [["有明确指标、标准和完成质量要求", "rule"], ["更看实际影响、创新价值和最终结果", "free"], ["既看结果，也看过程是否合理", "neutral"], ["不要被过细流程绑住，只要结果好就行", "free"]]],
+  ["structure", "入职适应方式", "刚进入一家公司或团队时，你更适合哪种上手方式？", [["先看培训材料、流程文档和示例，再开始做", "rule"], ["最好尽快进入真实任务，在实践中摸清规则", "free"], ["先了解核心规则，再边做边调整", "neutral"], ["需要先知道清晰边界，否则容易不安心", "rule"]]],
+  ["structure", "任务管理习惯", "面对多项任务并行时，你通常怎么安排？", [["会列清单、排优先级、按计划推进", "rule"], ["会根据状态和临场变化灵活切换", "free"], ["重要事项会做计划，其余保持机动", "neutral"], ["不喜欢太死的节奏，但会盯住最终结果", "free"]]],
+  ["structure", "组织规则感受", "如果一家公司审批较多、流程较细，但资源稳定、分工明确，你更可能怎么想？", [["可以接受，规则清楚反而更容易把事情做好", "rule"], ["会觉得限制太多，影响效率和发挥", "free"], ["关键看规则是否合理、是否真的提高质量", "neutral"], ["如果平台价值高，可以适应这类环境", "rule"]]]
 ].map((q, index) => ({ id: `P${index + 1}`, dimension: q[0], title: q[1], scene: q[2], options: q[3] }));
 
 const jobProfiles = {
@@ -207,7 +207,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "extrovert", risk: "adventurous", structure: "free" },
     gate: "高",
     jobs: "咨询顾问、PTA、战略实习、商业分析实习",
-    majors: ["business", "stem", "social"]
+    majors: ["business", "finance", "data", "engineering", "social"]
   },
   finance: {
     name: "金融投行/行研/投资",
@@ -215,7 +215,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "adventurous", structure: "rule" },
     gate: "高",
     jobs: "投行分析师、行研助理、投资实习、交易咨询",
-    majors: ["business", "stem"]
+    majors: ["finance", "data", "business", "science"]
   },
   internet: {
     name: "互联网产品/用户增长",
@@ -223,7 +223,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "adventurous", structure: "free" },
     gate: "中高",
     jobs: "产品运营、用户增长、商业运营、数据分析",
-    majors: ["business", "stem", "media"]
+    majors: ["data", "business", "engineering", "media"]
   },
   fmcg: {
     name: "快消/消费品品牌市场",
@@ -231,7 +231,7 @@ const jobProfiles = {
     traits: { decision: "neutral", social: "extrovert", risk: "neutral", structure: "free" },
     gate: "中高",
     jobs: "品牌市场、消费者洞察、Trade Marketing、管培生",
-    majors: ["business", "media", "social"]
+    majors: ["business", "media", "social", "arts"]
   },
   soe: {
     name: "国央企/事业单位",
@@ -239,7 +239,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "conservative", structure: "rule" },
     gate: "中高",
     jobs: "管培、综合管理、财务法务、项目管理",
-    majors: ["business", "stem", "social"]
+    majors: ["social", "business", "finance", "engineering"]
   },
   creative: {
     name: "文娱/策展/内容创意",
@@ -247,7 +247,7 @@ const jobProfiles = {
     traits: { decision: "emotional", social: "neutral", risk: "adventurous", structure: "free" },
     gate: "中",
     jobs: "内容策划、策展助理、品牌内容、项目统筹",
-    majors: ["media", "social", "business"]
+    majors: ["arts", "media", "social", "business"]
   },
   ba: {
     name: "数据分析/商业分析",
@@ -255,7 +255,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "introvert", risk: "neutral", structure: "rule" },
     gate: "中高",
     jobs: "商业分析、数据分析、经营分析、策略分析",
-    majors: ["stem", "business"]
+    majors: ["data", "finance", "business", "engineering"]
   },
   policy: {
     name: "政策/公共事务",
@@ -263,7 +263,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "extrovert", risk: "conservative", structure: "rule" },
     gate: "中高",
     jobs: "公共事务、政策研究、国际组织项目、政府关系",
-    majors: ["social", "business", "media"]
+    majors: ["social", "media", "business", "education"]
   },
   financial_services: {
     name: "银行/资管/保险/金融中后台",
@@ -271,7 +271,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "conservative", structure: "rule" },
     gate: "中高",
     jobs: "银行管培、资管产品、风险管理、金融科技、运营管理",
-    majors: ["business", "stem", "social"]
+    majors: ["finance", "business", "data", "social"]
   },
   big4: {
     name: "四大/审计/税务/风险咨询",
@@ -279,7 +279,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "neutral", structure: "rule" },
     gate: "中高",
     jobs: "审计、税务、风险咨询、交易咨询、管理咨询助理",
-    majors: ["business", "stem", "social"]
+    majors: ["finance", "business", "data", "social"]
   },
   hr: {
     name: "人力资源/组织发展",
@@ -287,7 +287,7 @@ const jobProfiles = {
     traits: { decision: "neutral", social: "extrovert", risk: "conservative", structure: "rule" },
     gate: "中",
     jobs: "HRBP助理、招聘、组织发展、培训发展、雇主品牌",
-    majors: ["business", "social", "media"]
+    majors: ["business", "social", "media", "education"]
   },
   supply_chain: {
     name: "供应链/采购/物流",
@@ -295,7 +295,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "conservative", structure: "rule" },
     gate: "中",
     jobs: "供应链管培、采购、物流计划、需求预测、运营管理",
-    majors: ["stem", "business"]
+    majors: ["engineering", "business", "data", "science"]
   },
   legal_compliance: {
     name: "法务/合规/风控",
@@ -303,7 +303,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "introvert", risk: "conservative", structure: "rule" },
     gate: "中高",
     jobs: "法务助理、合规、内控、风控、数据合规",
-    majors: ["social", "business", "stem"]
+    majors: ["social", "finance", "business", "data"]
   },
   academic: {
     name: "科研/学术/博士发展",
@@ -311,7 +311,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "introvert", risk: "neutral", structure: "free" },
     gate: "高",
     jobs: "研究助理、博士申请、科研项目、实验室/课题组、智库研究",
-    majors: ["stem", "social", "media"]
+    majors: ["science", "data", "engineering", "social", "media", "education"]
   },
   crossborder: {
     name: "跨境电商/海外市场/国际商务",
@@ -319,7 +319,7 @@ const jobProfiles = {
     traits: { decision: "neutral", social: "extrovert", risk: "adventurous", structure: "free" },
     gate: "中",
     jobs: "海外市场、跨境运营、国际商务、渠道拓展、品牌出海",
-    majors: ["business", "media", "social", "stem"]
+    majors: ["business", "media", "social", "finance", "data"]
   }
 };
 
@@ -330,7 +330,7 @@ function renderQuestions(targetId, questions, kind) {
   root.innerHTML = questions
     .map((q, idx) => `
       <article class="question-card">
-        <div class="q-meta"><span>${q.id} · ${kind === "capability" ? dimensions[q.dimension] : traitDimensionName(q.dimension)}${q.lead ? " · 求职规划线索" : ""}</span><span>${idx + 1}/${questions.length}</span></div>
+        <div class="q-meta"><span>${kind === "capability" ? dimensions[q.dimension] : traitDimensionName(q.dimension)}</span><span>第 ${idx + 1} / ${questions.length} 题</span></div>
         <div class="q-title">${q.title}：${q.scene}</div>
         <div class="option-grid">
           ${q.options.map((option, optionIndex) => `
@@ -350,7 +350,7 @@ function traitDimensionName(key) {
     decision: "决策风格",
     social: "社交能量",
     risk: "风险偏好",
-    structure: "结构偏好"
+    structure: "工作方式偏好"
   }[key];
 }
 
@@ -388,6 +388,7 @@ function getFormData() {
   const data = Object.fromEntries(new FormData(form).entries());
   data.interests = Array.from(form.querySelectorAll('input[name="interest"]:checked')).map((item) => item.value);
   if (!data.interests.length) data.interests = ["internet"];
+  if (!data.primaryInterest || !data.interests.includes(data.primaryInterest)) data.primaryInterest = data.interests[0];
   data.projects = Array.from(form.querySelectorAll('input[name="projects"]:checked')).map((item) => item.value);
   return data;
 }
@@ -426,6 +427,61 @@ function setupSchoolAutocomplete() {
   });
 }
 
+function setupPrimaryInterestSelector() {
+  const select = document.getElementById("primaryInterestSelect");
+  const checkboxes = Array.from(document.querySelectorAll('input[name="interest"]'));
+  if (!select || !checkboxes.length) return;
+  const sync = () => {
+    const selected = checkboxes.filter((item) => item.checked).map((item) => item.value);
+    const values = selected.length ? selected : ["internet"];
+    const current = values.includes(select.value) ? select.value : values[0];
+    select.innerHTML = values.map((value) => `<option value="${value}">${jobProfiles[value].name}</option>`).join("");
+    select.value = current;
+  };
+  checkboxes.forEach((checkbox) => checkbox.addEventListener("change", sync));
+  sync();
+}
+
+const majorTypeRules = [
+  ["finance", ["finance", "financial", "fintech", "economics", "economy", "accounting", "audit", "tax", "banking", "investment", "asset", "保险", "金融", "经济", "会计", "审计", "税务", "财务", "财政", "投资", "银行", "保险"]],
+  ["data", ["data", "computer", "computing", "software", "ai", "artificial intelligence", "machine learning", "statistics", "statistical", "math", "mathematics", "information system", "mis", "analytics", "business analytics", "cs", "计算机", "软件", "数据", "人工智能", "统计", "数学", "信息系统", "商业分析", "算法"]],
+  ["engineering", ["engineering", "industrial", "mechanical", "electrical", "electronic", "automation", "manufacturing", "supply chain", "logistics", "operations", "civil", "material", "建筑", "工程", "制造", "机械", "电子", "自动化", "土木", "工业工程", "供应链", "物流", "运营管理", "材料"]],
+  ["social", ["law", "legal", "public policy", "public administration", "politics", "political", "international relations", "sociology", "social policy", "governance", "法学", "法律", "公共政策", "公共管理", "国际关系", "政治学", "社会学", "社会政策"]],
+  ["media", ["media", "communication", "journalism", "advertising", "language", "linguistics", "translation", "literature", "history", "philosophy", "传播", "传媒", "新闻", "广告", "语言", "翻译", "文学", "历史", "哲学", "人文"]],
+  ["arts", ["design", "art", "arts", "creative", "film", "visual", "fashion", "interaction", "architecture design", "设计", "艺术", "创意", "影视", "视觉", "服装", "交互"]],
+  ["science", ["biology", "biological", "chemistry", "chemical", "physics", "biomedical", "medicine", "medical", "pharmacy", "pharmaceutical", "public health", "environmental science", "生物", "化学", "物理", "医学", "药学", "公共卫生", "自然科学", "环境科学"]],
+  ["education", ["education", "teaching", "psychology", "counselling", "learning", "教育", "心理", "心理学", "教学", "辅导"]],
+  ["business", ["business", "management", "marketing", "commerce", "mba", "human resource", "hr", "entrepreneurship", "strategy", "brand", "consumer", "工商管理", "管理", "市场营销", "品牌", "人力资源", "创业", "战略", "消费者"]],
+];
+
+function inferMajorTypeFromName(name, emptyValue = "other") {
+  const raw = String(name || "").trim().toLowerCase();
+  if (!raw || ["无", "none", "n/a", "na"].includes(raw)) return emptyValue;
+  for (const [type, keywords] of majorTypeRules) {
+    if (keywords.some((keyword) => raw.includes(String(keyword).toLowerCase()))) return type;
+  }
+  return "other";
+}
+
+function setupMajorTypeAutofill() {
+  [
+    ["undergradMajor", "undergradMajorType", "other"],
+    ["gradMajor", "gradMajorType", "none"],
+    ["phdMajor", "phdMajorType", "none"]
+  ].forEach(([majorName, typeName, emptyValue]) => {
+    const majorInput = document.querySelector(`[name="${majorName}"]`);
+    const typeSelect = document.querySelector(`[name="${typeName}"]`);
+    if (!majorInput || !typeSelect) return;
+    const syncType = () => {
+      const inferred = inferMajorTypeFromName(majorInput.value, emptyValue);
+      typeSelect.value = inferred;
+    };
+    majorInput.addEventListener("blur", syncType);
+    majorInput.addEventListener("change", syncType);
+    syncType();
+  });
+}
+
 function normalizeSchoolName(value) {
   const raw = value.trim();
   if (!raw || ["无", "none", "n/a", "na"].includes(raw.toLowerCase())) return raw;
@@ -440,27 +496,91 @@ function normalizeSchoolName(value) {
   return matches.length === 1 ? matches[0].name : raw;
 }
 
+function getDirectionQuestionTarget(interestCount) {
+  return Math.min(6 + Math.max(interestCount - 1, 0) * 3, 15);
+}
+
+function pickCommonCapabilityQuestions(commonQuestions, limit = 16) {
+  const grouped = Object.fromEntries(Object.keys(dimensions).map((dimension) => [dimension, commonQuestions.filter((q) => q.dimension === dimension)]));
+  const selected = [];
+  Object.keys(dimensions).forEach((dimension) => {
+    grouped[dimension].slice(0, 2).forEach((question) => {
+      if (!selected.includes(question)) selected.push(question);
+    });
+  });
+  let cursor = 2;
+  while (selected.length < limit) {
+    let added = false;
+    Object.keys(dimensions).forEach((dimension) => {
+      const question = grouped[dimension][cursor];
+      if (question && !selected.includes(question) && selected.length < limit) {
+        selected.push(question);
+        added = true;
+      }
+    });
+    if (!added) break;
+    cursor += 1;
+  }
+  return selected.slice(0, limit);
+}
+
+function buildDirectionAllocation(interests, target) {
+  if (!interests.length) return [];
+  const desired = interests.map((_, index) => {
+    if (index === 0) return 5;
+    if (index === 1) return 4;
+    if (index <= 3) return 3;
+    return 2;
+  });
+  const counts = [];
+  let used = 0;
+  interests.forEach((_, index) => {
+    const remainingSlots = interests.length - index - 1;
+    const maxForThis = Math.max(target - used - remainingSlots, 1);
+    const count = Math.min(desired[index], maxForThis);
+    counts.push(count);
+    used += count;
+  });
+  return counts;
+}
+
+function pickDirectionSpecificQuestions(profile, directionQuestions, limit) {
+  const orderedInterests = [
+    profile.primaryInterest,
+    ...profile.interests.filter((interest) => interest !== profile.primaryInterest)
+  ];
+  const allocation = buildDirectionAllocation(orderedInterests, limit);
+  const selected = [];
+
+  orderedInterests.forEach((interest, index) => {
+    const pool = directionQuestions.filter((question) => question.tags.includes(interest) && !selected.includes(question));
+    pool.slice(0, allocation[index]).forEach((question) => {
+      if (!selected.includes(question) && selected.length < limit) selected.push(question);
+    });
+  });
+
+  if (selected.length < limit) {
+    orderedInterests.forEach((interest) => {
+      directionQuestions
+        .filter((question) => question.tags.includes(interest) && !selected.includes(question))
+        .forEach((question) => {
+          if (selected.length < limit && !selected.includes(question)) selected.push(question);
+        });
+    });
+  }
+
+  return selected.slice(0, limit);
+}
+
 function refreshCapabilityQuestions() {
   const profile = getFormData();
   const common = capabilityQuestions.filter((q) => q.tags.includes("all"));
   const directionSpecific = capabilityQuestions.filter((q) => !q.tags.includes("all") && q.tags.some((tag) => profile.interests.includes(tag)));
-  const requiredDimensions = Object.keys(dimensions);
-  const balanced = [];
-  requiredDimensions.forEach((dimension) => {
-    common.filter((q) => q.dimension === dimension).slice(0, 2).forEach((q) => {
-      if (!balanced.includes(q)) balanced.push(q);
-    });
-    directionSpecific.filter((q) => q.dimension === dimension).slice(0, 3).forEach((q) => {
-      if (!balanced.includes(q)) balanced.push(q);
-    });
-  });
-  if (balanced.length < 20) {
-    common.forEach((q) => {
-      if (balanced.length < 24 && !balanced.includes(q)) balanced.push(q);
-    });
-  }
-  activeCapabilityQuestions = balanced.slice(0, 28);
-  document.getElementById("capabilityHint").innerHTML = `<h3>本轮题库已按目标方向调整</h3><p>当前选择方向：${profile.interests.map((key) => jobProfiles[key].name).join("、")}。系统会保留通用职场题，同时增加这些方向更常见的真实工作场景题；带“求职规划线索”的题目会在报告中作为服务承接信号输出。</p>`;
+  const commonSelected = pickCommonCapabilityQuestions(common, 16);
+  const directionTarget = getDirectionQuestionTarget(profile.interests.length);
+  const directionSelected = pickDirectionSpecificQuestions(profile, directionSpecific, directionTarget);
+  activeCapabilityQuestions = [...commonSelected, ...directionSelected];
+  document.getElementById("capabilityHint").innerHTML = `<h3>本轮测评将结合你的目标方向出题</h3><p>你当前选择的方向为：${profile.interests.map((key) => jobProfiles[key].name).join("、")}，优先方向为${jobProfiles[profile.primaryInterest].name}。本轮题目会同时考察通用能力和目标方向相关场景；如果你选择了多个方向，专项题数量会相应增加，最多不超过 15 题，从而让结果更贴近你的实际求职选择。</p>`;
   renderQuestions("capabilityQuestions", activeCapabilityQuestions, "capability");
 }
 
@@ -681,10 +801,14 @@ function scoreToTier(score) {
 }
 
 function majorFit(profile, job) {
+  const phdType = profile.phdMajorType && profile.phdMajorType !== "none" ? profile.phdMajorType : null;
   const gradType = profile.gradMajorType && profile.gradMajorType !== "none" ? profile.gradMajorType : null;
   const undergradType = profile.undergradMajorType || "other";
+  const phdScore = phdType ? (job.majors.includes(phdType) ? 96 : phdType === "other" ? 62 : 58) : null;
   const gradScore = gradType ? (job.majors.includes(gradType) ? 92 : gradType === "other" ? 62 : 58) : null;
   const undergradScore = job.majors.includes(undergradType) ? 84 : undergradType === "other" ? 62 : 55;
+  if (phdScore && gradScore) return Math.round(phdScore * 0.5 + gradScore * 0.3 + undergradScore * 0.2);
+  if (phdScore) return Math.round(phdScore * 0.7 + undergradScore * 0.3);
   return gradScore ? Math.round(gradScore * 0.65 + undergradScore * 0.35) : undergradScore;
 }
 
@@ -910,6 +1034,120 @@ function nextStepsByJob(key) {
   return map[key];
 }
 
+function reportStage(topJob, background) {
+  if (topJob.match >= 82 && background.score >= 75) {
+    return {
+      key: "sprint",
+      title: "重点冲刺阶段",
+      text: `你的主线方向已经比较清楚，${topJob.name}可以进入重点投递和冲刺机会的准备阶段。`
+    };
+  }
+  if (topJob.match >= 74) {
+    return {
+      key: "prepare",
+      title: "集中准备阶段",
+      text: `你已经具备比较明确的主申请方向，下一步重点是围绕${topJob.name}集中准备简历、面试和投递节奏。`
+    };
+  }
+  if (topJob.match >= 66) {
+    return {
+      key: "strengthen",
+      title: "重点补强阶段",
+      text: `你的主方向基本明确，但相关经历和能力证据还需要继续补强，当前最适合先围绕${topJob.name}补项目、补实习、补表达。`
+    };
+  }
+  if (topJob.match >= 58) {
+    return {
+      key: "clarify",
+      title: "方向初步明确阶段",
+      text: `你已经出现了相对清晰的兴趣方向，但还需要继续验证${topJob.name}是否适合作为真正的主线申请方向。`
+    };
+  }
+  return {
+    key: "explore",
+    title: "起步探索阶段",
+    text: `你目前更适合先做方向筛选和岗位认知，再决定是否把${topJob.name}作为后续重点投入方向。`
+  };
+}
+
+function allReportStages() {
+  return [
+    { key: "explore", title: "起步探索阶段", hint: "先看方向和岗位认知" },
+    { key: "clarify", title: "方向初步明确阶段", hint: "开始验证适合的主线" },
+    { key: "strengthen", title: "重点补强阶段", hint: "优先补项目、实习和证据" },
+    { key: "prepare", title: "集中准备阶段", hint: "集中准备简历、面试和投递" },
+    { key: "sprint", title: "重点冲刺阶段", hint: "重点冲目标机会，提高命中率" }
+  ];
+}
+
+function reportPriorityAction(topJob, weak, leadSignals) {
+  if (leadSignals.length) {
+    return "先把求职方向和投递节奏收拢，再进入项目补强和简历重构。";
+  }
+  return `优先补${weak[0][0] ? dimensions[weak[0][0]] : "岗位相关证据"}，并尽快产出1份与${topJob.name}相关的可展示作品。`;
+}
+
+function profileSnapshot(profile, background, topJob, strong, weak, personality) {
+  const backgroundText = `当前背景等级为${background.level}，对${topJob.name}的进入帮助是${background.score >= 75 ? "较稳定的" : background.score >= 60 ? "有基础但还需要补证据的" : "偏弱、需要更强经历支持的"}。`;
+  const abilityText = `你更突出的能力是${strong.map(([key]) => dimensions[key]).join("、")}；相对容易被追问的部分是${weak.map(([key]) => dimensions[key]).join("、")}。`;
+  const workStyleText = personalitySummary(personality).replace("你的工作偏好可以概括为：", "").replace("。这不是限制你选择行业，而是帮助你判断哪类岗位节奏更容易坚持。", "");
+  return { backgroundText, abilityText, workStyleText };
+}
+
+function pathRiskText(job) {
+  if (job.majorMismatch) return "专业和目标方向不是天然对口，申请时需要额外证明匹配理由。";
+  if (job.coreWeaknesses.length) return `当前最容易卡住的是${job.coreWeaknesses.join("、")}，面试里需要准备更具体的例子。`;
+  if (job.hardDifficulty) return "岗位门槛偏高，建议把它作为冲刺方向，而不是唯一目标。";
+  return "当前没有明显硬冲突，重点在于把已有优势转成简历和面试证据。";
+}
+
+function pathAdvantageText(job, strong) {
+  return `你的${strong.map(([key]) => dimensions[key]).join("、")}，和${job.name}看重的核心要求有比较直接的连接。`;
+}
+
+function abilityLevelText(score) {
+  if (score >= 80) return "优势项";
+  if (score >= 65) return "具备基础";
+  return "待补强";
+}
+
+function personalityVisualConfig() {
+  return {
+    decision: {
+      title: "决策风格",
+      left: "理性判断",
+      right: "感受驱动",
+      neutral: "兼顾逻辑与感受"
+    },
+    social: {
+      title: "社交能量",
+      left: "外向协作",
+      right: "独立思考",
+      neutral: "协作与独立都可适应"
+    },
+    risk: {
+      title: "风险偏好",
+      left: "愿意尝试",
+      right: "偏稳妥",
+      neutral: "接受变化但会看边界"
+    },
+    structure: {
+      title: "工作方式偏好",
+      left: "规则清晰",
+      right: "灵活自主",
+      neutral: "目标清楚、方法可灵活"
+    }
+  };
+}
+
+function personalityVisualLabel(key, result) {
+  const config = personalityVisualConfig()[key];
+  if (result.dominant === "neutral") return config.neutral;
+  return result.dominant === (key === "decision" ? "rational" : key === "social" ? "extrovert" : key === "risk" ? "adventurous" : "rule")
+    ? config.left
+    : config.right;
+}
+
 function generateReport() {
   const profile = getFormData();
   const capabilities = scoreCapabilities();
@@ -923,35 +1161,76 @@ function generateReport() {
   const top = [recommendations.main.job, recommendations.stretch.job, recommendations.backup.job];
   const strong = Object.entries(capabilities).sort((a, b) => b[1] - a[1]).slice(0, 2);
   const weak = Object.entries(capabilities).sort((a, b) => a[1] - b[1]).slice(0, 2);
+  const stage = reportStage(top[0], background);
+  const snapshot = profileSnapshot(profile, background, top[0], strong, weak, personality);
   const leadSignals = activeCapabilityQuestions
     .filter((q) => q.lead && selectedValue(q.id) !== null && q.options[selectedValue(q.id)][1] <= 2)
     .map((q) => q.title);
-  document.getElementById("reportRoot").className = "report-grid";
+  document.getElementById("reportRoot").className = "report-grid report-v2";
   document.getElementById("reportRoot").innerHTML = `
-    <section class="report-block">
-      <h3>用户画像总结</h3>
-      <p>你的背景竞争力为 <strong>${background.level}</strong>，背景分 <strong>${background.score}/100</strong>。学校层级为 <strong>${background.schoolTier} · ${background.schoolTierLabel}</strong>，学校分为 <strong>${background.schoolScore}/100</strong>，校园项目加成为 <strong>${background.projectBoost}</strong> 分。</p>
-      ${background.rankingScore ? `<p class="small-note">学校排名参考：四榜综合分 ${background.rankingScore}/100，数据置信度${background.rankingConfidence}。参考字段：QS ${background.rankingRefs.qs || "-"} / THE ${background.rankingRefs.the || "-"} / U.S. News Global ${background.rankingRefs.usnews || "-"} / ARWU ${background.rankingRefs.arwu || "-"}。</p>` : ""}
-      <p>${profileNarrative(profile, background, top[0])}</p>
-      <p>${personalitySummary(personality)}</p>
-    </section>
-    <section class="report-block">
-      <h3>核心优势与短板</h3>
-      <p>优势：${strong.map(([key]) => dimensions[key]).join("、")}。建议放在简历项目描述和面试案例的前半段，作为招聘方最先看到的能力证据。</p>
-      <p>短板：${weak.map(([key]) => dimensions[key]).join("、")}。短板不代表不能申请，而是需要用训练、项目或实习把风险降下来。</p>
-      <p class="small-note">${industryAbilityNote(top[0], strong, weak)}</p>
+    <section class="report-hero report-block wide">
+      <div class="report-hero-main">
+        <p class="report-kicker">Report Summary</p>
+        <h3>你的职业规划结论</h3>
+        <p class="report-lead">${stage.text}</p>
+        <div class="tag-row">
+          <span class="tag">主推荐方向：${top[0].name}</span>
+          <span class="tag">当前阶段：${stage.title}</span>
+          <span class="tag">背景等级：${background.level}</span>
+          <span class="tag">目标方向：${profile.interests.map((key) => jobProfiles[key].name).join("、")}</span>
+        </div>
+      </div>
+      <div class="stage-track" aria-label="求职阶段">
+        ${allReportStages().map((item, index) => `
+          <article class="stage-node ${item.key === stage.key ? "active" : ""}">
+            <span class="stage-index">阶段 ${index + 1}</span>
+            <strong>${item.title}</strong>
+            <p>${item.hint}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="summary-grid">
+        <article class="summary-card">
+          <span class="summary-label">当前定位</span>
+          <strong>${stage.title}</strong>
+          <p>${top[0].name}是当前最值得优先投入的方向。</p>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">主推荐路径</span>
+          <strong>${top[0].name}</strong>
+          <p>综合匹配度 ${top[0].match}/100，进入难度 ${top[0].entryDifficulty}。</p>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">竞争力判断</span>
+          <strong>${background.score}/100</strong>
+          <p>学校、成绩、项目和经历共同决定当前可进入性。</p>
+        </article>
+        <article class="summary-card emphasis">
+          <span class="summary-label">最优先动作</span>
+          <strong>${dimensions[weak[0][0]]}</strong>
+          <p>${reportPriorityAction(top[0], weak, leadSignals)}</p>
+        </article>
+      </div>
     </section>
     <section class="report-block wide">
-      <h3>能力画像：企业为什么看这些能力</h3>
-      ${Object.entries(capabilities).map(([key, val]) => `
-        <div class="metric-row">
-          <span>${dimensions[key]}</span>
-          <div class="bar"><span style="width:${val}%"></span></div>
-          <strong>${val}</strong>
-        </div>
-      `).join("")}
-      <div class="insight-list">
-        ${Object.entries(capabilities).map(([key, val]) => `<div class="insight-item"><strong>${dimensions[key]}</strong>：${abilityExplain(key, val)}</div>`).join("")}
+      <h3>用户画像总结</h3>
+      <div class="profile-grid">
+        <article class="profile-card">
+          <span class="summary-label">背景定位</span>
+          <p>${snapshot.backgroundText}</p>
+          <p class="small-note">学校层级：${background.schoolTier} · ${background.schoolTierLabel}；学校分 ${background.schoolScore}/100；校园项目加成 ${background.projectBoost} 分。</p>
+          ${background.rankingScore ? `<p class="small-note">四榜综合分 ${background.rankingScore}/100，数据置信度 ${background.rankingConfidence}。QS ${background.rankingRefs.qs || "-"} / THE ${background.rankingRefs.the || "-"} / U.S. News ${background.rankingRefs.usnews || "-"} / ARWU ${background.rankingRefs.arwu || "-"}。</p>` : ""}
+        </article>
+        <article class="profile-card">
+          <span class="summary-label">能力特点</span>
+          <p>${snapshot.abilityText}</p>
+          <p class="small-note">${industryAbilityNote(top[0], strong, weak)}</p>
+        </article>
+        <article class="profile-card">
+          <span class="summary-label">工作方式</span>
+          <p>${snapshot.workStyleText}。</p>
+          <p class="small-note">${profileNarrative(profile, background, top[0])}</p>
+        </article>
       </div>
     </section>
     <section class="report-block wide">
@@ -959,73 +1238,136 @@ function generateReport() {
       <div class="path-list">
         ${Object.values(recommendations).map((item) => `
           <article class="path-card">
-            <strong>${item.title}：${item.job.name}</strong>
-            <p>${item.summary}</p>
+            <div class="path-head">
+              <strong>${item.title}</strong>
+              <span class="path-job">${item.job.name}</span>
+            </div>
             <div class="path-meta">
               <span class="pill">匹配度 ${item.job.match}/100</span>
               <span class="pill">进入难度 ${item.job.entryDifficulty}</span>
               <span class="pill">专业匹配 ${item.job.majorScore}/100</span>
             </div>
-            <p>${item.reason}</p>
+            <div class="path-notes">
+              <p><strong>为什么推荐：</strong>${item.summary}</p>
+              <p><strong>当前优势：</strong>${pathAdvantageText(item.job, strong)}</p>
+              <p><strong>主要风险：</strong>${pathRiskText(item.job)}</p>
+              <p><strong>下一步动作：</strong>${item.nextStep}</p>
+            </div>
             <p class="small-note">适合岗位：${item.job.jobs}</p>
-            <p class="small-note">下一步：${item.nextStep}</p>
           </article>
         `).join("")}
       </div>
     </section>
-    <section class="report-block wide ${interestJobs.some((job) => job.match < 62) ? "danger" : "risk"}">
-      <h3>兴趣冲突检测</h3>
-      ${interestJobs.map((job) => conflictText(job, capabilities, background, profile)).join("")}
+    <section class="report-block wide">
+      <h3>能力画像</h3>
+      <p class="section-tip">这部分帮助你理解，企业为什么会在简历筛选和面试里重点看这些能力。</p>
+      <div class="ability-summary-cards">
+        ${Object.entries(capabilities).map(([key, val]) => `
+          <article class="mini-score-card">
+            <span class="summary-label">${dimensions[key]}</span>
+            <strong>${val}</strong>
+            <p>${abilityLevelText(val)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="ability-layout">
+        <div class="ability-metrics">
+      ${Object.entries(capabilities).map(([key, val]) => `
+        <div class="metric-row">
+          <span>${dimensions[key]}</span>
+          <div class="bar"><span style="width:${val}%"></span></div>
+          <strong>${val}</strong>
+        </div>
+      `).join("")}
+        </div>
+        <div class="insight-list">
+        ${Object.entries(capabilities).map(([key, val]) => `<div class="insight-item"><strong>${dimensions[key]}</strong><p>${abilityExplain(key, val)}</p></div>`).join("")}
+        </div>
+      </div>
     </section>
     <section class="report-block wide">
-      <h3>测评结果解读</h3>
-      <div class="insight-list">
-        ${studentResultInsights(profile, background, top).map((text) => `<div class="insight-item">${text}</div>`).join("")}
+      <h3>性格画像</h3>
+      <p class="section-tip">这部分展示的是你的工作方式倾向，不是限制行业选择，而是帮助你判断更适合怎样的团队节奏和工作环境。</p>
+      <div class="personality-grid">
+        ${Object.entries(personalityVisualConfig()).map(([key, config]) => `
+          <article class="personality-card">
+            <div class="personality-head">
+              <span class="summary-label">${config.title}</span>
+              <strong>${personalityVisualLabel(key, personality[key])}</strong>
+            </div>
+            <div class="personality-scale">
+              <span>${config.left}</span>
+              <div class="scale-track"><span style="left:${personality[key].leftRatio * 100}%"></span></div>
+              <span>${config.right}</span>
+            </div>
+            <p class="small-note">${key === "decision" ? "你在做判断时，更偏向先看事实、逻辑还是更重视感受和认同感。" : key === "social" ? "你在高频协作和独立推进之间，更容易在哪种节奏里保持状态。" : key === "risk" ? "你面对不确定机会时，更倾向主动尝试还是优先控制风险。" : "你更适合规则清晰的环境，还是更有自主空间的工作方式。"}</p>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+    <section class="report-block wide split-section">
+      <div class="split-card ${interestJobs.some((job) => job.match < 62) ? "danger" : "risk"}">
+        <h3>兴趣冲突检测</h3>
+        <div class="bullet-list">
+          ${interestJobs.map((job) => `<div class="bullet-item">${conflictText(job, capabilities, background, profile)}</div>`).join("")}
+        </div>
+      </div>
+      <div class="split-card">
+        <h3>测评结果解读</h3>
+        <div class="insight-list">
+          ${studentResultInsights(profile, background, top).map((text) => `<div class="insight-item">${text}</div>`).join("")}
+        </div>
       </div>
     </section>
     <section class="report-block wide">
       <h3>未来行动建议</h3>
-      <div class="path-list">
-        <div>
-          <h3>未来3个月：明确方向并补证据</h3>
+      <div class="timeline-grid">
+        <article class="timeline-card">
+          <span class="summary-label">未来3个月</span>
+          <h4>明确方向并补证据</h4>
           <ul>
             <li>确定1个主申请方向、1个冲刺方向、1个保底方向。</li>
             <li>完成一版定向简历，突出${strong.map(([key]) => dimensions[key]).join("、")}。</li>
             <li>每周拆解2个真实JD，记录岗位关键词。</li>
             <li>完成1份与${top[0].name}相关的项目作品或行业分析。</li>
           </ul>
-        </div>
-        <div>
-          <h3>未来6个月：形成实习和面试竞争力</h3>
+        </article>
+        <article class="timeline-card">
+          <span class="summary-label">未来6个月</span>
+          <h4>形成实习和面试竞争力</h4>
           <ul>
             <li>集中申请${top[0].jobs.split("、").slice(0, 2).join("、")}相关实习。</li>
             <li>建立投递表，持续跟踪岗位、反馈、面试问题和改进点。</li>
             <li>每周做2次模拟面试，重点训练STAR、岗位理解和项目复盘。</li>
             <li>补齐目标岗位要求的工具或技能，如Excel、SQL、行业研究、英文表达。</li>
           </ul>
-        </div>
-        <div>
-          <h3>未来1年：完成路径验证和求职闭环</h3>
+        </article>
+        <article class="timeline-card">
+          <span class="summary-label">未来1年</span>
+          <h4>完成路径验证和求职闭环</h4>
           <ul>
             <li>至少积累1段强相关实习或2个可展示项目。</li>
             <li>根据实习反馈判断是否坚持主线方向，或转向相邻岗位。</li>
             <li>提前准备秋招/春招批次，区分冲刺、主投、保底岗位。</li>
             <li>形成稳定的简历版本、面试故事库和作品集材料。</li>
           </ul>
+        </article>
+      </div>
+    </section>
+    <section class="report-block wide split-section">
+      <div class="split-card">
+        <h3>求职成功概率判断</h3>
+        <div class="prob-table">
+          ${top.map((job) => `<div class="prob-row"><strong>${job.name}</strong><span>${job.match}/100</span><span>${probability(job.match)}</span></div>`).join("")}
         </div>
+        <p class="small-note">该判断不是录取承诺，而是基于背景、能力、性格与岗位门槛的相对成功率。</p>
       </div>
-    </section>
-    <section class="report-block wide">
-      <h3>求职成功概率判断</h3>
-      <div class="prob-table">
-        ${top.map((job) => `<div class="prob-row"><strong>${job.name}</strong><span>${job.match}/100</span><span>${probability(job.match)}</span></div>`).join("")}
+      <div class="split-card action-card">
+        <h3>下一步行动建议</h3>
+        <p>建议先领取与你目标方向相关的行业/专业解析资料，例如岗位JD拆解、目标专业就业路径、校招时间线、简历项目模板。</p>
+        <p>如果你目前存在方向过多、经历包装不足、投递节奏不清晰等情况，建议尽快把重点放在方向收敛、简历重构、项目补强和面试训练上。</p>
+        <p class="small-note">${leadSignals.length ? `本次测评识别到的重点提醒：${leadSignals.join("、")}。` : "本次没有明显的高风险提醒，建议先按主线方向推进，并定期复盘投递反馈。"}</p>
       </div>
-      <p class="small-note">该判断不是录取承诺，而是基于背景、能力、性格与岗位门槛的相对成功率。</p>
-    </section>
-    <section class="report-block wide">
-      <h3>下一步行动建议</h3>
-      <p>建议先领取与你目标方向相关的行业/专业解析资料，例如岗位JD拆解、目标专业就业路径、校招时间线、简历项目模板。</p>
-      <p>如果你出现了方向过多、经历包装不足、投递节奏不清晰等情况，建议进入系统求职规划服务，重点完成方向收敛、简历重构、项目补强和面试训练。${leadSignals.length ? `本次测评识别到的规划线索：${leadSignals.join("、")}。` : "本次未出现明显强转化线索，可先以资料领取和方向答疑承接。"}</p>
     </section>
   `;
 }
@@ -1050,8 +1392,9 @@ function conflictText(job, capabilities, background, profile) {
 }
 
 function profileNarrative(profile, background, topJob) {
+  const phd = profile.phdMajorType && profile.phdMajorType !== "none";
   const grad = profile.gradMajorType && profile.gradMajorType !== "none";
-  const degreeText = grad ? "研究生专业" : "本科专业";
+  const degreeText = phd ? "博士专业" : grad ? "研究生专业" : "本科专业";
   const projectText = profile.projects && profile.projects.length ? "已有校园项目可以被包装成岗位证据" : "目前项目证据偏少，需要补一段可展示作品";
   const backgroundText = background.level === "T1" || background.level === "T2"
     ? "在多数主流校招岗位中具备进入候选池的基础"
@@ -1089,7 +1432,7 @@ function personalitySummary(personality) {
 function studentResultInsights(profile, background, topJobs) {
   const insights = [];
   insights.push(`背景解读：你的当前背景等级为${background.level}。这会影响部分岗位的简历筛选难度，但不是唯一决定因素。学校和GPA越难改变，越需要用实习、项目、作品和面试表现来补充证明。`);
-  insights.push(`专业解读：你的本科专业类型是${majorTypeName(profile.undergradMajorType)}，研究生专业类型是${majorTypeName(profile.gradMajorType)}。如果目标方向和专业不完全一致，建议优先选择能展示迁移能力的项目，例如行业研究、数据分析、产品分析或品牌策划。`);
+  insights.push(`专业解读：你的本科专业类型是${majorTypeName(profile.undergradMajorType)}，研究生专业类型是${majorTypeName(profile.gradMajorType)}，博士专业类型是${majorTypeName(profile.phdMajorType)}。如果目标方向和专业不完全一致，建议优先选择能展示迁移能力的项目，例如行业研究、数据分析、产品分析或品牌策划。`);
   insights.push(`方向解读：当前最建议优先考虑${topJobs[0].name}，同时把${topJobs[1].name}作为冲刺或相邻方向。这样既能保留兴趣空间，也能避免只押注一个高风险方向。`);
   insights.push(`经历解读：如果你还没有强相关实习，不建议只靠“我感兴趣、我愿意学习”来申请。更有效的做法是先做出一份能展示岗位能力的作品，再用它支持简历和面试。`);
   return insights;
@@ -1097,10 +1440,15 @@ function studentResultInsights(profile, background, topJobs) {
 
 function majorTypeName(type) {
   return {
-    business: "商科/经济/管理",
-    stem: "理工科/数据/计算机",
-    social: "社科/公共政策/法律",
-    media: "传媒/语言/艺术/人文",
+    business: "商科/管理/市场",
+    finance: "金融/经济/会计",
+    data: "数据/计算机/数学",
+    engineering: "工程/制造/供应链",
+    social: "法律/公共政策/社科",
+    media: "传媒/语言/人文",
+    arts: "艺术/设计/创意",
+    science: "医药/生物/自然科学",
+    education: "教育/心理",
     other: "其他或暂不确定",
     none: "无研究生学历"
   }[type] || "未填写";
@@ -1243,6 +1591,8 @@ document.getElementById("exportBtn").addEventListener("click", () => {
 });
 
 setupSchoolAutocomplete();
+setupPrimaryInterestSelector();
+setupMajorTypeAutofill();
 refreshCapabilityQuestions();
 renderQuestions("personalityQuestions", personalityQuestions, "personality");
 initTabs();
