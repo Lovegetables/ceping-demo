@@ -22,6 +22,7 @@
           <span id="progressBar"></span>
         </div>
         <nav class="step-tabs" id="stepTabs"></nav>
+        <p class="step-tabs-hint">可左右滑动查看全部测评板块</p>
       </section>
 
       <section class="panel active" id="panel-intro">
@@ -78,6 +79,31 @@
         </div>
 
         <form class="grid-form" id="profileForm">
+          <div class="form-note full-span">
+            <span>基础信息</span>
+            <p>以下信息用于保存测评结果并便于后续查看与沟通。系统会在你点击“生成报告”时自动登记本次测评结果。带 <strong>*</strong> 的字段为必填项。</p>
+          </div>
+          <label>
+            <span>姓名 / 称呼 <em class="required-mark">*</em></span>
+            <input name="studentName" placeholder="如：张同学 / 李家长" required />
+          </label>
+          <label>
+            <span>手机号 / 微信号 <em class="required-mark">*</em></span>
+            <input name="contact" placeholder="如：138xxxx / wechat_id" required />
+          </label>
+          <label>
+            <span>邮箱（选填）</span>
+            <input name="email" placeholder="如：name@example.com" />
+          </label>
+          <label>
+            <span>身份 <em class="required-mark">*</em></span>
+            <select name="role" required>
+              <option value="学生本人">学生本人</option>
+              <option value="学生家长">学生家长</option>
+              <option value="顾问代填">顾问代填</option>
+            </select>
+          </label>
+
           <label>
             <span>本科学校</span>
             <input name="undergradSchool" list="schoolOptions" autocomplete="off" placeholder="如：UCL / 复旦大学 / 普通一本" />
@@ -273,9 +299,7 @@
       </footer>
     </main>
 
-    <script src="./schools-data.js"></script>
     <script src="./school-tier-data.js"></script>
-    <script src="./school-ranking-data.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>

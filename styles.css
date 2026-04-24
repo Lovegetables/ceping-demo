@@ -134,6 +134,14 @@ h3 {
   margin-top: 14px;
 }
 
+.step-tabs-hint {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: right;
+}
+
 .step-tab {
   min-height: 42px;
   padding: 9px 10px;
@@ -144,12 +152,15 @@ h3 {
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 8px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
 
 .step-tab.active {
   color: #fff;
-  background: var(--green);
-  border-color: var(--green);
+  background: linear-gradient(135deg, #0f766e, #2563eb);
+  border-color: transparent;
+  box-shadow: 0 10px 22px rgba(15, 118, 110, 0.22);
+  transform: translateY(-1px);
 }
 
 .panel {
@@ -218,6 +229,12 @@ label span {
   color: #34424f;
   font-size: 14px;
   font-weight: 800;
+}
+
+.required-mark {
+  color: var(--red);
+  font-style: normal;
+  font-weight: 900;
 }
 
 label .field-tip {
@@ -302,7 +319,8 @@ select:focus {
   min-height: 18px;
 }
 
-.interest-field label:has(input:checked) {
+.interest-field label:has(input:checked),
+.interest-field label.is-checked {
   color: #12343b;
   background: rgba(15, 118, 110, 0.08);
   border-color: var(--green);
@@ -364,7 +382,8 @@ select:focus {
   height: 18px;
 }
 
-.option-item:has(input:checked) {
+.option-item:has(input:checked),
+.option-item.is-checked {
   border-color: var(--green);
   background: rgba(15, 118, 110, 0.08);
 }
@@ -482,7 +501,6 @@ button:disabled {
 .timeline-grid,
 .split-section,
 .ability-layout,
-.ability-summary-cards,
 .personality-grid {
   display: grid;
   gap: 14px;
@@ -495,8 +513,8 @@ button:disabled {
 }
 
 .stage-node {
-  min-height: 120px;
-  padding: 14px;
+  min-height: 98px;
+  padding: 12px;
   background: rgba(255, 255, 255, 0.76);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -509,24 +527,30 @@ button:disabled {
 }
 
 .stage-index {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
   margin-bottom: 8px;
-  color: var(--muted);
-  font-size: 12px;
+  color: #12343b;
+  font-size: 11px;
   font-weight: 800;
+  background: #e7f4f2;
+  border-radius: 999px;
 }
 
 .stage-node strong {
   display: block;
-  margin-bottom: 8px;
-  font-size: 16px;
+  margin-bottom: 6px;
+  font-size: 15px;
 }
 
 .stage-node p {
   margin: 0;
   color: #435160;
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .summary-grid {
@@ -568,12 +592,6 @@ button:disabled {
   grid-template-columns: repeat(3, 1fr);
 }
 
-.ability-summary-cards {
-  grid-template-columns: repeat(6, 1fr);
-  margin-bottom: 14px;
-}
-
-.mini-score-card,
 .personality-card {
   padding: 14px;
   background: #fff;
@@ -581,29 +599,75 @@ button:disabled {
   border-radius: 8px;
 }
 
-.mini-score-card strong {
-  display: block;
-  margin: 8px 0 6px;
-  font-size: 28px;
-  line-height: 1;
-}
-
-.mini-score-card p {
-  margin: 0;
-  color: #435160;
-  font-size: 13px;
-}
-
 .path-head {
-  display: grid;
-  gap: 4px;
-  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .path-job {
   color: var(--ink);
   font-size: 15px;
   font-weight: 800;
+}
+
+.score-orb {
+  --score: 0;
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  border-radius: 50%;
+  background: conic-gradient(var(--green) calc(var(--score) * 1%), #dce4ea 0);
+}
+
+.score-orb::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.score-orb span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+  z-index: 1;
+}
+
+.path-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.path-metric {
+  padding: 10px 12px;
+  background: #f6f9fb;
+  border: 1px solid #e1e8ee;
+  border-radius: 8px;
+}
+
+.path-metric span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.path-metric strong {
+  margin: 0;
+  font-size: 16px;
 }
 
 .path-notes {
@@ -613,16 +677,78 @@ button:disabled {
   line-height: 1.7;
 }
 
-.ability-layout {
-  grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
-  align-items: start;
+.ability-visual-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
-.ability-metrics {
-  padding: 14px 16px;
+.ability-visual-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 8px;
+}
+
+.ability-donut {
+  --score: 0;
+  position: relative;
+  width: 62px;
+  height: 62px;
+  flex: 0 0 62px;
+  border-radius: 50%;
+  background: conic-gradient(var(--green) calc(var(--score) * 1%), #dce4ea 0);
+}
+
+.ability-donut::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.ability-donut span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+  z-index: 1;
+}
+
+.ability-visual-card.high .ability-donut,
+.path-card.main .score-orb {
+  background: conic-gradient(var(--green) calc(var(--score) * 1%), #dce4ea 0);
+}
+
+.ability-visual-card.mid .ability-donut,
+.path-card.stretch .score-orb {
+  background: conic-gradient(var(--blue) calc(var(--score) * 1%), #dce4ea 0);
+}
+
+.ability-visual-card.low .ability-donut,
+.path-card.backup .score-orb {
+  background: conic-gradient(var(--amber) calc(var(--score) * 1%), #dce4ea 0);
+}
+
+.ability-card-copy strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.ability-card-copy p {
+  margin: 0;
+  color: #435160;
+  font-size: 13px;
 }
 
 .personality-grid {
@@ -815,6 +941,74 @@ button:disabled {
   border-color: #c9e6e1;
 }
 
+.registration-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.registration-form textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 12px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid #cfd9e1;
+  border-radius: 8px;
+  resize: vertical;
+  font: inherit;
+}
+
+.registration-form textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+  outline: none;
+}
+
+.consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #f6f9fb;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.consent-row input {
+  width: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  margin-top: 2px;
+}
+
+.consent-row span {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.registration-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ghost-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 10px 16px;
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration: none;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
 .plan-columns {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -831,6 +1025,10 @@ ul {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.7;
+}
+
+.hidden-status {
+  display: none;
 }
 
 @media (max-width: 840px) {
@@ -850,17 +1048,15 @@ ul {
   .option-grid,
   .path-list,
   .intro-grid,
-  .step-tabs,
   .interest-field,
   .prob-row,
   .summary-grid,
-  .stage-track,
   .profile-grid,
-  .ability-summary-cards,
   .personality-grid,
   .timeline-grid,
   .split-section,
-  .ability-layout {
+  .ability-layout,
+  .registration-form {
     grid-template-columns: 1fr;
   }
 
@@ -868,6 +1064,132 @@ ul {
   .topbar,
   .progress-wrap {
     padding: 18px;
+  }
+
+  .step-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-top: 14px;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+  }
+
+  .step-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .step-tabs-hint {
+    margin-top: 8px;
+    font-size: 12px;
+    text-align: left;
+  }
+
+  .step-tab {
+    flex: 0 0 calc((100% - 8px) / 2);
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  .step-tab.active {
+    box-shadow: 0 12px 24px rgba(15, 118, 110, 0.24);
+  }
+
+  .report-hero {
+    padding: 18px;
+    gap: 14px;
+  }
+
+  .report-lead {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .stage-track {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .stage-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stage-node {
+    flex: 0 0 calc((100% - 10px) / 2);
+    min-height: 92px;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .path-head {
+    align-items: flex-start;
+  }
+
+  .score-orb {
+    width: 56px;
+    height: 56px;
+    flex-basis: 56px;
+  }
+
+  .path-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .path-metric {
+    padding: 9px 10px;
+  }
+
+  .ability-visual-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ability-visual-card {
+    align-items: flex-start;
+  }
+
+  .actions {
+    position: static;
+    display: grid;
+    gap: 10px;
+    padding-top: 14px;
+    background: transparent;
+  }
+
+  .action-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .personality-scale {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .registration-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .ghost-link {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .personality-scale span:last-child {
+    text-align: right;
   }
 
   h1 {
@@ -910,13 +1232,12 @@ ul {
   .path-list,
   .plan-columns,
   .summary-grid,
-  .stage-track,
   .profile-grid,
-  .ability-summary-cards,
   .personality-grid,
   .timeline-grid,
   .split-section,
-  .ability-layout {
+  .ability-layout,
+  .registration-form {
     display: block;
   }
 

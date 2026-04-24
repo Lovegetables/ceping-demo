@@ -15,6 +15,14 @@ const dimensions = {
   business: "商业敏感度"
 };
 
+const ASSESSMENT_API_BASE = typeof window !== "undefined"
+  ? (window.ASSESSMENT_API_BASE || "http://127.0.0.1:8787")
+  : "http://127.0.0.1:8787";
+
+let latestAssessmentResult = null;
+let latestAssessmentSignature = null;
+let latestAutoRecordId = null;
+
 const schoolDirectory = [
   { name: "University College London", aliases: ["ucl", "伦敦大学学院"] },
   { name: "London School of Economics and Political Science", aliases: ["lse", "伦敦政治经济学院", "伦敦政经"] },
@@ -116,10 +124,12 @@ const schoolDirectory = [
   { name: "Sun Yat-sen University", aliases: ["中山大学", "sysu"] }
 ];
 
-const allSchoolDirectory = mergeSchoolDirectories(
+let allSchoolDirectory = mergeSchoolDirectories(
   schoolDirectory,
   typeof window !== "undefined" ? window.externalSchoolDirectory || [] : []
 );
+let schoolDirectoryLoadPromise = null;
+let schoolRankingLoadPromise = null;
 
 const capabilityQuestions = [
   ["analytical", "业务数据下滑分析", "你在实习中发现某产品本月用户转化率下降了15%，负责人让你初步分析原因。", [["先拆分转化漏斗，比较不同渠道、用户群、时间段的数据变化", 3], ["先询问运营和销售同事近期是否有异常情况", 2], ["先查看竞品是否有类似活动或价格变化", 2], ["先根据直觉判断可能是活动力度不够", 1]]],
@@ -359,10 +369,13 @@ function initTabs() {
     .map((step, idx) => `<button class="step-tab" data-step="${idx}" type="button">${idx + 1}. ${step.name}</button>`)
     .join("");
   document.querySelectorAll(".step-tab").forEach((tab) => {
-    tab.addEventListener("click", () => {
+    tab.addEventListener("click", async () => {
       currentStep = Number(tab.dataset.step);
       if (currentStep === 2) refreshCapabilityQuestions();
-      if (currentStep === 4) generateReport();
+      if (currentStep === 4) {
+        await ensureReportDataLoaded();
+        generateReport();
+      }
       updateStep();
     });
   });
@@ -372,6 +385,9 @@ function updateStep() {
   steps.forEach((step, idx) => {
     document.getElementById(`panel-${step.id}`).classList.toggle("active", idx === currentStep);
   });
+  if (currentStep === 1) {
+    ensureSchoolDirectoryLoaded();
+  }
   document.querySelectorAll(".step-tab").forEach((tab, idx) => {
     tab.classList.toggle("active", idx === currentStep);
   });
@@ -391,6 +407,30 @@ function getFormData() {
   if (!data.primaryInterest || !data.interests.includes(data.primaryInterest)) data.primaryInterest = data.interests[0];
   data.projects = Array.from(form.querySelectorAll('input[name="projects"]:checked')).map((item) => item.value);
   return data;
+}
+
+function validateRequiredRegistrantFields() {
+  const requiredFields = [
+    { name: "studentName", label: "姓名 / 称呼" },
+    { name: "contact", label: "手机号 / 微信号" },
+    { name: "role", label: "身份" }
+  ];
+  const form = document.getElementById("profileForm");
+  for (const field of requiredFields) {
+    const input = form.querySelector(`[name="${field.name}"]`);
+    const value = String(input?.value || "").trim();
+    if (!value) {
+      currentStep = 1;
+      updateStep();
+      requestAnimationFrame(() => {
+        input?.focus();
+        input?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      window.alert(`请先填写${field.label}，再生成报告。`);
+      return false;
+    }
+  }
+  return true;
 }
 
 function mergeSchoolDirectories(primary, external) {
@@ -413,14 +453,70 @@ function mergeSchoolDirectories(primary, external) {
   return Array.from(merged.values()).sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function setupSchoolAutocomplete() {
-  const dataList = document.getElementById("schoolOptions");
-  if (dataList) {
-    dataList.innerHTML = allSchoolDirectory
-      .map((school) => `<option value="${school.name}">${[school.region || school.country, ...(school.aliases || []).slice(0, 2)].filter(Boolean).join(" / ")}</option>`)
-      .join("");
+function loadScriptOnce(src) {
+  if (document.querySelector(`script[src="${src}"]`)) {
+    return Promise.resolve();
   }
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error(`Failed to load ${src}`));
+    document.body.appendChild(script);
+  });
+}
+
+function renderSchoolOptions() {
+  const dataList = document.getElementById("schoolOptions");
+  if (!dataList) return;
+  dataList.innerHTML = allSchoolDirectory
+    .map((school) => `<option value="${school.name}">${[school.region || school.country, ...(school.aliases || []).slice(0, 2)].filter(Boolean).join(" / ")}</option>`)
+    .join("");
+}
+
+async function ensureSchoolDirectoryLoaded() {
+  if (typeof window !== "undefined" && Array.isArray(window.externalSchoolDirectory) && window.externalSchoolDirectory.length) {
+    allSchoolDirectory = mergeSchoolDirectories(schoolDirectory, window.externalSchoolDirectory);
+    return allSchoolDirectory;
+  }
+  if (!schoolDirectoryLoadPromise) {
+    schoolDirectoryLoadPromise = loadScriptOnce("./schools-data.js")
+      .then(() => {
+        allSchoolDirectory = mergeSchoolDirectories(schoolDirectory, window.externalSchoolDirectory || []);
+        renderSchoolOptions();
+        return allSchoolDirectory;
+      })
+      .catch((error) => {
+        console.warn("School directory load failed:", error);
+        return allSchoolDirectory;
+      });
+  }
+  return schoolDirectoryLoadPromise;
+}
+
+async function ensureRankingDataLoaded() {
+  if (typeof window !== "undefined" && window.schoolRankingData?.schools?.length) return window.schoolRankingData;
+  if (!schoolRankingLoadPromise) {
+    schoolRankingLoadPromise = loadScriptOnce("./school-ranking-data.js")
+      .then(() => window.schoolRankingData)
+      .catch((error) => {
+        console.warn("Ranking data load failed:", error);
+        return null;
+      });
+  }
+  return schoolRankingLoadPromise;
+}
+
+async function ensureReportDataLoaded() {
+  await Promise.all([ensureSchoolDirectoryLoaded(), ensureRankingDataLoaded()]);
+}
+
+function setupSchoolAutocomplete() {
+  renderSchoolOptions();
   document.querySelectorAll('input[name="undergradSchool"], input[name="gradSchool"], input[name="phdSchool"]').forEach((input) => {
+    const preload = () => ensureSchoolDirectoryLoaded();
+    input.addEventListener("focus", preload, { once: true });
     input.addEventListener("blur", () => {
       input.value = normalizeSchoolName(input.value);
     });
@@ -440,6 +536,30 @@ function setupPrimaryInterestSelector() {
   };
   checkboxes.forEach((checkbox) => checkbox.addEventListener("change", sync));
   sync();
+}
+
+function setupSelectableStates() {
+  const refresh = (input) => {
+    const optionItem = input.closest(".option-item");
+    if (optionItem) {
+      const group = document.querySelectorAll(`input[name="${input.name}"]`);
+      group.forEach((node) => node.closest(".option-item")?.classList.toggle("is-checked", node.checked));
+    }
+    const interestLabel = input.closest(".interest-field label");
+    if (interestLabel) {
+      interestLabel.classList.toggle("is-checked", input.checked);
+    }
+  };
+
+  document.addEventListener("change", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    refresh(target);
+  });
+
+  document.querySelectorAll('.option-item input, .interest-field input').forEach((input) => {
+    refresh(input);
+  });
 }
 
 const majorTypeRules = [
@@ -1111,6 +1231,12 @@ function abilityLevelText(score) {
   return "待补强";
 }
 
+function abilityTone(score) {
+  if (score >= 80) return "high";
+  if (score >= 65) return "mid";
+  return "low";
+}
+
 function personalityVisualConfig() {
   return {
     decision: {
@@ -1148,6 +1274,110 @@ function personalityVisualLabel(key, result) {
     : config.right;
 }
 
+function compactProfileForRegistration(profile) {
+  return {
+    undergradSchool: profile.undergradSchool || "",
+    undergradMajor: profile.undergradMajor || "",
+    undergradMajorType: majorTypeName(profile.undergradMajorType),
+    gradSchool: profile.gradSchool || "",
+    gradMajor: profile.gradMajor || "",
+    gradMajorType: majorTypeName(profile.gradMajorType),
+    phdSchool: profile.phdSchool || "",
+    phdMajor: profile.phdMajor || "",
+    phdMajorType: majorTypeName(profile.phdMajorType),
+    internship: profile.internship || "",
+    projects: profile.projects || [],
+    interests: (profile.interests || []).map((key) => jobProfiles[key]?.name || key),
+    primaryInterest: jobProfiles[profile.primaryInterest]?.name || profile.primaryInterest
+  };
+}
+
+function compactPersonalityForRegistration(personality) {
+  return Object.fromEntries(
+    Object.entries(personalityVisualConfig()).map(([key, config]) => [config.title, {
+      label: personalityVisualLabel(key, personality[key]),
+      leftRatio: Math.round((personality[key].leftRatio || 0) * 100),
+      dominant: personality[key].dominant
+    }])
+  );
+}
+
+function buildAssessmentRegistrationPayload(profile, capabilities, personality, background, recommendations, stage) {
+  return {
+    createdAt: new Date().toISOString(),
+    registrant: {
+      studentName: profile.studentName || "",
+      contact: profile.contact || "",
+      email: profile.email || "",
+      role: profile.role || "学生本人",
+      note: ""
+    },
+    currentStage: stage.title,
+    background: {
+      level: background.level,
+      score: background.score,
+      schoolTier: background.schoolTier,
+      schoolTierLabel: background.schoolTierLabel,
+      schoolScore: background.schoolScore,
+      rankingScore: background.rankingScore || null,
+      rankingConfidence: background.rankingConfidence || null
+    },
+    profile: compactProfileForRegistration(profile),
+    capabilities,
+    personality: compactPersonalityForRegistration(personality),
+    recommendations: Object.fromEntries(
+      Object.entries(recommendations).map(([key, item]) => [key, {
+        title: item.title,
+        direction: item.job.name,
+        match: item.job.match,
+        entryDifficulty: item.job.entryDifficulty,
+        majorScore: item.job.majorScore,
+        jobs: item.job.jobs
+      }])
+    )
+  };
+}
+
+function assessmentSignature(payload) {
+  const clone = { ...payload };
+  delete clone.createdAt;
+  return JSON.stringify(clone);
+}
+
+async function autoRegisterLatestAssessmentResult() {
+  const status = document.getElementById("registrationStatus");
+  if (!latestAssessmentResult) return;
+
+  const signature = assessmentSignature(latestAssessmentResult);
+  if (signature === latestAssessmentSignature) {
+    if (status) status.textContent = latestAutoRecordId
+      ? `系统已自动登记本次报告，记录编号 ${latestAutoRecordId}。后台现在可以直接查看本次测评结果。`
+      : "系统已自动登记本次报告，后台现在可以直接查看本次测评结果。";
+    return;
+  }
+
+  if (status) status.textContent = "正在自动登记本次测评结果...";
+  try {
+    const response = await fetch(`${ASSESSMENT_API_BASE}/api/assessment-records`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        source: "auto_report_generation",
+        registrant: latestAssessmentResult.registrant,
+        assessment: latestAssessmentResult
+      })
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const result = await response.json();
+    latestAssessmentSignature = signature;
+    latestAutoRecordId = result.recordId;
+    if (status) status.textContent = `系统已自动登记本次报告，记录编号 ${result.recordId}。后台现在可以直接查看本次测评结果。`;
+  } catch (error) {
+    console.error(error);
+    if (status) status.textContent = `自动登记失败：当前未连接后台服务，请先启动本地登记服务（${ASSESSMENT_API_BASE}）。`;
+  }
+}
+
 function generateReport() {
   const profile = getFormData();
   const capabilities = scoreCapabilities();
@@ -1166,6 +1396,7 @@ function generateReport() {
   const leadSignals = activeCapabilityQuestions
     .filter((q) => q.lead && selectedValue(q.id) !== null && q.options[selectedValue(q.id)][1] <= 2)
     .map((q) => q.title);
+  latestAssessmentResult = buildAssessmentRegistrationPayload(profile, capabilities, personality, background, recommendations, stage);
   document.getElementById("reportRoot").className = "report-grid report-v2";
   document.getElementById("reportRoot").innerHTML = `
     <section class="report-hero report-block wide">
@@ -1183,7 +1414,7 @@ function generateReport() {
       <div class="stage-track" aria-label="求职阶段">
         ${allReportStages().map((item, index) => `
           <article class="stage-node ${item.key === stage.key ? "active" : ""}">
-            <span class="stage-index">阶段 ${index + 1}</span>
+            <span class="stage-index">${index + 1}</span>
             <strong>${item.title}</strong>
             <p>${item.hint}</p>
           </article>
@@ -1236,16 +1467,30 @@ function generateReport() {
     <section class="report-block wide">
       <h3>职业路径推荐</h3>
       <div class="path-list">
-        ${Object.values(recommendations).map((item) => `
-          <article class="path-card">
+        ${Object.entries(recommendations).map(([kind, item]) => `
+          <article class="path-card ${kind}">
             <div class="path-head">
-              <strong>${item.title}</strong>
-              <span class="path-job">${item.job.name}</span>
+              <div>
+                <strong>${item.title}</strong>
+                <span class="path-job">${item.job.name}</span>
+              </div>
+              <div class="score-orb" style="--score:${item.job.match}">
+                <span>${item.job.match}</span>
+              </div>
             </div>
-            <div class="path-meta">
-              <span class="pill">匹配度 ${item.job.match}/100</span>
-              <span class="pill">进入难度 ${item.job.entryDifficulty}</span>
-              <span class="pill">专业匹配 ${item.job.majorScore}/100</span>
+            <div class="path-metrics">
+              <div class="path-metric">
+                <span>匹配度</span>
+                <strong>${item.job.match}/100</strong>
+              </div>
+              <div class="path-metric">
+                <span>进入难度</span>
+                <strong>${item.job.entryDifficulty}</strong>
+              </div>
+              <div class="path-metric">
+                <span>专业匹配</span>
+                <strong>${item.job.majorScore}/100</strong>
+              </div>
             </div>
             <div class="path-notes">
               <p><strong>为什么推荐：</strong>${item.summary}</p>
@@ -1261,28 +1506,21 @@ function generateReport() {
     <section class="report-block wide">
       <h3>能力画像</h3>
       <p class="section-tip">这部分帮助你理解，企业为什么会在简历筛选和面试里重点看这些能力。</p>
-      <div class="ability-summary-cards">
+      <div class="ability-visual-grid">
         ${Object.entries(capabilities).map(([key, val]) => `
-          <article class="mini-score-card">
-            <span class="summary-label">${dimensions[key]}</span>
-            <strong>${val}</strong>
-            <p>${abilityLevelText(val)}</p>
+          <article class="ability-visual-card ${abilityTone(val)}">
+            <div class="ability-donut" style="--score:${val}">
+              <span>${val}</span>
+            </div>
+            <div class="ability-card-copy">
+              <strong>${dimensions[key]}</strong>
+              <p>${abilityLevelText(val)}</p>
+            </div>
           </article>
         `).join("")}
       </div>
-      <div class="ability-layout">
-        <div class="ability-metrics">
-      ${Object.entries(capabilities).map(([key, val]) => `
-        <div class="metric-row">
-          <span>${dimensions[key]}</span>
-          <div class="bar"><span style="width:${val}%"></span></div>
-          <strong>${val}</strong>
-        </div>
-      `).join("")}
-        </div>
-        <div class="insight-list">
+      <div class="insight-list">
         ${Object.entries(capabilities).map(([key, val]) => `<div class="insight-item"><strong>${dimensions[key]}</strong><p>${abilityExplain(key, val)}</p></div>`).join("")}
-        </div>
       </div>
     </section>
     <section class="report-block wide">
@@ -1369,7 +1607,9 @@ function generateReport() {
         <p class="small-note">${leadSignals.length ? `本次测评识别到的重点提醒：${leadSignals.join("、")}。` : "本次没有明显的高风险提醒，建议先按主线方向推进，并定期复盘投递反馈。"}</p>
       </div>
     </section>
+    <p class="small-note hidden-status" id="registrationStatus" aria-live="polite"></p>
   `;
+  autoRegisterLatestAssessmentResult();
 }
 
 function conflictText(job, capabilities, background, profile) {
@@ -1578,14 +1818,25 @@ document.getElementById("prevBtn").addEventListener("click", () => {
   updateStep();
 });
 
-document.getElementById("nextBtn").addEventListener("click", () => {
+document.getElementById("nextBtn").addEventListener("click", async () => {
+  const nextBtn = document.getElementById("nextBtn");
   if (currentStep === 1) refreshCapabilityQuestions();
-  if (currentStep >= steps.length - 2) generateReport();
+  if (currentStep >= steps.length - 2) {
+    if (!validateRequiredRegistrantFields()) return;
+    const originalText = nextBtn.textContent;
+    nextBtn.disabled = true;
+    nextBtn.textContent = "生成中...";
+    await ensureReportDataLoaded();
+    generateReport();
+    nextBtn.textContent = originalText;
+    nextBtn.disabled = false;
+  }
   currentStep = Math.min(steps.length - 1, currentStep + 1);
   updateStep();
 });
 
-document.getElementById("exportBtn").addEventListener("click", () => {
+document.getElementById("exportBtn").addEventListener("click", async () => {
+  await ensureReportDataLoaded();
   generateReport();
   window.print();
 });
@@ -1595,5 +1846,6 @@ setupPrimaryInterestSelector();
 setupMajorTypeAutofill();
 refreshCapabilityQuestions();
 renderQuestions("personalityQuestions", personalityQuestions, "personality");
+setupSelectableStates();
 initTabs();
 updateStep();
