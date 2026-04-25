@@ -23,6 +23,7 @@ let latestAssessmentResult = null;
 let latestAssessmentSignature = null;
 let latestAutoRecordId = null;
 let schoolAutocompleteActiveIndex = -1;
+const questionOptionOrders = new Map();
 
 const majorTypeDefinitions = {
   management: "管理/工商管理/组织管理",
@@ -153,82 +154,82 @@ let schoolDirectoryLoadPromise = null;
 let schoolRankingLoadPromise = null;
 
 const capabilityQuestions = [
-  ["analytical", "业务数据下滑分析", "你在实习中发现某产品本月用户转化率下降了15%，负责人让你初步分析原因。", [["先拆分转化漏斗，比较不同渠道、用户群、时间段的数据变化", 3], ["先询问运营和销售同事近期是否有异常情况", 2], ["先查看竞品是否有类似活动或价格变化", 2], ["先根据直觉判断可能是活动力度不够", 1]]],
-  ["analytical", "复杂商业问题", "你被要求分析“某品牌为什么在年轻人中增长放缓”。你会如何展开？", [["拆成用户、渠道、产品、价格、竞品、品牌认知几个模块逐一验证", 3], ["先做用户访谈，看看年轻人真实怎么评价这个品牌", 2], ["先研究行业报告，了解整体趋势", 2], ["先看社交媒体上大家怎么讨论该品牌", 1]]],
-  ["analytical", "案例面试准备", "你准备咨询或商业分析类岗位的案例面试，最可能采用哪种方法？", [["系统练习市场规模、盈利提升、增长策略等题型，并复盘结构", 3], ["多看优秀案例答案，熟悉表达方式", 2], ["找同学模拟面试，提高临场反应", 2], ["主要依靠现场发挥，因为案例题没有标准答案", 1]]],
-  ["analytical", "信息不完整时决策", "老板让你在2小时内判断一个新市场是否值得进入，但信息不完整。你会怎么做？", [["明确关键假设，用有限数据快速验证最影响结论的变量", 3], ["先搜索尽可能多的信息，避免遗漏", 2], ["根据类似市场经验做类比判断", 2], ["倾向于说明信息不足，暂不下结论", 1]]],
+  ["analytical", "业务数据下滑分析", "你在实习中发现某产品本月用户转化率下降了15%，负责人让你初步分析原因。", [["先拆漏斗和渠道数据，再看变化来源", 3], ["先询问业务同事，确认近期异常情况", 2], ["先查看竞品活动和价格是否变化", 2], ["先按活动力度不足这个方向排查", 1]]],
+  ["analytical", "复杂商业问题", "你被要求分析“某品牌为什么在年轻人中增长放缓”。你会如何展开？", [["拆成用户、渠道、产品、价格几类验证", 3], ["先做用户访谈，了解真实评价", 2], ["先研究行业报告，判断整体趋势", 2], ["先看社媒讨论，找出常见反馈", 1]]],
+  ["analytical", "案例面试准备", "你准备咨询或商业分析类岗位的案例面试，最可能采用哪种方法？", [["按题型系统练习，并复盘拆题结构", 3], ["多看优秀案例，熟悉表达方式", 2], ["找同学模拟，提高临场反应", 2], ["主要靠现场发挥和日常积累", 1]]],
+  ["analytical", "信息不完整时决策", "老板让你在2小时内判断一个新市场是否值得进入，但信息不完整。你会怎么做？", [["先定关键假设，再快速验证核心变量", 3], ["先搜索更多信息，尽量减少遗漏", 2], ["用类似市场经验做初步类比", 2], ["先说明信息不足，暂不做判断", 1]]],
 
-  ["communication", "汇报项目进展", "你需要向经理汇报一个项目延期问题。你会怎么说？", [["先说明结论和影响，再解释原因，最后给出补救方案和新时间表", 3], ["详细说明过程中遇到的困难，让经理理解延期原因", 2], ["先承认延期，再表示会尽快赶上", 1], ["等经理问到具体问题时再逐一解释", 1]]],
-  ["communication", "强势同事协作", "你和一位强势同事负责同一项目，对方经常直接否定你的想法。你会如何处理？", [["私下沟通分歧点，用事实和目标对齐方案", 3], ["在会议中直接说明自己的理由，争取团队支持", 2], ["尽量减少冲突，按对方方式推进", 1], ["向上级反馈协作困难，请上级协调", 2]]],
-  ["communication", "面试表达", "面试官问你“为什么适合这个岗位”，你会如何回答？", [["结合岗位要求，用经历证明自己具备对应能力", 3], ["说明自己对行业有兴趣，也愿意学习", 1], ["重点介绍自己的学校、专业和成绩", 2], ["讲述自己过往经历中最有成就感的事情", 2]]],
-  ["communication", "跨部门沟通", "你需要推动设计、技术、运营三个团队配合上线一个功能。你会优先做什么？", [["明确目标、分工、时间节点和风险点，并同步给所有相关方", 3], ["先分别找关键负责人沟通，争取支持", 2], ["建一个群，把需求文档发进去", 1], ["先推动最熟悉的团队开始做，再逐步拉其他人加入", 2]]],
+  ["communication", "汇报项目进展", "你需要向经理汇报一个项目延期问题。你会怎么说？", [["先说影响和原因，再给补救安排", 3], ["详细说明困难，让经理理解延期", 2], ["先承认延期，表示会尽快赶上", 1], ["等经理追问时再逐项解释", 1]]],
+  ["communication", "强势同事协作", "你和一位强势同事负责同一项目，对方经常直接否定你的想法。你会如何处理？", [["私下对齐分歧，用事实推动方案", 3], ["会议中说明理由，争取团队支持", 2], ["减少正面冲突，按对方方式推进", 1], ["向上级反馈，请对方协助协调", 2]]],
+  ["communication", "面试表达", "面试官问你“为什么适合这个岗位”，你会如何回答？", [["对照岗位要求，用经历证明能力", 3], ["说明自己有兴趣，也愿意学习", 1], ["重点介绍学校、专业和成绩", 2], ["讲一段最有成就感的经历", 2]]],
+  ["communication", "跨部门沟通", "你需要推动设计、技术、运营三个团队配合上线一个功能。你会优先做什么？", [["先对齐目标、分工、节点和风险", 3], ["先找关键负责人沟通争取支持", 2], ["建群发需求文档，让大家先看", 1], ["先推动熟悉团队，再拉其他人", 2]]],
 
-  ["execution", "多任务并行", "你同时面对课程论文、实习任务、社团活动三个截止日期。你会怎么处理？", [["按重要性和截止时间排序，拆分任务并设定每日交付节点", 3], ["先做最紧急的任务，其他任务之后再说", 2], ["先做自己最有把握完成的任务，减少压力", 1], ["和相关方沟通延期或调整预期", 2]]],
-  ["execution", "高压交付", "实习期间，领导临时要求你第二天上午前完成一份分析材料。你会怎么做？", [["先确认交付标准和用途，再快速搭框架、补数据、优先完成核心部分", 3], ["直接开始查资料，尽可能做完整", 2], ["先问能否延长时间，避免质量不够", 1], ["找同学或同事帮忙一起完成", 2]]],
-  ["execution", "任务被反复修改", "你完成的方案被领导连续修改三次，你会怎么反应？", [["主动总结每次修改背后的标准，确认最终方向后继续推进", 3], ["按照领导意见继续改，直到满意为止", 2], ["感到挫败，但会尽量完成", 1], ["询问是否一开始需求没有说清楚", 2]]],
-  ["execution", "长周期目标", "你计划半年后求职，但现在课程和生活都很忙。你会怎么安排？", [["制定每周固定求职任务，如改简历、练面试、投递、复盘", 3], ["等到招聘季开始后集中准备", 1], ["偶尔参加宣讲会和活动，保持了解", 2], ["先专注GPA，求职之后再补", 1]], ["all"], true],
+  ["execution", "多任务并行", "你同时面对课程论文、实习任务、社团活动三个截止日期。你会怎么处理？", [["按重要性和时间拆分每日节点", 3], ["先做最紧急的任务，再处理其他", 2], ["先做最有把握的任务，降低压力", 1], ["和相关方沟通调整部分预期", 2]]],
+  ["execution", "高压交付", "实习期间，领导临时要求你第二天上午前完成一份分析材料。你会怎么做？", [["先确认标准，再搭框架做核心部分", 3], ["直接开始查资料，尽量做完整", 2], ["先问能否延时，避免质量不够", 1], ["找同学或同事协助完成部分内容", 2]]],
+  ["execution", "任务被反复修改", "你完成的方案被领导连续修改三次，你会怎么反应？", [["总结修改标准，确认方向后推进", 3], ["继续按领导意见改到满意为止", 2], ["会有挫败感，但仍尽量完成", 1], ["询问是否最初需求不够清楚", 2]]],
+  ["execution", "长周期目标", "你计划半年后求职，但现在课程和生活都很忙。你会怎么安排？", [["每周固定做简历、面试和投递复盘", 3], ["等招聘季开始后再集中准备", 1], ["偶尔参加宣讲会，保持了解", 2], ["先专注GPA，求职之后再补", 1]], ["all"], true],
 
-  ["creativity", "新活动策划", "你负责为一个校园品牌活动设计传播方案。你会怎么开始？", [["先研究目标人群兴趣和传播渠道，再设计有记忆点的互动形式", 3], ["参考同类活动中效果好的玩法并做调整", 2], ["先设计视觉海报和主题口号", 2], ["按照往年模板执行，降低出错风险", 1]]],
-  ["creativity", "开放任务", "老师或领导给你一个很开放的任务：“研究一下AI对消费行业的影响”。你会怎么做？", [["先提出几个可能方向，如营销、供应链、客服、产品创新，再选择切入点", 3], ["先大量阅读报告和文章，寻找灵感", 2], ["先问清楚希望交付什么形式", 2], ["容易觉得范围太大，不知道从哪里开始", 1]]],
-  ["creativity", "产品体验优化", "你发现一个App的注册流程很复杂。你会如何提出优化建议？", [["从用户路径、流失节点、心理成本和替代方案角度提出改进", 3], ["参考竞品注册流程，提出相似优化", 2], ["直接建议减少步骤，让用户更快完成", 2], ["认为这是技术或合规问题，自己不太适合判断", 1]]],
-  ["creativity", "探索新机会", "你发现一个新兴行业很火，但自己了解不多。你会怎么做？", [["快速拆解行业链条、岗位类型和能力要求，判断是否值得投入", 3], ["找从业者聊天，了解真实工作内容", 2], ["先报名相关课程或活动，边学边看", 2], ["等行业更成熟后再考虑", 1]]],
+  ["creativity", "新活动策划", "你负责为一个校园品牌活动设计传播方案。你会怎么开始？", [["先看人群和渠道，再设计互动形式", 3], ["参考同类活动玩法，再做调整", 2], ["先设计视觉海报和主题口号", 2], ["沿用往年模板，降低执行风险", 1]]],
+  ["creativity", "开放任务", "老师或领导给你一个很开放的任务：“研究一下AI对消费行业的影响”。你会怎么做？", [["先列几个方向，再选择切入点", 3], ["先读报告和文章，寻找灵感", 2], ["先问清楚希望交付什么形式", 2], ["会觉得范围太大，难以下手", 1]]],
+  ["creativity", "产品体验优化", "你发现一个App的注册流程很复杂。你会如何提出优化建议？", [["从用户路径和流失点提出改进", 3], ["参考竞品流程，提出类似优化", 2], ["直接建议减少步骤，提高完成率", 2], ["认为这更像技术或合规问题", 1]]],
+  ["creativity", "探索新机会", "你发现一个新兴行业很火，但自己了解不多。你会怎么做？", [["先拆行业链条、岗位和能力要求", 3], ["找从业者聊聊真实工作内容", 2], ["先报名课程或活动边学边看", 2], ["等行业更成熟后再考虑投入", 1]]],
 
-  ["stability", "流程合规", "你在实习中发现一个流程可以更快完成，但可能不完全符合公司规定。你会怎么做？", [["先确认规定边界，在合规前提下提出优化方案", 3], ["如果风险不大，可以先按更快方式完成", 1], ["完全按照现有流程，不主动改变", 2], ["向负责人说明利弊，请其决定", 3]]],
-  ["stability", "细节检查", "你需要提交一份重要材料，时间比较紧。你会怎么处理最后检查？", [["按清单检查数据、格式、引用、逻辑和错别字", 3], ["快速浏览一遍，确保没有明显错误", 2], ["主要检查自己最担心的部分", 2], ["时间紧就先提交，后续有问题再改", 1]]],
-  ["stability", "长期稳定工作", "如果一份工作内容较稳定、流程清晰、晋升较慢但确定性强，你的看法是？", [["可以接受，如果平台和福利稳定，适合作为长期选择", 3], ["短期可以接受，但希望有成长空间", 2], ["会觉得缺乏挑战，不太愿意长期做", 1], ["取决于薪资和城市等现实因素", 2]]],
-  ["stability", "规则与创新冲突", "你提出的新方案被告知“不符合既有流程”。你会怎么做？", [["了解流程背后的原因，再判断是否有调整空间", 3], ["如果方案确实更好，会继续争取", 2], ["尊重规则，先不推动", 2], ["觉得组织太保守，降低投入感", 1]]],
+  ["stability", "流程合规", "你在实习中发现一个流程可以更快完成，但可能不完全符合公司规定。你会怎么做？", [["先确认规则边界，再提优化方案", 3], ["如果风险不大，先按快方式完成", 1], ["完全沿用现有流程，不主动改", 2], ["向负责人说明利弊，请其决定", 3]]],
+  ["stability", "细节检查", "你需要提交一份重要材料，时间比较紧。你会怎么处理最后检查？", [["按清单检查数据、格式和逻辑", 3], ["快速浏览，确保没有明显错误", 2], ["主要检查自己最担心的部分", 2], ["时间紧先提交，有问题再修改", 1]]],
+  ["stability", "长期稳定工作", "如果一份工作内容较稳定、流程清晰、晋升较慢但确定性强，你的看法是？", [["可以接受，适合作为长期选择", 3], ["短期能接受，但希望有成长空间", 2], ["会觉得挑战不足，不想长期做", 1], ["取决于薪资、城市和平台情况", 2]]],
+  ["stability", "规则与创新冲突", "你提出的新方案被告知“不符合既有流程”。你会怎么做？", [["先理解流程原因，再判断空间", 3], ["如果方案更好，会继续争取", 2], ["尊重规则，暂时不继续推动", 2], ["会觉得组织保守，投入感下降", 1]]],
 
-  ["business", "判断商业价值", "你想到一个校园二手交易平台的点子。你会优先验证什么？", [["用户需求频率、供需匹配效率、获客成本和变现方式", 3], ["同学们是否觉得这个想法有趣", 1], ["市面上有没有类似产品", 2], ["技术上能不能快速做出来", 2]]],
-  ["business", "市场活动复盘", "一个品牌活动曝光量很高，但转化很低。你会如何判断问题？", [["分析目标人群是否精准、利益点是否明确、转化路径是否顺畅", 3], ["认为活动创意可能不够吸引人", 2], ["认为预算可能花在了不合适的渠道", 2], ["认为曝光已经不错，转化低也正常", 1]]],
-  ["business", "实习中发现机会", "你在实习中发现用户经常反馈同一个问题，但团队还没重视。你会怎么做？", [["整理反馈频次、影响用户类型和潜在业务损失，形成建议", 3], ["在会议中提醒大家这个问题比较多", 2], ["先和运营同学聊聊是否确实重要", 2], ["觉得自己只是实习生，不适合主动提", 1]]],
-  ["business", "看待公司增长", "你判断一家公司是否有发展潜力，会优先关注什么？", [["市场空间、竞争壁垒、商业模式、增长效率和团队执行", 3], ["公司品牌知名度和融资情况", 2], ["产品是否受自己和身边人喜欢", 1], ["薪资、办公环境和员工评价", 2]]],
-  ["analytical", "咨询项目利润诊断", "客户是一家连锁餐饮品牌，利润率连续两个季度下降。项目组让你先做问题拆解。", [["先拆收入、成本、门店结构和客单价变化，再验证关键假设", 3], ["先找几家门店访谈，了解一线反馈", 2], ["先看同行是否也在降价或成本上升", 2], ["直接建议提升客单价或减少折扣", 1]], ["consulting", "ba"]],
-  ["communication", "客户会议表达", "你需要在客户会议上说明一个不太受欢迎的结论。", [["先说明业务影响，再用证据解释，并给出可执行替代方案", 3], ["先铺垫研究过程，让客户更容易接受", 2], ["尽量弱化结论，避免现场冲突", 1], ["把问题交给项目经理主讲", 1]], ["consulting", "policy"]],
-  ["business", "投资标的判断", "你需要快速判断一家消费公司的投资价值。", [["看市场空间、增长质量、利润结构、竞争壁垒和估值", 3], ["重点看融资新闻和创始人背景", 2], ["先判断自己是否喜欢这个产品", 1], ["先找几篇研报拼接核心观点", 2]], ["finance", "ba"]],
-  ["stability", "金融材料校验", "你负责投行或行研材料中的关键数据表，提交前发现口径可能不一致。", [["暂停提交，核对数据来源、计算口径和引用页码", 3], ["先提交版本，再提醒团队后续可能需要更新", 1], ["只检查最重要的数据，其余保持原样", 2], ["请同事一起复核关键表格", 3]], ["finance"]],
-  ["creativity", "品牌Campaign设计", "你要为一个新品设计校园传播活动。", [["基于目标人群洞察，设计主题、触点、转化路径和复盘指标", 3], ["参考爆款活动形式，快速改造成适合本品牌的版本", 2], ["先做视觉和slogan，让活动更有记忆点", 2], ["沿用去年模板，确保执行稳定", 1]], ["fmcg", "creative"]],
-  ["communication", "品牌跨团队推进", "市场部、销售和代理商对活动目标理解不一致。", [["重新对齐目标、人群、渠道、预算和责任人", 3], ["分别沟通各方诉求，再折中推进", 2], ["先推进自己能控制的部分", 1], ["把分歧升级给负责人决定", 2]], ["fmcg"]],
-  ["business", "产品需求优先级", "产品团队有三个需求都想排期：提升留存、增加收入、优化体验。", [["结合用户影响、业务价值、实现成本和验证周期排序", 3], ["优先做用户呼声最高的需求", 2], ["优先做领导最关注的需求", 1], ["先做开发成本最低的需求", 2]], ["internet"]],
-  ["analytical", "数据异常判断", "运营看板显示某渠道新增用户暴涨，但付费没有变化。", [["检查埋点、渠道质量、用户行为和转化漏斗是否异常", 3], ["先判断这是一次成功拉新", 1], ["问渠道同事最近是否加了预算", 2], ["先等几天观察趋势", 1]], ["internet", "ba"]],
-  ["stability", "国央企流程推进", "你在大型组织实习，需要推动一个跨部门流程，但审批链条较长。", [["先明确审批节点、材料要求和关键联系人，再按节奏推进", 3], ["找熟悉的同事帮忙加快流程", 2], ["直接催所有相关方尽快处理", 1], ["等流程自然推进，避免出错", 2]], ["soe"]],
-  ["communication", "公共事务沟通", "你要向不同立场的利益相关方说明一个政策或项目方案。", [["分别识别关注点，用事实、影响和风险边界组织表达", 3], ["强调方案的正面意义，争取认同", 2], ["尽量避免谈敏感分歧", 1], ["把正式材料发给对方自行理解", 1]], ["policy", "soe"]],
-  ["creativity", "策展内容选择", "你负责一个青年文化展览，需要确定内容线索。", [["先定义受众、主题叙事、作品关系和传播亮点", 3], ["先选自己最喜欢、最有审美感的内容", 2], ["参考成熟展览结构做改编", 2], ["优先选择执行最简单的内容", 1]], ["creative"]],
-  ["execution", "作品集推进", "你想申请内容/策展/品牌岗位，但作品集一直没有完成。", [["拆成选题、素材、结构、视觉、复盘，每周固定交付", 3], ["等有灵感时集中完成", 1], ["先做最容易展示的部分", 2], ["找朋友一起督促推进", 2]], ["creative", "fmcg"], true],
-  ["stability", "审计底稿复核", "你在审计/风险咨询项目中负责复核底稿，发现凭证和表格口径不一致。", [["逐项核对凭证、口径、公式和引用，记录问题后同步负责人", 3], ["先修正明显错误，其余等经理复核", 2], ["只要总数能对上就先提交", 1], ["请同组同事一起交叉检查", 3]], ["big4", "financial_services", "legal_compliance"]],
-  ["analytical", "银行风险判断", "你需要初步判断一个企业客户是否存在信用风险。", [["看现金流、负债结构、行业周期、抵押物和历史履约情况", 3], ["重点看企业规模和品牌知名度", 1], ["先查公开新闻和工商信息", 2], ["主要参考客户经理的判断", 1]], ["financial_services", "legal_compliance"]],
-  ["communication", "HR候选人沟通", "你负责推进一个校招候选人的面试流程，但业务部门和候选人时间反复冲突。", [["同时管理双方预期，给出可选时间和流程节点", 3], ["先满足业务部门时间，候选人再协调", 2], ["让候选人自己多提供几个时间", 1], ["把问题升级给主管处理", 2]], ["hr"]],
-  ["execution", "供应链交付异常", "供应商延期导致新品上线可能受影响，你需要协调解决。", [["确认影响范围、替代方案、库存情况和新时间表，同步相关团队", 3], ["先催供应商尽快交付", 1], ["优先通知销售和市场延期", 2], ["等待采购负责人统一处理", 1]], ["supply_chain"]],
-  ["analytical", "合规政策解读", "公司准备上线一个新业务，你需要判断其中的数据或合同风险。", [["拆解业务流程、适用规则、风险点和可调整方案", 3], ["先查类似公司的公开案例", 2], ["直接建议暂缓上线，避免风险", 1], ["把问题全部交给外部律师判断", 1]], ["legal_compliance"]],
-  ["creativity", "科研选题推进", "你准备申请博士或研究助理，需要确定一个研究选题。", [["从文献缺口、方法可行性、数据来源和导师方向综合判断", 3], ["选择自己最感兴趣的话题", 2], ["沿用导师已有课题，降低风险", 2], ["先大量阅读，不急着确定问题", 1]], ["academic"], true],
-  ["business", "海外市场进入", "你要判断一个中国品牌是否适合进入某个海外市场。", [["分析当地需求、渠道、竞品、价格带、合规和获客成本", 3], ["先看当地社媒是否有人讨论该品类", 2], ["先找海外达人试投放", 2], ["觉得产品在国内卖得好，海外也应该有机会", 1]], ["crossborder", "fmcg"]]
+  ["business", "判断商业价值", "你想到一个校园二手交易平台的点子。你会优先验证什么？", [["需求频率、供需效率和变现方式", 3], ["同学们是否觉得这个想法有趣", 1], ["市面上有没有类似竞品存在", 2], ["技术上能不能快速做出版本", 2]]],
+  ["business", "市场活动复盘", "一个品牌活动曝光量很高，但转化很低。你会如何判断问题？", [["看人群、利益点和转化路径", 3], ["认为活动创意可能不够吸引人", 2], ["认为预算可能投错了渠道", 2], ["认为曝光不错，转化低也正常", 1]]],
+  ["business", "实习中发现机会", "你在实习中发现用户经常反馈同一个问题，但团队还没重视。你会怎么做？", [["整理反馈频次和影响，形成建议", 3], ["会议中提醒大家这个问题较多", 2], ["先和运营同学确认是否重要", 2], ["觉得自己是实习生，不主动提", 1]]],
+  ["business", "看待公司增长", "你判断一家公司是否有发展潜力，会优先关注什么？", [["看市场空间、壁垒和增长效率", 3], ["看公司知名度和融资情况", 2], ["看产品是否受身边人喜欢", 1], ["看薪资、环境和员工评价", 2]]],
+  ["analytical", "咨询项目利润诊断", "客户是一家连锁餐饮品牌，利润率连续两个季度下降。项目组让你先做问题拆解。", [["拆收入、成本和门店结构验证", 3], ["先访谈门店，了解一线反馈", 2], ["先看同行是否也在降价增本", 2], ["直接建议提价或减少折扣", 1]], ["consulting", "ba"]],
+  ["communication", "客户会议表达", "你需要在客户会议上说明一个不太受欢迎的结论。", [["先说影响和证据，再给替代方案", 3], ["先铺垫研究过程，降低接受难度", 2], ["尽量弱化结论，避免现场冲突", 1], ["把问题交给项目经理主讲", 1]], ["consulting", "policy"]],
+  ["business", "投资标的判断", "你需要快速判断一家消费公司的投资价值。", [["看空间、增长、利润、壁垒和估值", 3], ["重点看融资新闻和创始人背景", 2], ["先判断自己是否喜欢产品", 1], ["先找几篇研报整理观点", 2]], ["finance", "ba"]],
+  ["stability", "金融材料校验", "你负责投行或行研材料中的关键数据表，提交前发现口径可能不一致。", [["先核对来源、口径和引用页码", 3], ["先提交版本，再提醒后续更新", 1], ["只检查关键数据，其余保持原样", 2], ["请同事一起复核关键表格", 3]], ["finance"]],
+  ["creativity", "品牌Campaign设计", "你要为一个新品设计校园传播活动。", [["基于人群洞察设计主题和触点", 3], ["参考爆款活动，改成本品牌版本", 2], ["先做视觉和口号提升记忆点", 2], ["沿用去年模板，确保执行稳定", 1]], ["fmcg", "creative"]],
+  ["communication", "品牌跨团队推进", "市场部、销售和代理商对活动目标理解不一致。", [["重新对齐目标、人群、预算和分工", 3], ["分别沟通诉求，再折中推进", 2], ["先推进自己能控制的部分", 1], ["把分歧升级给负责人决定", 2]], ["fmcg"]],
+  ["business", "产品需求优先级", "产品团队有三个需求都想排期：提升留存、增加收入、优化体验。", [["按用户影响、业务价值和成本排序", 3], ["优先做用户呼声最高的需求", 2], ["优先做领导最关注的需求", 1], ["先做开发成本最低的需求", 2]], ["internet"]],
+  ["analytical", "数据异常判断", "运营看板显示某渠道新增用户暴涨，但付费没有变化。", [["检查埋点、渠道质量和转化漏斗", 3], ["先判断这是一次成功拉新", 1], ["问渠道同事最近是否加了预算", 2], ["先等几天观察整体趋势", 1]], ["internet", "ba"]],
+  ["stability", "国央企流程推进", "你在大型组织实习，需要推动一个跨部门流程，但审批链条较长。", [["先理清节点、材料和关键联系人", 3], ["找熟悉同事帮忙加快流程", 2], ["直接催所有相关方尽快处理", 1], ["等待流程推进，尽量避免出错", 2]], ["soe"]],
+  ["communication", "公共事务沟通", "你要向不同立场的利益相关方说明一个政策或项目方案。", [["识别关注点，再讲事实和边界", 3], ["强调方案正面意义，争取认同", 2], ["尽量避开敏感分歧和争议", 1], ["把正式材料发给对方理解", 1]], ["policy", "soe"]],
+  ["creativity", "策展内容选择", "你负责一个青年文化展览，需要确定内容线索。", [["先定受众、主题和作品关系", 3], ["先选自己最喜欢的内容", 2], ["参考成熟展览结构做改编", 2], ["优先选择执行最简单内容", 1]], ["creative"]],
+  ["execution", "作品集推进", "你想申请内容/策展/品牌岗位，但作品集一直没有完成。", [["拆成模块，每周固定交付", 3], ["等有灵感时再集中完成", 1], ["先做最容易展示的部分", 2], ["找朋友一起督促推进", 2]], ["creative", "fmcg"], true],
+  ["stability", "审计底稿复核", "你在审计/风险咨询项目中负责复核底稿，发现凭证和表格口径不一致。", [["核对凭证、口径和公式后同步", 3], ["先修明显错误，其余等经理复核", 2], ["总数能对上就先提交版本", 1], ["请同组同事一起交叉检查", 3]], ["big4", "financial_services", "legal_compliance"]],
+  ["analytical", "银行风险判断", "你需要初步判断一个企业客户是否存在信用风险。", [["看现金流、负债、行业和履约", 3], ["重点看企业规模和品牌知名度", 1], ["先查公开新闻和工商信息", 2], ["主要参考客户经理的判断", 1]], ["financial_services", "legal_compliance"]],
+  ["communication", "HR候选人沟通", "你负责推进一个校招候选人的面试流程，但业务部门和候选人时间反复冲突。", [["管理双方预期，给出可选节点", 3], ["先满足业务时间，再协调候选人", 2], ["让候选人自己多提供时间", 1], ["把问题升级给主管处理", 2]], ["hr"]],
+  ["execution", "供应链交付异常", "供应商延期导致新品上线可能受影响，你需要协调解决。", [["确认影响、替代方案和新时间表", 3], ["先催供应商尽快完成交付", 1], ["优先通知销售和市场延期", 2], ["等待采购负责人统一处理", 1]], ["supply_chain"]],
+  ["analytical", "合规政策解读", "公司准备上线一个新业务，你需要判断其中的数据或合同风险。", [["拆流程、规则、风险和调整方案", 3], ["先查类似公司的公开案例", 2], ["直接建议暂缓上线避免风险", 1], ["把问题交给外部律师判断", 1]], ["legal_compliance"]],
+  ["creativity", "科研选题推进", "你准备申请博士或研究助理，需要确定一个研究选题。", [["看文献缺口、方法和数据来源", 3], ["选择自己最感兴趣的话题", 2], ["沿用导师课题，降低风险", 2], ["先大量阅读，不急着定题", 1]], ["academic"], true],
+  ["business", "海外市场进入", "你要判断一个中国品牌是否适合进入某个海外市场。", [["看需求、渠道、竞品和获客成本", 3], ["先看当地社媒是否讨论该品类", 2], ["先找海外达人做小规模投放", 2], ["国内卖得好，海外也有机会", 1]], ["crossborder", "fmcg"]]
 ].map((q, index) => ({ id: `C${index + 1}`, dimension: q[0], title: q[1], scene: q[2], options: q[3], tags: q[4] || ["all"], lead: Boolean(q[5]) }));
 
 let activeCapabilityQuestions = capabilityQuestions.slice(0, 24);
 
 const personalityQuestions = [
-  ["decision", "选择实习机会", "你同时拿到两个实习机会：A岗位工作内容更贴近目标方向，但团队节奏较快；B岗位氛围更轻松，但和未来求职的相关度一般。", [["先比较岗位内容、成长路径和后续求职价值，再做决定", "rational"], ["更看重自己是否喜欢团队氛围、做起来是否舒服", "emotional"], ["会综合前辈建议和自己的感受再判断", "neutral"], ["会优先选择当下压力更小、体验更好的那个", "emotional"]]],
-  ["decision", "汇报方案取舍", "你在实习中准备周汇报，手里有两个版本：一个逻辑清晰、数据完整；另一个表达更有感染力，但论据还不够扎实。", [["优先用逻辑更完整、证据更充分的版本", "rational"], ["优先用更能打动人的表达方式", "emotional"], ["先保留核心数据，再补一些更容易被接受的表达", "neutral"], ["看汇报对象平时更偏好哪种风格再决定", "neutral"]]],
-  ["decision", "面试失利复盘", "一场你很重视的面试没有通过，接下来你通常会怎么做？", [["先拆岗位要求和自己的回答差距，再针对性调整", "rational"], ["会先消化情绪，等状态恢复后再考虑下一步", "emotional"], ["会找前辈或朋友聊聊，听听外部反馈", "neutral"], ["先把简历和面试案例快速重做一版", "rational"]]],
+  ["decision", "选择实习机会", "你同时拿到两个实习机会：A岗位工作内容更贴近目标方向，但团队节奏较快；B岗位氛围更轻松，但和未来求职的相关度一般。", [["先比较内容、成长和求职价值", "rational"], ["更看重团队氛围和做起来是否舒服", "emotional"], ["会综合前辈建议和自身感受", "neutral"], ["优先选当下压力更小的机会", "emotional"]]],
+  ["decision", "汇报方案取舍", "你在实习中准备周汇报，手里有两个版本：一个逻辑清晰、数据完整；另一个表达更有感染力，但论据还不够扎实。", [["优先用逻辑和证据更完整的版本", "rational"], ["优先用更容易打动人的表达", "emotional"], ["保留核心数据，再优化表达", "neutral"], ["看汇报对象偏好再决定风格", "neutral"]]],
+  ["decision", "面试失利复盘", "一场你很重视的面试没有通过，接下来你通常会怎么做？", [["先拆岗位要求和回答差距", "rational"], ["先消化情绪，再考虑下一步", "emotional"], ["找前辈或朋友聊聊外部反馈", "neutral"], ["快速重做简历和面试案例", "rational"]]],
   ["decision", "接受修改意见", "带教同事看完你的材料后说“方向不太对，需要重来”。你第一反应更接近哪种？", [["先确认判断标准和目标，再重做", "rational"], ["会先有些受挫，需要缓一下再继续", "emotional"], ["会先理解对方担心的点，再判断怎么调整", "neutral"], ["直接按目标重新搭结构，尽快交新版", "rational"]]],
-  ["decision", "职业方向判断", "当你决定未来重点投递哪个方向时，你通常最看重什么？", [["行业前景、岗位成长路径和简历含金量", "rational"], ["是否符合自己的兴趣、价值感和长期喜欢程度", "emotional"], ["会把前辈建议、市场情况和个人偏好放在一起考虑", "neutral"], ["会优先考虑自己做起来是否有动力、不容易内耗", "emotional"]]],
+  ["decision", "职业方向判断", "当你决定未来重点投递哪个方向时，你通常最看重什么？", [["行业前景、成长路径和履历价值", "rational"], ["是否符合兴趣、价值感和喜欢程度", "emotional"], ["综合市场情况、建议和个人偏好", "neutral"], ["优先看自己是否有动力坚持", "emotional"]]],
 
-  ["social", "高频协作场景", "如果一份工作每天都需要开会、推进项目、和不同团队反复沟通，你通常会怎么感受？", [["会觉得节奏快但有参与感，越做越有状态", "extrovert"], ["可以完成，但连续高频沟通会消耗比较大", "introvert"], ["取决于沟通是否高效、议题是否有价值", "neutral"], ["更希望每天保留相对完整的独立工作时间", "introvert"]]],
-  ["social", "行业交流活动", "参加招聘宣讲会或行业交流活动时，你通常更像哪种状态？", [["会主动认识人、提问、交换信息", "extrovert"], ["更倾向先观察，不会主动和太多人交流", "introvert"], ["只会有目标地和少数关键对象交流", "neutral"], ["更喜欢会后单独联系，而不是现场频繁社交", "introvert"]]],
-  ["social", "项目合作方式", "做团队项目时，你更容易进入状态的方式是？", [["边讨论边推进，和人互动会激发想法", "extrovert"], ["先自己想清楚，再参加讨论", "introvert"], ["看任务性质决定，有些任务适合独立，有些适合协作", "neutral"], ["只要团队节奏快、反馈多，我会更投入", "extrovert"]]],
+  ["social", "高频协作场景", "如果一份工作每天都需要开会、推进项目、和不同团队反复沟通，你通常会怎么感受？", [["节奏快但有参与感，会更有状态", "extrovert"], ["可以完成，但高频沟通较消耗", "introvert"], ["取决于沟通效率和议题价值", "neutral"], ["更希望保留完整独立工作时间", "introvert"]]],
+  ["social", "行业交流活动", "参加招聘宣讲会或行业交流活动时，你通常更像哪种状态？", [["会主动认识人、提问和交换信息", "extrovert"], ["更倾向先观察，少主动交流", "introvert"], ["只和少数关键对象目标交流", "neutral"], ["更喜欢会后再单独联系对方", "introvert"]]],
+  ["social", "项目合作方式", "做团队项目时，你更容易进入状态的方式是？", [["边讨论边推进，互动会激发想法", "extrovert"], ["先自己想清楚，再参加讨论", "introvert"], ["按任务性质选择独立或协作", "neutral"], ["团队节奏快、反馈多会更投入", "extrovert"]]],
   ["social", "正式汇报场景", "如果需要你代表小组向老师、客户或面试官做正式汇报，你通常会？", [["愿意承担主讲角色，表达本身也是影响力", "extrovert"], ["可以讲，但会更依赖充分准备", "neutral"], ["如果能不主讲，通常会更愿意负责内容支持", "introvert"], ["如果内容是自己主导完成的，可以接受出面汇报", "neutral"]]],
-  ["social", "一周后的恢复方式", "一周高密度实习或求职准备结束后，你通常用什么方式恢复状态？", [["和朋友见面、聊天或参加活动，换个环境会更快恢复", "extrovert"], ["更想一个人安静休息、整理情绪和节奏", "introvert"], ["会找少数熟人简单见面，不会安排太密集", "neutral"], ["更希望做一些不需要太多互动的事情", "introvert"]]],
+  ["social", "一周后的恢复方式", "一周高密度实习或求职准备结束后，你通常用什么方式恢复状态？", [["见朋友聊天，换环境更快恢复", "extrovert"], ["一个人安静休息，整理节奏", "introvert"], ["找少数熟人见面，不安排太满", "neutral"], ["做些不需要太多互动的事情", "introvert"]]],
 
-  ["risk", "新团队机会", "你拿到一个成长很快但流程还不完善的团队机会，岗位空间不错，但不确定性也更高。", [["如果方向和人都靠谱，愿意去试，边做边看", "adventurous"], ["更倾向选制度成熟、路径稳定的平台", "conservative"], ["可以尝试，但会先想清楚退出机制和阶段目标", "neutral"], ["除非没有更稳的选择，否则不会优先考虑", "conservative"]]],
-  ["risk", "跨专业转向", "你想申请一个和现有专业不完全一致的方向，需要补项目、补认知、重新包装经历。", [["只要方向值得，愿意花时间重新搭证据", "adventurous"], ["更倾向先走和原专业更接近的路径", "conservative"], ["会先通过项目或实习试一试，再决定要不要重投入", "neutral"], ["会担心试错成本太高，不会轻易转向", "conservative"]]],
+  ["risk", "新团队机会", "你拿到一个成长很快但流程还不完善的团队机会，岗位空间不错，但不确定性也更高。", [["方向和人靠谱，就愿意试一试", "adventurous"], ["更倾向制度成熟、路径稳定的平台", "conservative"], ["可以尝试，但会先设阶段目标", "neutral"], ["除非没有稳选择，否则不优先", "conservative"]]],
+  ["risk", "跨专业转向", "你想申请一个和现有专业不完全一致的方向，需要补项目、补认知、重新包装经历。", [["方向值得，就愿意重新搭证据", "adventurous"], ["更倾向先走原专业相近路径", "conservative"], ["先用项目或实习试一试", "neutral"], ["担心试错成本，不轻易转向", "conservative"]]],
   ["risk", "高压高回报岗位", "有个岗位能明显拉高履历和成长速度，但强度大、节奏快、淘汰也快。", [["如果能带来明显跃迁，愿意在前几年冲一冲", "adventurous"], ["会优先考虑自己的身体状态和可持续性", "conservative"], ["要看这份高压是否真的能换来后续机会", "neutral"], ["不太愿意把自己长期放在高压环境里", "conservative"]]],
   ["risk", "从0到1任务", "带教让你接一个没有成熟模板的新任务，只给了目标，没有具体做法。", [["会觉得有挑战，愿意自己摸索推进", "adventurous"], ["希望先明确边界、资源和标准再开始", "conservative"], ["可以做，但会先把风险和关键假设列清楚", "neutral"], ["更希望接已经有成熟流程的任务", "conservative"]]],
-  ["risk", "城市与机会选择", "如果一个城市岗位更多、上升更快，但生活成本高、竞争也更激烈，你会怎么选？", [["会优先看机会密度，只要值得就愿意去", "adventurous"], ["会更看重生活稳定和长期可承受性", "conservative"], ["会先算清楚收入、成本和成长收益再决定", "neutral"], ["更倾向选择自己更熟悉、支持系统更强的城市", "conservative"]]],
+  ["risk", "城市与机会选择", "如果一个城市岗位更多、上升更快，但生活成本高、竞争也更激烈，你会怎么选？", [["优先看机会密度，值得就去", "adventurous"], ["更看重稳定和长期可承受性", "conservative"], ["先算收入、成本和成长收益", "neutral"], ["更倾向熟悉且支持强的城市", "conservative"]]],
 
-  ["structure", "接到新任务", "刚到一段新实习时，主管给你安排了一个新任务。你更希望得到哪种支持？", [["目标、流程、标准和交付时间都比较明确", "rule"], ["只给目标和结果，具体方法可以自己设计", "free"], ["关键节点讲清楚，执行方式保留一定灵活度", "neutral"], ["希望先知道边界和常见坑，避免做无用功", "rule"]]],
-  ["structure", "绩效判断方式", "如果要评价你的工作表现，你更希望依据什么？", [["有明确指标、标准和完成质量要求", "rule"], ["更看实际影响、创新价值和最终结果", "free"], ["既看结果，也看过程是否合理", "neutral"], ["不要被过细流程绑住，只要结果好就行", "free"]]],
-  ["structure", "入职适应方式", "刚进入一家公司或团队时，你更适合哪种上手方式？", [["先看培训材料、流程文档和示例，再开始做", "rule"], ["最好尽快进入真实任务，在实践中摸清规则", "free"], ["先了解核心规则，再边做边调整", "neutral"], ["需要先知道清晰边界，否则容易不安心", "rule"]]],
+  ["structure", "接到新任务", "刚到一段新实习时，主管给你安排了一个新任务。你更希望得到哪种支持？", [["目标、流程、标准和时间都明确", "rule"], ["只给目标，具体方法自己设计", "free"], ["讲清关键节点，方法保持灵活", "neutral"], ["先知道边界和常见坑更安心", "rule"]]],
+  ["structure", "绩效判断方式", "如果要评价你的工作表现，你更希望依据什么？", [["有明确指标、标准和质量要求", "rule"], ["更看实际影响、创新和结果", "free"], ["既看结果，也看过程是否合理", "neutral"], ["不被细流程绑住，结果好就行", "free"]]],
+  ["structure", "入职适应方式", "刚进入一家公司或团队时，你更适合哪种上手方式？", [["先看材料、流程和示例再做", "rule"], ["尽快进入真实任务中熟悉规则", "free"], ["先了解核心规则，再边做边调", "neutral"], ["先知道清晰边界才更安心", "rule"]]],
   ["structure", "任务管理习惯", "面对多项任务并行时，你通常怎么安排？", [["会列清单、排优先级、按计划推进", "rule"], ["会根据状态和临场变化灵活切换", "free"], ["重要事项会做计划，其余保持机动", "neutral"], ["不喜欢太死的节奏，但会盯住最终结果", "free"]]],
-  ["structure", "组织规则感受", "如果一家公司审批较多、流程较细，但资源稳定、分工明确，你更可能怎么想？", [["可以接受，规则清楚反而更容易把事情做好", "rule"], ["会觉得限制太多，影响效率和发挥", "free"], ["关键看规则是否合理、是否真的提高质量", "neutral"], ["如果平台价值高，可以适应这类环境", "rule"]]]
+  ["structure", "组织规则感受", "如果一家公司审批较多、流程较细，但资源稳定、分工明确，你更可能怎么想？", [["可以接受，规则清楚更好推进", "rule"], ["会觉得限制多，影响效率发挥", "free"], ["看规则是否合理、能否提质", "neutral"], ["如果平台价值高，可以适应", "rule"]]]
 ].map((q, index) => ({ id: `P${index + 1}`, dimension: q[0], title: q[1], scene: q[2], options: q[3] }));
 
 const jobProfiles = {
@@ -351,6 +352,14 @@ const jobProfiles = {
     gate: "中",
     jobs: "海外市场、跨境运营、国际商务、渠道拓展、品牌出海",
     majors: ["management", "marketing", "media", "socialscience", "finance", "data", "cs", "humanities"]
+  },
+  undecided: {
+    name: "暂不确定",
+    weights: { analytical: 3, communication: 3, execution: 3, creativity: 3, stability: 3, business: 3 },
+    traits: { decision: "neutral", social: "neutral", risk: "neutral", structure: "neutral" },
+    gate: "中",
+    jobs: "方向探索、岗位认知、通用实习、校园项目",
+    majors: ["management", "marketing", "finance", "accounting", "data", "cs", "engineering", "supplychain", "lawpolicy", "socialscience", "media", "humanities", "arts", "science", "education", "other"]
   }
 };
 
@@ -359,21 +368,39 @@ let currentStep = 0;
 function renderQuestions(targetId, questions, kind) {
   const root = document.getElementById(targetId);
   root.innerHTML = questions
-    .map((q, idx) => `
-      <article class="question-card">
-        <div class="q-meta"><span>${kind === "capability" ? dimensions[q.dimension] : traitDimensionName(q.dimension)}</span><span>第 ${idx + 1} / ${questions.length} 题</span></div>
-        <div class="q-title">${q.title}：${q.scene}</div>
-        <div class="option-grid">
-          ${q.options.map((option, optionIndex) => `
-            <label class="option-item">
-              <input type="radio" name="${q.id}" value="${optionIndex}" />
-              ${String.fromCharCode(65 + optionIndex)}. ${option[0]}
-            </label>
-          `).join("")}
-        </div>
-      </article>
-    `)
+    .map((q, idx) => {
+      const optionOrder = getQuestionOptionOrder(q);
+      return `
+        <article class="question-card">
+          <div class="q-meta"><span>${kind === "capability" ? dimensions[q.dimension] : traitDimensionName(q.dimension)}</span><span>第 ${idx + 1} / ${questions.length} 题</span></div>
+          <div class="q-title">${q.title}：${q.scene}</div>
+          <div class="option-grid">
+            ${optionOrder.map((optionIndex, displayIndex) => {
+              const option = q.options[optionIndex];
+              return `
+                <label class="option-item">
+                  <input type="radio" name="${q.id}" value="${optionIndex}" />
+                  ${String.fromCharCode(65 + displayIndex)}. ${option[0]}
+                </label>
+              `;
+            }).join("")}
+          </div>
+        </article>
+      `;
+    })
     .join("");
+}
+
+function getQuestionOptionOrder(question) {
+  if (!questionOptionOrders.has(question.id)) {
+    const order = question.options.map((_, index) => index);
+    for (let i = order.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+    questionOptionOrders.set(question.id, order);
+  }
+  return questionOptionOrders.get(question.id);
 }
 
 function traitDimensionName(key) {
@@ -393,11 +420,6 @@ function initTabs() {
     tab.addEventListener("click", async () => {
       currentStep = Number(tab.dataset.step);
       if (currentStep === 2) refreshCapabilityQuestions();
-      if (currentStep === 4) {
-        if (!validateRequiredRegistrantFields()) return;
-        await ensureReportDataLoaded();
-        generateReport();
-      }
       updateStep();
     });
   });
@@ -439,7 +461,7 @@ function updateStep() {
   document.getElementById("stepBadge").textContent = `${currentStep + 1} / ${steps.length}`;
   updateStepTabsScrollThumb();
   document.getElementById("prevBtn").disabled = currentStep === 0;
-  document.getElementById("nextBtn").textContent = currentStep === steps.length - 1 ? "重新生成报告" : currentStep === steps.length - 2 ? "生成报告" : "下一步";
+  document.getElementById("nextBtn").textContent = currentStep === steps.length - 1 ? "生成报告" : "下一步";
   document.getElementById("exportBtn").classList.toggle("visible", currentStep === steps.length - 1);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -452,9 +474,11 @@ function getFormData() {
     ...Object.fromEntries(new FormData(registrantForm).entries())
   };
   data.interests = Array.from(profileForm.querySelectorAll('input[name="interest"]:checked')).map((item) => item.value);
-  if (!data.interests.length) data.interests = ["internet"];
+  if (!data.interests.length) data.interests = ["undecided"];
+  if (data.interests.includes("undecided") && data.interests.length > 1) data.interests = data.interests.filter((item) => item !== "undecided");
   if (!data.primaryInterest || !data.interests.includes(data.primaryInterest)) data.primaryInterest = data.interests[0];
   data.projects = Array.from(profileForm.querySelectorAll('input[name="projects"]:checked')).map((item) => item.value);
+  if (data.projects.includes("none") && data.projects.length > 1) data.projects = data.projects.filter((item) => item !== "none");
   return data;
 }
 
@@ -670,18 +694,37 @@ function setupPrimaryInterestSelector() {
   const select = document.getElementById("primaryInterestSelect");
   const checkboxes = Array.from(document.querySelectorAll('input[name="interest"]'));
   if (!select || !checkboxes.length) return;
-  const sync = () => {
-    const selected = checkboxes.filter((item) => item.checked).map((item) => item.value);
-    const values = selected.length ? selected : ["internet"];
-    const current = values.includes(select.value) ? select.value : values[0];
-    select.innerHTML = values.map((value) => `<option value="${value}">${jobProfiles[value].name}</option>`).join("");
-    select.value = current;
-  };
-  checkboxes.forEach((checkbox) => checkbox.addEventListener("change", sync));
-  sync();
+  checkboxes.forEach((checkbox) => checkbox.addEventListener("change", syncPrimaryInterestOptions));
+  syncPrimaryInterestOptions();
+}
+
+function syncPrimaryInterestOptions() {
+  const select = document.getElementById("primaryInterestSelect");
+  const checkboxes = Array.from(document.querySelectorAll('input[name="interest"]'));
+  if (!select || !checkboxes.length) return;
+  const selected = checkboxes.filter((item) => item.checked).map((item) => item.value);
+  const values = selected.length ? selected.filter((item) => item !== "undecided") : ["undecided"];
+  if (!values.length) values.push("undecided");
+  const current = values.includes(select.value) ? select.value : values[0];
+  select.innerHTML = values.map((value) => `<option value="${value}">${jobProfiles[value].name}</option>`).join("");
+  select.value = current;
 }
 
 function setupSelectableStates() {
+  const enforceExclusiveOption = (input) => {
+    if (!input.checked || !["interest", "projects"].includes(input.name)) return;
+    const exclusiveValue = input.name === "interest" ? "undecided" : "none";
+    const group = Array.from(document.querySelectorAll(`input[name="${input.name}"]`));
+    if (input.value === exclusiveValue) {
+      group.forEach((node) => {
+        if (node !== input) node.checked = false;
+      });
+      return;
+    }
+    const exclusive = group.find((node) => node.value === exclusiveValue);
+    if (exclusive) exclusive.checked = false;
+  };
+
   const refresh = (input) => {
     const optionItem = input.closest(".option-item");
     if (optionItem) {
@@ -697,7 +740,12 @@ function setupSelectableStates() {
   document.addEventListener("change", (event) => {
     const target = event.target;
     if (!(target instanceof HTMLInputElement)) return;
+    enforceExclusiveOption(target);
     refresh(target);
+    if (["interest", "projects"].includes(target.name)) {
+      document.querySelectorAll(`input[name="${target.name}"]`).forEach((input) => refresh(input));
+    }
+    if (target.name === "interest") syncPrimaryInterestOptions();
   });
 
   document.querySelectorAll('.option-item input, .interest-field input').forEach((input) => {
@@ -866,12 +914,15 @@ function pickDirectionSpecificQuestions(profile, directionQuestions, limit) {
 function refreshCapabilityQuestions() {
   const profile = getFormData();
   const common = capabilityQuestions.filter((q) => q.tags.includes("all"));
-  const directionSpecific = capabilityQuestions.filter((q) => !q.tags.includes("all") && q.tags.some((tag) => profile.interests.includes(tag)));
+  const selectedInterests = profile.interests.filter((interest) => interest !== "undecided");
+  const directionSpecific = capabilityQuestions.filter((q) => !q.tags.includes("all") && q.tags.some((tag) => selectedInterests.includes(tag)));
   const commonSelected = pickCommonCapabilityQuestions(common, 16);
-  const directionTarget = getDirectionQuestionTarget(profile.interests.length);
-  const directionSelected = pickDirectionSpecificQuestions(profile, directionSpecific, directionTarget);
+  const directionTarget = selectedInterests.length ? getDirectionQuestionTarget(selectedInterests.length) : 0;
+  const directionSelected = selectedInterests.length ? pickDirectionSpecificQuestions({ ...profile, interests: selectedInterests, primaryInterest: selectedInterests.includes(profile.primaryInterest) ? profile.primaryInterest : selectedInterests[0] }, directionSpecific, directionTarget) : [];
   activeCapabilityQuestions = [...commonSelected, ...directionSelected];
-  document.getElementById("capabilityHint").innerHTML = `<h3>本轮测评将结合你的目标方向出题</h3><p>你当前选择的方向为：${profile.interests.map((key) => jobProfiles[key].name).join("、")}，优先方向为${jobProfiles[profile.primaryInterest].name}。本轮题目会同时考察通用能力和目标方向相关场景；如果你选择了多个方向，专项题数量会相应增加，最多不超过 15 题，从而让结果更贴近你的实际求职选择。</p>`;
+  document.getElementById("capabilityHint").innerHTML = selectedInterests.length
+    ? `<h3>本轮测评将结合你的目标方向出题</h3><p>你当前选择的方向为：${selectedInterests.map((key) => jobProfiles[key].name).join("、")}，优先方向为${jobProfiles[profile.primaryInterest].name}。本轮题目会同时考察通用能力和目标方向相关场景；如果你选择了多个方向，专项题数量会相应增加，最多不超过 15 题，从而让结果更贴近你的实际求职选择。</p>`
+    : `<h3>本轮测评将先看通用能力</h3><p>你当前选择了“暂不确定”。本轮题目会优先考察分析、沟通、执行、创造力、稳定性和商业敏感度，报告会先帮助你判断更适合探索哪些方向。</p>`;
   renderQuestions("capabilityQuestions", activeCapabilityQuestions, "capability");
 }
 
@@ -945,7 +996,8 @@ function scoreBackground(profile) {
   const gpas = [profile.undergradGpa, profile.gradGpa, profile.phdGpa].map(Number).filter(Boolean);
   const gpa = gpas.length ? Math.max(...gpas) : 65;
   const internship = Number(profile.internship || 50);
-  const projectBoost = Math.min((profile.projects || []).length * 3, 12);
+  const effectiveProjects = (profile.projects || []).filter((project) => project !== "none");
+  const projectBoost = Math.min(effectiveProjects.length * 3, 12);
   const score = Math.min(100, Math.round(school * 0.42 + gpa * 0.23 + internship * 0.28 + projectBoost));
   const level = score >= 85 ? "T1" : score >= 70 ? "T2" : score >= 55 ? "T3" : score >= 40 ? "T4" : "T5";
   return {
@@ -1095,18 +1147,38 @@ function majorFit(profile, job) {
   const phdType = profile.phdMajorType && profile.phdMajorType !== "none" ? profile.phdMajorType : null;
   const gradType = profile.gradMajorType && profile.gradMajorType !== "none" ? profile.gradMajorType : null;
   const undergradType = profile.undergradMajorType || "other";
-  const phdScore = phdType ? (job.majors.includes(phdType) ? 96 : phdType === "other" ? 62 : 58) : null;
-  const gradScore = gradType ? (job.majors.includes(gradType) ? 92 : gradType === "other" ? 62 : 58) : null;
-  const undergradScore = job.majors.includes(undergradType) ? 84 : undergradType === "other" ? 62 : 55;
+  const typeScore = (type, scores, mismatchScore) => {
+    if (!type || type === "none") return null;
+    const majorIndex = job.majors.indexOf(type);
+    if (majorIndex >= 0) {
+      if (majorIndex <= 1) return scores.strong;
+      if (majorIndex <= 4) return scores.related;
+      return scores.adjacent;
+    }
+    if (type === "other") return 60;
+    return mismatchScore;
+  };
+  const phdScore = typeScore(phdType, { strong: 98, related: 84, adjacent: 72 }, 45);
+  const gradScore = typeScore(gradType, { strong: 94, related: 80, adjacent: 68 }, 48);
+  const undergradScore = typeScore(undergradType, { strong: 86, related: 74, adjacent: 62 }, 50) || 60;
   if (phdScore && gradScore) return Math.round(phdScore * 0.5 + gradScore * 0.3 + undergradScore * 0.2);
   if (phdScore) return Math.round(phdScore * 0.7 + undergradScore * 0.3);
   return gradScore ? Math.round(gradScore * 0.65 + undergradScore * 0.35) : undergradScore;
+}
+
+function coreAbilityGaps(job, capabilities, threshold = 62) {
+  return Object.entries(job.weights)
+    .filter(([key, weight]) => weight >= 4 && capabilities[key] < threshold)
+    .map(([key]) => key);
 }
 
 function scoreJob(job, capabilities, personality, background, profile) {
   const weightSum = Object.values(job.weights).reduce((sum, val) => sum + val, 0);
   const capabilityScore = Object.entries(job.weights).reduce((sum, [key, weight]) => sum + capabilities[key] * weight, 0) / weightSum;
   const majorScore = majorFit(profile, job);
+  const coreGapKeys = coreAbilityGaps(job, capabilities);
+  const corePenalty = Math.min(coreGapKeys.length * 5, 15);
+  const majorPenalty = majorScore < 55 ? 7 : majorScore < 65 ? 4 : 0;
   const traitScores = Object.entries(job.traits).map(([key, expected]) => {
     const actual = personality[key].dominant;
     if (expected === "neutral" || actual === "neutral") return 70;
@@ -1115,8 +1187,9 @@ function scoreJob(job, capabilities, personality, background, profile) {
   });
   const personalityScore = traitScores.reduce((sum, val) => sum + val, 0) / traitScores.length;
   const highGate = job.gate === "高";
-  const match = Math.round(capabilityScore * (highGate ? 0.36 : 0.45) + personalityScore * (highGate ? 0.18 : 0.22) + background.score * (highGate ? 0.34 : 0.23) + majorScore * 0.12);
-  return { capabilityScore: Math.round(capabilityScore), personalityScore: Math.round(personalityScore), majorScore, match };
+  const baseMatch = capabilityScore * (highGate ? 0.36 : 0.45) + personalityScore * (highGate ? 0.18 : 0.22) + background.score * (highGate ? 0.34 : 0.23) + majorScore * 0.12;
+  const match = Math.max(35, Math.min(98, Math.round(baseMatch - corePenalty - majorPenalty)));
+  return { capabilityScore: Math.round(capabilityScore), personalityScore: Math.round(personalityScore), backgroundScore: background.score, majorScore, match, corePenalty, coreGapKeys };
 }
 
 function difficulty(job, backgroundLevel) {
@@ -1151,7 +1224,7 @@ function buildStrategicRecommendations(ranked, capabilities, background, profile
     main: {
       title: "主推荐路径",
       job: mainJob,
-      summary: "推荐性质：优先投入方向。它不是简单分数最高，而是综合考虑了匹配度、进入难度、专业解释度和核心短板风险。",
+      summary: "推荐性质：优先投入方向。它不是简单分数最高，而是综合考虑了岗位综合匹配度、进入难度、专业匹配度和核心短板风险。",
       reason: pathStrategyReason("main", mainJob),
       nextStep: mainJob.nextSteps.main
     },
@@ -1172,19 +1245,75 @@ function buildStrategicRecommendations(ranked, capabilities, background, profile
   };
 }
 
+function primaryDirectionDiagnosis(profile, ranked, recommendations, capabilities, background) {
+  const isUndecided = !profile.primaryInterest || profile.primaryInterest === "undecided";
+  if (isUndecided) {
+    return {
+      isUndecided: true,
+      title: "暂未锁定优先方向",
+      lead: "你目前还没有选择明确的优先方向，本次报告会先根据能力、背景、专业和工作方式，给出适合进一步探索的路径。",
+      meta: [
+        ["推荐逻辑", "探索型推荐"],
+        ["下一步", "先验证方向"],
+        ["重点参考", "能力 + 背景 + 专业"]
+      ],
+      notes: [
+        ["为什么这样推荐", "没有明确目标方向时，系统不会强行把某个兴趣方向前置，而是先看你当前更容易形成竞争力的岗位类型。"],
+        ["下一步怎么做", "建议从主推荐和冲刺路径中各选1个方向，拆解3-5个真实JD，再用项目或实习反馈验证是否适合。"]
+      ]
+    };
+  }
+  const baseJob = ranked.find((item) => item.key === profile.primaryInterest);
+  if (!baseJob) return primaryDirectionDiagnosis({ ...profile, primaryInterest: "undecided" }, ranked, recommendations, capabilities, background);
+  const recommendationEntry = Object.values(recommendations).find((item) => item.job.key === baseJob.key);
+  const job = recommendationEntry ? recommendationEntry.job : enrichJobForStrategy(baseJob, capabilities, background, profile);
+  const recommendationLabel = recommendationEntry ? recommendationEntry.title : "未进入三条推荐路径";
+  const risks = [];
+  if (["高", "极高"].includes(job.entryDifficulty)) risks.push(`进入难度为${job.entryDifficulty}`);
+  if (job.majorScore < 65) risks.push("专业匹配度偏弱");
+  if (job.coreWeaknesses?.length) risks.push(`${job.coreWeaknesses.join("、")}需要补强`);
+  if (!risks.length) risks.push("当前没有特别突出的硬伤");
+  return {
+    isUndecided: false,
+    title: `优先方向：${job.name}`,
+    lead: `${job.name}当前岗位综合匹配度为 ${job.match}/100，${recommendationLabel === "未进入三条推荐路径" ? "暂时没有进入主推荐/冲刺/保底路径" : `已进入“${recommendationLabel}”`}。`,
+    meta: [
+      ["岗位综合匹配度", `${job.match}/100`],
+      ["专业匹配度", `${job.majorScore}/100`],
+      ["进入难度", job.entryDifficulty]
+    ],
+    notes: [
+      ["当前判断", `这个方向的主要判断依据是能力匹配 ${job.capabilityScore}/100、背景竞争力 ${job.backgroundScore || "已计入"}、专业匹配度 ${job.majorScore}/100。${risks.join("；")}。`],
+      ["如果想坚持", primaryDirectionNextStep(job)]
+    ]
+  };
+}
+
+function primaryDirectionNextStep(job) {
+  if (job.majorScore < 65) {
+    return `先补一份能解释“为什么适合${job.name}”的项目或作品，例如岗位分析、行业研究、数据/业务复盘。`;
+  }
+  if (job.coreWeaknesses?.length) {
+    return `优先补${job.coreWeaknesses.join("、")}，并把补强结果写进简历项目和面试案例。`;
+  }
+  if (["高", "极高"].includes(job.entryDifficulty)) {
+    return `该方向门槛较高，建议用强相关实习、项目作品或内推机会降低筛选风险。`;
+  }
+  return `可以继续作为重点方向推进，下一步把简历、项目和投递岗位都向${job.name}集中。`;
+}
+
 function enrichJobForStrategy(job, capabilities, background, profile) {
   const entryDifficulty = difficulty(job, background.level);
-  const coreWeaknesses = Object.entries(job.weights)
-    .filter(([key, weight]) => weight >= 4 && capabilities[key] < 60)
-    .map(([key]) => dimensions[key]);
+  const coreWeaknessKeys = job.coreGapKeys || coreAbilityGaps(job, capabilities);
+  const coreWeaknesses = coreWeaknessKeys.map((key) => dimensions[key]);
   const interested = profile.interests.includes(job.key);
   const hardDifficulty = ["高", "极高"].includes(entryDifficulty);
   const mediumDifficulty = ["中", "中高"].includes(entryDifficulty);
-  const majorMismatch = job.majorScore < 62;
+  const majorMismatch = job.majorScore < 65;
   const interestBoost = interested ? 8 : 0;
   const difficultyPenalty = entryDifficulty === "极高" ? 18 : entryDifficulty === "高" ? 12 : entryDifficulty === "中高" ? 6 : 0;
-  const weaknessPenalty = coreWeaknesses.length * 8;
-  const majorPenalty = majorMismatch ? 10 : 0;
+  const weaknessPenalty = coreWeaknesses.length * 10;
+  const majorPenalty = job.majorScore < 55 ? 16 : majorMismatch ? 10 : 0;
   const strategyScore = job.match + interestBoost - difficultyPenalty - weaknessPenalty - majorPenalty;
   const lowRiskScore = job.match - difficultyPenalty * 1.3 - weaknessPenalty * 1.2 - majorPenalty;
   const stretchScore = job.match + (interested ? 14 : 4) + (job.gate === "高" ? 7 : 0) - weaknessPenalty * 0.6 - majorPenalty * 0.5;
@@ -1235,10 +1364,10 @@ function pathStrategyReason(type, job) {
   const weaknessText = job.coreWeaknesses.length ? `当前风险是${job.coreWeaknesses.join("、")}还需要补强` : "核心能力短板不明显";
   const interestText = job.interested ? "且属于你主动选择的目标方向" : "虽然不是你主动选择的方向，但与当前能力结构有连接";
   if (type === "main") {
-    return `为什么推荐：${job.name}的进入难度为${job.entryDifficulty}，专业匹配为${job.majorScore}/100，${weaknessText}，${interestText}，适合作为当前优先投入方向。`;
+    return `为什么推荐：${job.name}的进入难度为${job.entryDifficulty}，专业匹配度为${job.majorScore}/100，${weaknessText}，${interestText}，适合作为当前优先投入方向。`;
   }
   if (type === "stretch") {
-    const risk = job.hardDifficulty ? "背景或招聘门槛较高" : job.majorMismatch ? "专业解释度需要加强" : weaknessText;
+    const risk = job.hardDifficulty ? "背景或招聘门槛较高" : job.majorMismatch ? "专业匹配度需要加强" : weaknessText;
     return `为什么可以冲：该方向有较高成长价值或与你的兴趣有关；为什么有风险：${risk}。建议把它作为冲刺目标，并设置明确补强条件。`;
   }
   return `为什么保底：该方向进入难度为${job.entryDifficulty}，能力迁移空间较好，可以帮助你先获得相关实习或第一份工作经验；为什么不浪费：后续仍可向主线方向转移。`;
@@ -1499,7 +1628,7 @@ function compactPersonalityForRegistration(personality) {
   );
 }
 
-function buildAssessmentRegistrationPayload(profile, capabilities, personality, background, recommendations, stage) {
+function buildAssessmentRegistrationPayload(profile, capabilities, personality, background, recommendations, stage, identityTag = null) {
   return {
     createdAt: new Date().toISOString(),
     registrant: {
@@ -1519,6 +1648,11 @@ function buildAssessmentRegistrationPayload(profile, capabilities, personality, 
       rankingConfidence: background.rankingConfidence || null
     },
     profile: compactProfileForRegistration(profile),
+    futureIdentity: identityTag ? {
+      title: identityTag.title,
+      description: identityTag.description,
+      keywords: identityTag.keywords
+    } : null,
     capabilities,
     personality: compactPersonalityForRegistration(personality),
     recommendations: Object.fromEntries(
@@ -1590,10 +1724,12 @@ function generateReport() {
   const personality = scorePersonality();
   const background = scoreBackground(profile);
   const ranked = Object.entries(jobProfiles)
+    .filter(([key]) => key !== "undecided")
     .map(([key, job]) => ({ key, ...job, ...scoreJob(job, capabilities, personality, background, profile) }))
     .sort((a, b) => b.match - a.match);
   const interestJobs = ranked.filter((job) => profile.interests.includes(job.key));
   const recommendations = buildStrategicRecommendations(ranked, capabilities, background, profile);
+  const primaryDiagnosis = primaryDirectionDiagnosis(profile, ranked, recommendations, capabilities, background);
   const top = [recommendations.main.job, recommendations.stretch.job, recommendations.backup.job];
   const strong = Object.entries(capabilities).sort((a, b) => b[1] - a[1]).slice(0, 2);
   const weak = Object.entries(capabilities).sort((a, b) => a[1] - b[1]).slice(0, 2);
@@ -1607,7 +1743,11 @@ function generateReport() {
   const currentStageMeta = stages[currentStageIndex];
   const nextStageMeta = stages[Math.min(currentStageIndex + 1, stages.length - 1)];
   const stageInfo = stageDetail(stage.key);
-  latestAssessmentResult = buildAssessmentRegistrationPayload(profile, capabilities, personality, background, recommendations, stage);
+  const interestLabelText = profile.interests.includes("undecided")
+    ? "暂不确定"
+    : profile.interests.map((key) => jobProfiles[key].name).join("、");
+  const identityTag = futureIdentityTag(profile, recommendations, primaryDiagnosis);
+  latestAssessmentResult = buildAssessmentRegistrationPayload(profile, capabilities, personality, background, recommendations, stage, identityTag);
   document.getElementById("reportRoot").className = "report-grid report-v2";
   document.getElementById("reportRoot").innerHTML = `
     <section class="report-hero report-block wide">
@@ -1619,7 +1759,17 @@ function generateReport() {
           <span class="tag">主推荐方向：${top[0].name}</span>
           <span class="tag">当前阶段：${stage.title}</span>
           <span class="tag">背景等级：${background.level}</span>
-          <span class="tag">目标方向：${profile.interests.map((key) => jobProfiles[key].name).join("、")}</span>
+          <span class="tag">目标方向：${interestLabelText}</span>
+        </div>
+      </div>
+      <div class="identity-card">
+        <div class="identity-copy">
+          <span class="summary-label">未来身份标签</span>
+          <h4>${identityTag.title}</h4>
+          <p>${identityTag.description}</p>
+        </div>
+        <div class="identity-keywords" aria-label="身份关键词">
+          ${identityTag.keywords.map((keyword) => `<span>${keyword}</span>`).join("")}
         </div>
       </div>
       <div class="stage-progress" aria-label="求职阶段进度">
@@ -1668,10 +1818,10 @@ function generateReport() {
         <article class="summary-card">
           <span class="summary-label">主推荐路径</span>
           <strong>${top[0].name}</strong>
-          <p>综合匹配度 ${top[0].match}/100，进入难度 ${top[0].entryDifficulty}。</p>
+          <p>岗位综合匹配度 ${top[0].match}/100，进入难度 ${top[0].entryDifficulty}。</p>
         </article>
         <article class="summary-card">
-          <span class="summary-label">竞争力判断</span>
+          <span class="summary-label">背景竞争力</span>
           <strong>${background.score}/100</strong>
           <p>学校、成绩、项目和经历共同决定当前可进入性。</p>
         </article>
@@ -1683,7 +1833,7 @@ function generateReport() {
       </div>
     </section>
     <section class="report-block wide">
-      <h3>用户画像总结</h3>
+      <h3>测评结果解读</h3>
       <div class="profile-grid">
         <article class="profile-card">
           <span class="summary-label">背景定位</span>
@@ -1710,6 +1860,32 @@ function generateReport() {
       </div>
     </section>
     <section class="report-block wide">
+      <h3>${primaryDiagnosis.isUndecided ? "优先方向诊断" : "你的优先方向诊断"}</h3>
+      <div class="priority-diagnosis-card ${primaryDiagnosis.isUndecided ? "explore" : ""}">
+        <div class="priority-diagnosis-main">
+          <span class="summary-label">${primaryDiagnosis.isUndecided ? "探索型推荐" : "当前最想尝试的方向"}</span>
+          <strong>${primaryDiagnosis.title}</strong>
+          <p>${primaryDiagnosis.lead}</p>
+        </div>
+        <div class="priority-metrics">
+          ${primaryDiagnosis.meta.map(([label, value]) => `
+            <div class="priority-metric">
+              <span>${label}</span>
+              <strong>${value}</strong>
+            </div>
+          `).join("")}
+        </div>
+        <div class="priority-notes">
+          ${primaryDiagnosis.notes.map(([label, text]) => `
+            <div class="path-note-item">
+              <span class="path-note-label">${label}</span>
+              <p>${text}</p>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </section>
+    <section class="report-block wide">
       <h3>职业路径推荐</h3>
       <div class="path-list">
         ${Object.entries(recommendations).map(([kind, item]) => `
@@ -1725,7 +1901,7 @@ function generateReport() {
             </div>
             <div class="path-metrics">
               <div class="path-metric">
-                <span>匹配度</span>
+                <span>岗位综合匹配度</span>
                 <strong>${item.job.match}/100</strong>
               </div>
               <div class="path-metric">
@@ -1733,8 +1909,12 @@ function generateReport() {
                 <strong>${item.job.entryDifficulty}</strong>
               </div>
               <div class="path-metric">
-                <span>专业匹配</span>
+                <span>专业匹配度</span>
                 <strong>${item.job.majorScore}/100</strong>
+              </div>
+              <div class="path-metric">
+                <span>成功概率</span>
+                <strong>${probability(item.job.match)}</strong>
               </div>
             </div>
             <div class="path-notes">
@@ -1806,25 +1986,6 @@ function generateReport() {
         `).join("")}
       </div>
     </section>
-    <section class="report-block wide split-section">
-      <div class="split-card ${interestJobs.some((job) => job.match < 62) ? "danger" : "risk"}">
-        <h3>兴趣冲突检测</h3>
-        <div class="bullet-list">
-          ${interestJobs.map((job) => `<div class="bullet-item">${conflictText(job, capabilities, background, profile)}</div>`).join("")}
-        </div>
-      </div>
-      <div class="split-card">
-        <h3>测评结果解读</h3>
-        <div class="insight-list">
-          ${studentResultInsights(profile, background, top).map((text) => `
-            <div class="insight-item narrative">
-              <span class="insight-kicker">结果说明</span>
-              <p>${text}</p>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-    </section>
     <section class="report-block wide">
       <h3>未来行动建议</h3>
       <div class="timeline-grid">
@@ -1860,14 +2021,7 @@ function generateReport() {
         </article>
       </div>
     </section>
-    <section class="report-block wide split-section">
-      <div class="split-card">
-        <h3>求职成功概率判断</h3>
-        <div class="prob-table">
-          ${top.map((job) => `<div class="prob-row"><strong>${job.name}</strong><span>${job.match}/100</span><span>${probability(job.match)}</span></div>`).join("")}
-        </div>
-        <p class="small-note">该判断不是录取承诺，而是基于背景、能力、性格与岗位门槛的相对成功率。</p>
-      </div>
+    <section class="report-block wide">
       <div class="split-card action-card">
         <h3>下一步行动建议</h3>
         <p>建议先领取与你目标方向相关的行业/专业解析资料，例如岗位JD拆解、目标专业就业路径、校招时间线、简历项目模板。</p>
@@ -1885,7 +2039,7 @@ function conflictText(job, capabilities, background, profile) {
   const weakRequired = Object.entries(job.weights).filter(([key, weight]) => weight >= 4 && capabilities[key] < 60).map(([key]) => dimensions[key]);
   const directionAdvice = conflictAdviceByJob(job.key);
   if (job.match >= 75) {
-    return `<p><strong>${job.name}</strong>：当前综合匹配度较好，可作为主线或重点冲刺方向。${directionAdvice.good}</p>`;
+    return `<p><strong>${job.name}</strong>：当前岗位综合匹配度较好，可作为主线或重点冲刺方向。${directionAdvice.good}</p>`;
   }
   if (background.score < 60 && job.gate !== "中") {
     return `<p><strong>${job.name}</strong>：该方向背景门槛为${job.gate}，你的当前背景竞争力为${background.level}。${directionAdvice.background}</p>`;
@@ -1896,7 +2050,7 @@ function conflictText(job, capabilities, background, profile) {
   if (weakRequired.length) {
     return `<p><strong>${job.name}</strong>：该方向高度依赖${weakRequired.join("、")}，而这些是你当前相对薄弱的部分。${directionAdvice.ability}</p>`;
   }
-  return `<p><strong>${job.name}</strong>：当前匹配度中等。${directionAdvice.neutral}</p>`;
+  return `<p><strong>${job.name}</strong>：当前岗位综合匹配度中等。${directionAdvice.neutral}</p>`;
 }
 
 function profileNarrative(profile, background, topJob) {
@@ -1907,7 +2061,124 @@ function profileNarrative(profile, background, topJob) {
   const backgroundText = background.level === "T1" || background.level === "T2"
     ? "在多数主流校招岗位中具备进入候选池的基础"
     : "申请高门槛岗位时需要更依赖实习、项目和技能证明";
-  return `从招聘视角看，你的${degreeText}与${topJob.name}的专业匹配分为${topJob.majorScore}/100，${backgroundText}。${projectText}，否则简历容易停留在“背景描述”，而不是“岗位能力证明”。`;
+  return `从招聘视角看，你的${degreeText}与${topJob.name}的专业匹配度为${topJob.majorScore}/100，${backgroundText}。${projectText}，否则简历容易停留在“背景描述”，而不是“岗位能力证明”。`;
+}
+
+function futureIdentityTag(profile, recommendations, primaryDiagnosis) {
+  const mainJob = recommendations.main.job;
+  const priorityKey = profile.primaryInterest && profile.primaryInterest !== "undecided"
+    ? profile.primaryInterest
+    : mainJob.key;
+  const priorityJob = jobProfiles[priorityKey] ? { key: priorityKey, ...jobProfiles[priorityKey] } : mainJob;
+  const majorContext = preferredMajorType(profile);
+  const context = identityContextByJob(priorityJob.key, majorContext);
+  const majorLabel = majorContext ? majorTypeName(majorContext) : "多元背景";
+  const bridge = majorContext && priorityJob.majors.includes(majorContext)
+    ? `你的${majorLabel}背景与${priorityJob.name}有一定衔接，可以把专业积累转化为岗位证据。`
+    : `你的${majorLabel}背景可以作为切入点，但需要用项目、实习或作品补足与${priorityJob.name}的连接。`;
+  const pathText = primaryDiagnosis.isUndecided
+    ? `当前目标方向还在探索中，系统先基于主推荐路径“${mainJob.name}”给你生成一个可验证的职业身份。`
+    : `你当前最想尝试“${priorityJob.name}”，主推荐路径为“${mainJob.name}”，两者共同构成这个阶段的目标锚点。`;
+  return {
+    title: `未来${context.title}`,
+    description: `${pathText}${bridge}`,
+    keywords: [...new Set([priorityJob.name, mainJob.name, majorLabel, ...context.keywords])].slice(0, 6)
+  };
+}
+
+function preferredMajorType(profile) {
+  const candidates = [profile.phdMajorType, profile.gradMajorType, profile.undergradMajorType];
+  return candidates.find((type) => type && type !== "none" && type !== "other") || "";
+}
+
+function identityContextByJob(key, majorType = "") {
+  const map = {
+    consulting: {
+      titles: ["战略操盘手", "商业问题解决专家", "企业转型顾问", "增长战略设计师"],
+      keywords: ["战略", "问题拆解", "顶层设计"],
+      titleByMajor: { marketing: 3, management: 0, finance: 1, accounting: 1, data: 1, cs: 1, engineering: 2, supplychain: 2, lawpolicy: 2, socialscience: 2 }
+    },
+    finance: {
+      titles: ["资本运作专家", "投资决策者", "行业洞察分析师", "并购交易操盘手"],
+      keywords: ["资本", "交易", "判断力"],
+      titleByMajor: { finance: 0, accounting: 3, data: 2, cs: 2, management: 1, science: 2 }
+    },
+    financial_services: {
+      titles: ["风险管理专家", "资产配置顾问", "金融运营管理者", "资金安全守护者"],
+      keywords: ["稳健", "体系", "风控"],
+      titleByMajor: { finance: 1, accounting: 0, management: 2, data: 0, cs: 2, lawpolicy: 3 }
+    },
+    internet: {
+      titles: ["产品增长负责人", "用户增长黑客", "数据驱动产品经理", "平台运营操盘手"],
+      keywords: ["增长", "转化", "用户"],
+      titleByMajor: { data: 2, cs: 2, management: 3, marketing: 1, engineering: 2, media: 0 }
+    },
+    ba: {
+      titles: ["数据决策官", "商业洞察分析师", "增长分析专家", "数据产品专家"],
+      keywords: ["分析", "模型", "决策支持"],
+      titleByMajor: { data: 0, cs: 3, finance: 1, accounting: 1, management: 1, engineering: 3, supplychain: 2 }
+    },
+    fmcg: {
+      titles: ["品牌增长经理", "市场策略操盘手", "消费者洞察专家", "品牌营销主理人"],
+      keywords: ["品牌", "用户", "营销"],
+      titleByMajor: { marketing: 0, management: 1, media: 3, socialscience: 2, arts: 3, humanities: 3 }
+    },
+    big4: {
+      titles: ["企业合规守护者", "财务审计专家", "风险控制顾问", "税务筹划专家"],
+      keywords: ["规范", "专业", "审慎"],
+      titleByMajor: { accounting: 1, finance: 2, management: 2, data: 2, cs: 2, lawpolicy: 0 }
+    },
+    soe: {
+      titles: ["产业发展推动者", "国家战略执行者", "资源配置管理者", "公共价值创造者"],
+      keywords: ["稳定", "责任", "体系"],
+      titleByMajor: { engineering: 0, lawpolicy: 1, socialscience: 3, management: 2, finance: 2, accounting: 2 }
+    },
+    policy: {
+      titles: ["公共政策分析师", "国际事务协调官", "社会治理专家", "政策研究员"],
+      keywords: ["政策", "国际", "影响力"],
+      titleByMajor: { lawpolicy: 0, socialscience: 2, media: 1, management: 0, education: 2, humanities: 3 }
+    },
+    creative: {
+      titles: ["内容创意主理人", "文化策展人", "IP打造专家", "内容策略设计师"],
+      keywords: ["创意", "表达", "内容"],
+      titleByMajor: { arts: 1, media: 0, humanities: 1, socialscience: 3, marketing: 2, management: 3 }
+    },
+    hr: {
+      titles: ["组织发展专家", "人才战略顾问", "HR业务伙伴（HRBP）", "组织效能提升官"],
+      keywords: ["组织", "人", "效率"],
+      titleByMajor: { management: 0, marketing: 2, socialscience: 1, media: 2, education: 0, humanities: 1 }
+    },
+    supply_chain: {
+      titles: ["供应链优化专家", "采购策略负责人", "运营效率提升官", "全球物流管理者"],
+      keywords: ["效率", "成本", "系统"],
+      titleByMajor: { engineering: 2, supplychain: 0, management: 1, data: 2, science: 0, cs: 2 }
+    },
+    legal_compliance: {
+      titles: ["企业法律顾问", "合规管理专家", "风控体系设计师", "商业风险守门人"],
+      keywords: ["规则", "风险", "底线"],
+      titleByMajor: { lawpolicy: 0, socialscience: 1, finance: 2, accounting: 2, management: 1, data: 2, cs: 2 }
+    },
+    academic: {
+      titles: ["学术研究者", "前沿技术探索者", "科研项目负责人", "学科带头人"],
+      keywords: ["深度", "创新", "研究"],
+      titleByMajor: { science: 1, data: 1, cs: 1, engineering: 1, lawpolicy: 0, socialscience: 0, media: 0, education: 0, humanities: 0 }
+    },
+    crossborder: {
+      titles: ["全球市场拓展经理", "跨境增长操盘手", "国际商务负责人", "出海品牌战略官"],
+      keywords: ["全球化", "增长", "商业化"],
+      titleByMajor: { management: 2, marketing: 3, media: 1, socialscience: 0, finance: 2, data: 1, cs: 1, humanities: 0 }
+    }
+  };
+  const context = map[key] || {
+    titles: ["职业方向探索者", "能力迁移实践者", "求职路径规划者", "职业目标验证者"],
+    keywords: ["方向验证", "能力迁移", "行动计划"],
+    titleByMajor: {}
+  };
+  const titleIndex = context.titleByMajor[majorType] ?? 0;
+  return {
+    title: context.titles[titleIndex] || context.titles[0],
+    keywords: context.keywords
+  };
 }
 
 function industryAbilityNote(job, strong, weak) {
@@ -1935,15 +2206,6 @@ function personalitySummary(personality) {
   const risk = personality.risk.dominant === "adventurous" ? "愿意尝试新机会和不确定性较高的岗位" : personality.risk.dominant === "conservative" ? "更看重平台稳定、路径清晰和风险可控" : "可以接受一定变化，但需要看到清晰收益和边界";
   const structure = personality.structure.dominant === "rule" ? "更适应目标、流程和评价标准清楚的组织" : personality.structure.dominant === "free" ? "更喜欢有自主空间、能快速试错的工作方式" : "适合关键目标清晰、执行方式相对灵活的环境";
   return `你的工作偏好可以概括为：${decision}；${social}；${risk}；${structure}。这不是限制你选择行业，而是帮助你判断哪类岗位节奏更容易坚持。`;
-}
-
-function studentResultInsights(profile, background, topJobs) {
-  const insights = [];
-  insights.push(`背景解读：你的当前背景等级为${background.level}。这会影响部分岗位的简历筛选难度，但不是唯一决定因素。学校和GPA越难改变，越需要用实习、项目、作品和面试表现来补充证明。`);
-  insights.push(`专业解读：你的本科专业类型是${majorTypeName(profile.undergradMajorType)}，研究生专业类型是${majorTypeName(profile.gradMajorType)}，博士专业类型是${majorTypeName(profile.phdMajorType)}。如果目标方向和专业不完全一致，建议优先选择能展示迁移能力的项目，例如行业研究、数据分析、产品分析或品牌策划。`);
-  insights.push(`方向解读：当前最建议优先考虑${topJobs[0].name}，同时把${topJobs[1].name}作为冲刺或相邻方向。这样既能保留兴趣空间，也能避免只押注一个高风险方向。`);
-  insights.push(`经历解读：如果你还没有强相关实习，不建议只靠“我感兴趣、我愿意学习”来申请。更有效的做法是先做出一份能展示岗位能力的作品，再用它支持简历和面试。`);
-  return insights;
 }
 
 function majorTypeName(type) {
@@ -2077,7 +2339,7 @@ document.getElementById("prevBtn").addEventListener("click", () => {
 document.getElementById("nextBtn").addEventListener("click", async () => {
   const nextBtn = document.getElementById("nextBtn");
   if (currentStep === 1) refreshCapabilityQuestions();
-  if (currentStep >= steps.length - 2) {
+  if (currentStep === steps.length - 1) {
     if (!validateRequiredRegistrantFields()) return;
     const originalText = nextBtn.textContent;
     nextBtn.disabled = true;

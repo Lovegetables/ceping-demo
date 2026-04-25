@@ -58,7 +58,7 @@
             <ul>
               <li>背景竞争力等级与顾问解读话术</li>
               <li>六大能力画像与企业视角解释</li>
-              <li>目标方向匹配度、进入难度和风险提示</li>
+              <li>目标方向岗位综合匹配度、进入难度和风险提示</li>
               <li>未来3个月求职行动计划与资料建议</li>
             </ul>
           </article>
@@ -194,8 +194,8 @@
           </div>
 
           <div class="form-note">
-            <span>学校层级</span>
-            <p>系统会根据你填写的本科、研究生、博士学校名称自动估算学校层级；未识别学校会按中性分处理。</p>
+            <span>学校综合等级</span>
+            <p>不需要手动选择学校等级。填写学校名称后，测评会结合院校知名度、常见招聘门槛和公开排名信息，用于后续背景竞争力分析。</p>
           </div>
           <label>
             <span>专业/目标岗位相关实习</span>
@@ -208,6 +208,7 @@
           </label>
           <fieldset class="interest-field">
             <legend>校园项目经历，可多选</legend>
+            <label><input type="checkbox" name="projects" value="none" />暂无相关校园项目</label>
             <label><input type="checkbox" name="projects" value="case" />商赛/咨询case/行业研究</label>
             <label><input type="checkbox" name="projects" value="data" />数据分析/建模/量化项目</label>
             <label><input type="checkbox" name="projects" value="marketing" />品牌/新媒体/活动策划</label>
@@ -217,10 +218,11 @@
           </fieldset>
           <fieldset class="interest-field">
             <legend>未来就业目标方向，可多选</legend>
+            <label><input type="checkbox" name="interest" value="undecided" checked />暂不确定</label>
             <label><input type="checkbox" name="interest" value="consulting" />战略/管理咨询</label>
             <label><input type="checkbox" name="interest" value="finance" />金融投行/行研/投资</label>
             <label><input type="checkbox" name="interest" value="financial_services" />银行/资管/保险/金融中后台</label>
-            <label><input type="checkbox" name="interest" value="internet" checked />互联网产品/用户增长</label>
+            <label><input type="checkbox" name="interest" value="internet" />互联网产品/用户增长</label>
             <label><input type="checkbox" name="interest" value="ba" />数据分析/商业分析</label>
             <label><input type="checkbox" name="interest" value="fmcg" />快消/消费品品牌市场</label>
             <label><input type="checkbox" name="interest" value="big4" />四大/审计/税务/风险咨询</label>
@@ -236,7 +238,7 @@
           <label class="full-span">
             <span>当前最想优先尝试的方向</span>
             <select name="primaryInterest" id="primaryInterestSelect"></select>
-            <small class="field-tip">专项题会优先围绕你的主方向出题；如果你选择了多个方向，专项题数量会增加，最多 15 题。</small>
+            <small class="field-tip">如果你暂时没有明确方向，可以选择“暂不确定”。系统会先以通用能力和职业探索题为主。</small>
           </label>
         </form>
         <datalist id="schoolOptions"></datalist>
@@ -282,7 +284,7 @@
           </label>
         </form>
         <div id="reportRoot" class="report-empty">
-          完成前面测评后，点击“生成报告”查看结果。
+          请先填写上方姓名信息，然后点击“生成报告”查看结果。
         </div>
       </section>
 

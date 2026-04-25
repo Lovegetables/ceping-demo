@@ -612,6 +612,56 @@ button:disabled {
   line-height: 1.7;
 }
 
+.identity-card {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 16px;
+  align-items: center;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #c9e6e1;
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(15, 118, 110, 0.08);
+}
+
+.identity-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.identity-copy h4 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.identity-copy p {
+  max-width: 760px;
+  margin: 0;
+  color: #354556;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.identity-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.identity-keywords span {
+  padding: 8px 10px;
+  color: #12343b;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  background: #e7f4f2;
+  border: 1px solid #c9e6e1;
+  border-radius: 999px;
+}
+
 .summary-grid,
 .profile-grid,
 .timeline-grid,
@@ -827,6 +877,78 @@ button:disabled {
   line-height: 1.6;
 }
 
+.priority-diagnosis-card {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 16px;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.priority-diagnosis-card.explore {
+  background: #f8fbfc;
+}
+
+.priority-diagnosis-main {
+  display: grid;
+  gap: 8px;
+}
+
+.priority-diagnosis-main strong {
+  color: var(--ink);
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.priority-diagnosis-main p {
+  margin: 0;
+  color: #354556;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.priority-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  align-self: start;
+}
+
+.priority-metric {
+  min-width: 0;
+  padding: 12px 10px;
+  background: #f6f9fb;
+  border: 1px solid #e1e8ee;
+  border-radius: 8px;
+}
+
+.priority-metric span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.priority-metric strong {
+  display: block;
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.25;
+  word-break: keep-all;
+}
+
+.priority-notes {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #eef3f6;
+}
+
 .personality-card {
   padding: 14px;
   background: #fff;
@@ -889,12 +1011,13 @@ button:disabled {
 
 .path-metrics {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   margin: 12px 0;
 }
 
 .path-metric {
+  min-width: 0;
   padding: 10px 12px;
   background: #f6f9fb;
   border: 1px solid #e1e8ee;
@@ -907,11 +1030,13 @@ button:disabled {
   color: var(--muted);
   font-size: 12px;
   font-weight: 700;
+  line-height: 1.25;
 }
 
 .path-metric strong {
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
+  line-height: 1.35;
 }
 
 .path-notes {
@@ -1408,6 +1533,25 @@ ul {
     line-height: 1.6;
   }
 
+  .identity-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .identity-copy h4 {
+    font-size: 24px;
+  }
+
+  .identity-copy p {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .identity-keywords {
+    justify-content: flex-start;
+  }
+
   .stage-progress-head,
   .stage-detail-head {
     align-items: flex-start;
@@ -1446,6 +1590,34 @@ ul {
     line-height: 1.7;
   }
 
+  .priority-diagnosis-card {
+    grid-template-columns: 1fr;
+  }
+
+  .priority-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .priority-metric {
+    padding: 10px 7px;
+    text-align: center;
+  }
+
+  .priority-metric span {
+    min-height: 30px;
+    margin-bottom: 5px;
+    font-size: 11px;
+  }
+
+  .priority-metric strong {
+    font-size: 14px;
+  }
+
+  .priority-diagnosis-main strong {
+    font-size: 21px;
+  }
+
   .path-job {
     font-size: 18px;
   }
@@ -1476,12 +1648,16 @@ ul {
   }
 
   .path-metrics {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
 
   .path-metric {
     padding: 9px 10px;
+  }
+
+  .path-metric strong {
+    font-size: 14px;
   }
 
   .ability-visual-grid {
