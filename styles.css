@@ -528,6 +528,50 @@ select:focus {
   display: inline-block;
 }
 
+.quick-scroll {
+  position: fixed;
+  right: max(14px, calc((100vw - 1180px) / 2 + 14px));
+  bottom: 88px;
+  z-index: 40;
+  display: grid;
+  gap: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.quick-scroll.visible {
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.quick-scroll button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  min-height: 42px;
+  padding: 0;
+  color: #12343b;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  background: #fff;
+  border: 1px solid #c9d6df;
+  border-radius: 999px;
+  box-shadow: 0 12px 24px rgba(25, 38, 52, 0.16);
+}
+
+.quick-scroll button:disabled {
+  cursor: default;
+  opacity: 0.42;
+  box-shadow: none;
+}
+
 button {
   min-width: 118px;
   min-height: 46px;
@@ -816,6 +860,10 @@ button:disabled {
 
 .summary-grid {
   grid-template-columns: repeat(4, 1fr);
+}
+
+.summary-grid-single {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .summary-card,
@@ -1637,6 +1685,10 @@ ul {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .summary-grid-single {
+    grid-template-columns: 1fr;
+  }
+
   .path-head {
     align-items: flex-start;
   }
@@ -1716,13 +1768,25 @@ ul {
 }
 
 @media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   body {
     background: #fff;
   }
 
   .topbar,
   .progress-wrap,
-  .actions {
+  .actions,
+  .registration-form,
+  #registrationStatus {
     display: none;
   }
 
@@ -1742,6 +1806,10 @@ ul {
     display: block;
   }
 
+  #reportRoot {
+    display: block;
+  }
+
   .report-grid,
   .path-list,
   .plan-columns,
@@ -1750,20 +1818,46 @@ ul {
   .personality-grid,
   .timeline-grid,
   .split-section,
-  .ability-layout,
-  .registration-form {
+  .stage-track,
+  .stage-detail-grid,
+  .priority-diagnosis-card,
+  .priority-metrics,
+  .path-metrics,
+  .ability-visual-grid,
+  .ability-layout {
     display: block;
   }
 
   .report-block,
+  .stage-node,
+  .stage-detail-card,
+  .stage-detail-item,
+  .priority-diagnosis-card,
+  .priority-metric,
   .path-card,
+  .path-metric,
   .summary-card,
   .profile-card,
+  .personality-card,
   .timeline-card,
   .split-card,
-  .ability-metrics {
+  .ability-visual-card,
+  .insight-item {
     break-inside: avoid;
     margin-bottom: 12px;
     border-color: #ccd5dd;
+  }
+
+  .report-hero {
+    background: #f6fbfa;
+  }
+
+  .score-orb,
+  .ability-donut {
+    print-color-adjust: exact;
+  }
+
+  .school-suggestion-panel {
+    display: none;
   }
 }

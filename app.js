@@ -454,6 +454,9 @@ function updateStep() {
   if (currentStep === 1) {
     ensureSchoolDirectoryLoaded();
   }
+  if (currentStep >= 1) {
+    runWhenIdle(() => ensureRankingDataLoaded(), 1800);
+  }
   document.querySelectorAll(".step-tab").forEach((tab, idx) => {
     tab.classList.toggle("active", idx === currentStep);
   });
@@ -539,6 +542,20 @@ function loadScriptOnce(src) {
   });
 }
 
+function waitForNextPaint() {
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve));
+  });
+}
+
+function runWhenIdle(callback, timeout = 1200) {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(callback, { timeout });
+    return;
+  }
+  window.setTimeout(callback, 0);
+}
+
 function renderSchoolOptions() {
   const dataList = document.getElementById("schoolOptions");
   if (!dataList) return;
@@ -605,8 +622,18 @@ async function ensureRankingDataLoaded() {
   return schoolRankingLoadPromise;
 }
 
-async function ensureReportDataLoaded() {
-  await Promise.all([ensureSchoolDirectoryLoaded(), ensureRankingDataLoaded()]);
+async function ensureReportDataLoaded(options = {}) {
+  const { waitForRanking = false } = options;
+  const schoolPromise = ensureSchoolDirectoryLoaded();
+  const rankingPromise = ensureRankingDataLoaded();
+  if (waitForRanking) {
+    await Promise.all([schoolPromise, rankingPromise]);
+    return;
+  }
+  await Promise.race([
+    schoolPromise.catch(() => null),
+    new Promise((resolve) => window.setTimeout(resolve, 250))
+  ]);
 }
 
 function setupSchoolAutocomplete() {
@@ -1250,15 +1277,15 @@ function primaryDirectionDiagnosis(profile, ranked, recommendations, capabilitie
   if (isUndecided) {
     return {
       isUndecided: true,
-      title: "暂未锁定优先方向",
-      lead: "你目前还没有选择明确的优先方向，本次报告会先根据能力、背景、专业和工作方式，给出适合进一步探索的路径。",
+      title: "暂未锁定方向",
+      lead: "你目前还没有锁定想优先尝试的方向，系统会先根据能力、背景、专业和工作方式，给出更适合先探索的方向组合。",
       meta: [
-        ["推荐逻辑", "探索型推荐"],
-        ["下一步", "先验证方向"],
+        ["当前状态", "方向探索中"],
+        ["下一步", "先做方向验证"],
         ["重点参考", "能力 + 背景 + 专业"]
       ],
       notes: [
-        ["为什么这样推荐", "没有明确目标方向时，系统不会强行把某个兴趣方向前置，而是先看你当前更容易形成竞争力的岗位类型。"],
+        ["这代表什么", "没有明确意向方向时，系统不会强行把某个兴趣方向前置，而是先看你当前更容易形成竞争力的岗位类型。"],
         ["下一步怎么做", "建议从主推荐和冲刺路径中各选1个方向，拆解3-5个真实JD，再用项目或实习反馈验证是否适合。"]
       ]
     };
@@ -1275,15 +1302,15 @@ function primaryDirectionDiagnosis(profile, ranked, recommendations, capabilitie
   if (!risks.length) risks.push("当前没有特别突出的硬伤");
   return {
     isUndecided: false,
-    title: `优先方向：${job.name}`,
-    lead: `${job.name}当前岗位综合匹配度为 ${job.match}/100，${recommendationLabel === "未进入三条推荐路径" ? "暂时没有进入主推荐/冲刺/保底路径" : `已进入“${recommendationLabel}”`}。`,
+    title: job.name,
+    lead: `这是你主动选择想优先了解或尝试的方向，不等同于系统判定的最适合方向。系统会从岗位能力、专业背景和进入难度三个角度，判断它现在更适合作为主线、冲刺还是探索方向。当前岗位综合匹配度为 ${job.match}/100，${recommendationLabel === "未进入三条推荐路径" ? "暂时没有进入主推荐/冲刺/保底路径" : `已进入“${recommendationLabel}”`}。`,
     meta: [
       ["岗位综合匹配度", `${job.match}/100`],
       ["专业匹配度", `${job.majorScore}/100`],
       ["进入难度", job.entryDifficulty]
     ],
     notes: [
-      ["当前判断", `这个方向的主要判断依据是能力匹配 ${job.capabilityScore}/100、背景竞争力 ${job.backgroundScore || "已计入"}、专业匹配度 ${job.majorScore}/100。${risks.join("；")}。`],
+      ["意向方向体检", `这个方向的主要判断依据是能力匹配 ${job.capabilityScore}/100、背景竞争力 ${job.backgroundScore || "已计入"}、专业匹配度 ${job.majorScore}/100。${risks.join("；")}。`],
       ["如果想坚持", primaryDirectionNextStep(job)]
     ]
   };
@@ -1718,7 +1745,16 @@ async function autoRegisterLatestAssessmentResult() {
   }
 }
 
-function generateReport() {
+function reportHasRendered() {
+  return Boolean(latestAssessmentResult && document.querySelector("#reportRoot .report-block"));
+}
+
+function scheduleAutoRegisterLatestAssessmentResult() {
+  runWhenIdle(() => autoRegisterLatestAssessmentResult(), 1800);
+}
+
+function generateReport(options = {}) {
+  const { autoRegister = true } = options;
   const profile = getFormData();
   const capabilities = scoreCapabilities();
   const personality = scorePersonality();
@@ -1809,61 +1845,19 @@ function generateReport() {
           </article>
         </div>
       </div>
-      <div class="summary-grid">
-        <article class="summary-card">
-          <span class="summary-label">当前定位</span>
-          <strong>${stage.title}</strong>
-          <p>${top[0].name}是当前最值得优先投入的方向。</p>
-        </article>
-        <article class="summary-card">
-          <span class="summary-label">主推荐路径</span>
-          <strong>${top[0].name}</strong>
-          <p>岗位综合匹配度 ${top[0].match}/100，进入难度 ${top[0].entryDifficulty}。</p>
-        </article>
+      <div class="summary-grid summary-grid-single">
         <article class="summary-card">
           <span class="summary-label">背景竞争力</span>
           <strong>${background.score}/100</strong>
           <p>学校、成绩、项目和经历共同决定当前可进入性。</p>
         </article>
-        <article class="summary-card emphasis">
-          <span class="summary-label">最优先动作</span>
-          <strong>${dimensions[weak[0][0]]}</strong>
-          <p>${reportPriorityAction(top[0], weak, leadSignals)}</p>
-        </article>
       </div>
     </section>
     <section class="report-block wide">
-      <h3>测评结果解读</h3>
-      <div class="profile-grid">
-        <article class="profile-card">
-          <span class="summary-label">背景定位</span>
-          <p class="profile-lead">${snapshot.backgroundText}</p>
-          <div class="profile-meta">
-            <p class="small-note">学校层级：${background.schoolTier} · ${background.schoolTierLabel}；学校分 ${background.schoolScore}/100；校园项目加成 ${background.projectBoost} 分。</p>
-            ${background.rankingScore ? `<p class="small-note">四榜综合分 ${background.rankingScore}/100，数据置信度 ${background.rankingConfidence}。QS ${background.rankingRefs.qs || "-"} / THE ${background.rankingRefs.the || "-"} / U.S. News ${background.rankingRefs.usnews || "-"} / ARWU ${background.rankingRefs.arwu || "-"}。</p>` : ""}
-          </div>
-        </article>
-        <article class="profile-card">
-          <span class="summary-label">能力特点</span>
-          <p class="profile-lead">${snapshot.abilityText}</p>
-          <div class="profile-meta">
-            <p class="small-note">${industryAbilityNote(top[0], strong, weak)}</p>
-          </div>
-        </article>
-        <article class="profile-card">
-          <span class="summary-label">工作方式</span>
-          <p class="profile-lead">${snapshot.workStyleText}。</p>
-          <div class="profile-meta">
-            <p class="small-note">${profileNarrative(profile, background, top[0])}</p>
-          </div>
-        </article>
-      </div>
-    </section>
-    <section class="report-block wide">
-      <h3>${primaryDiagnosis.isUndecided ? "优先方向诊断" : "你的优先方向诊断"}</h3>
+      <h3>${primaryDiagnosis.isUndecided ? "方向探索建议" : "你想优先尝试的方向"}</h3>
       <div class="priority-diagnosis-card ${primaryDiagnosis.isUndecided ? "explore" : ""}">
         <div class="priority-diagnosis-main">
-          <span class="summary-label">${primaryDiagnosis.isUndecided ? "探索型推荐" : "当前最想尝试的方向"}</span>
+          <span class="summary-label">${primaryDiagnosis.isUndecided ? "当前状态" : "用户意向方向"}</span>
           <strong>${primaryDiagnosis.title}</strong>
           <p>${primaryDiagnosis.lead}</p>
         </div>
@@ -1987,6 +1981,33 @@ function generateReport() {
       </div>
     </section>
     <section class="report-block wide">
+      <h3>测评结果解读</h3>
+      <div class="profile-grid">
+        <article class="profile-card">
+          <span class="summary-label">背景定位</span>
+          <p class="profile-lead">${snapshot.backgroundText}</p>
+          <div class="profile-meta">
+            <p class="small-note">学校层级：${background.schoolTier} · ${background.schoolTierLabel}；学校分 ${background.schoolScore}/100；校园项目加成 ${background.projectBoost} 分。</p>
+            ${background.rankingScore ? `<p class="small-note">四榜综合分 ${background.rankingScore}/100，数据置信度 ${background.rankingConfidence}。QS ${background.rankingRefs.qs || "-"} / THE ${background.rankingRefs.the || "-"} / U.S. News ${background.rankingRefs.usnews || "-"} / ARWU ${background.rankingRefs.arwu || "-"}。</p>` : ""}
+          </div>
+        </article>
+        <article class="profile-card">
+          <span class="summary-label">能力特点</span>
+          <p class="profile-lead">${snapshot.abilityText}</p>
+          <div class="profile-meta">
+            <p class="small-note">${industryAbilityNote(top[0], strong, weak)}</p>
+          </div>
+        </article>
+        <article class="profile-card">
+          <span class="summary-label">工作方式</span>
+          <p class="profile-lead">${snapshot.workStyleText}。</p>
+          <div class="profile-meta">
+            <p class="small-note">${profileNarrative(profile, background, top[0])}</p>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="report-block wide">
       <h3>未来行动建议</h3>
       <div class="timeline-grid">
         <article class="timeline-card">
@@ -2031,7 +2052,7 @@ function generateReport() {
     </section>
     <p class="small-note hidden-status" id="registrationStatus" aria-live="polite"></p>
   `;
-  autoRegisterLatestAssessmentResult();
+  if (autoRegister) scheduleAutoRegisterLatestAssessmentResult();
 }
 
 function conflictText(job, capabilities, background, profile) {
@@ -2078,7 +2099,7 @@ function futureIdentityTag(profile, recommendations, primaryDiagnosis) {
     : `你的${majorLabel}背景可以作为切入点，但需要用项目、实习或作品补足与${priorityJob.name}的连接。`;
   const pathText = primaryDiagnosis.isUndecided
     ? `当前目标方向还在探索中，系统先基于主推荐路径“${mainJob.name}”给你生成一个可验证的职业身份。`
-    : `你当前最想尝试“${priorityJob.name}”，主推荐路径为“${mainJob.name}”，两者共同构成这个阶段的目标锚点。`;
+    : `你当前想优先尝试“${priorityJob.name}”，主推荐路径为“${mainJob.name}”。这个身份标签用于帮助你建立目标代入感，不代表最终只能选择这一个方向。`;
   return {
     title: `未来${context.title}`,
     description: `${pathText}${bridge}`,
@@ -2344,19 +2365,55 @@ document.getElementById("nextBtn").addEventListener("click", async () => {
     const originalText = nextBtn.textContent;
     nextBtn.disabled = true;
     nextBtn.textContent = "生成中...";
-    await ensureReportDataLoaded();
-    generateReport();
+    ensureReportDataLoaded();
+    await waitForNextPaint();
+    generateReport({ autoRegister: false });
+    currentStep = Math.min(steps.length - 1, currentStep + 1);
+    updateStep();
+    scheduleAutoRegisterLatestAssessmentResult();
     nextBtn.textContent = originalText;
     nextBtn.disabled = false;
+    return;
   }
   currentStep = Math.min(steps.length - 1, currentStep + 1);
   updateStep();
 });
 
 document.getElementById("exportBtn").addEventListener("click", async () => {
-  await ensureReportDataLoaded();
-  generateReport();
-  window.print();
+  const exportBtn = document.getElementById("exportBtn");
+  const originalText = exportBtn.textContent;
+  exportBtn.disabled = true;
+  exportBtn.textContent = "准备导出...";
+  try {
+    ensureReportDataLoaded();
+    if (!reportHasRendered()) generateReport({ autoRegister: false });
+    await waitForNextPaint();
+    document.body.classList.add("is-printing-report");
+    exportBtn.textContent = "正在打开...";
+    window.setTimeout(() => {
+      window.print();
+      window.setTimeout(() => {
+        document.body.classList.remove("is-printing-report");
+        exportBtn.textContent = originalText;
+        exportBtn.disabled = false;
+      }, 600);
+    }, 120);
+  } catch (error) {
+    console.error(error);
+    document.body.classList.remove("is-printing-report");
+    exportBtn.textContent = originalText;
+    exportBtn.disabled = false;
+    alert("导出暂时没有成功，请稍后重试或使用浏览器菜单里的分享/打印功能保存为PDF。");
+  }
+});
+
+window.addEventListener("afterprint", () => {
+  const exportBtn = document.getElementById("exportBtn");
+  document.body.classList.remove("is-printing-report");
+  if (exportBtn) {
+    exportBtn.disabled = false;
+    exportBtn.textContent = "导出PDF";
+  }
 });
 
 setupSchoolAutocomplete();
