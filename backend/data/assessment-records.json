@@ -1,0 +1,621 @@
+[
+  {
+    "id": "5bb5d8af-60dd-42f3-933b-5ab06cb65818",
+    "createdAt": "2026-04-24T09:29:26.641Z",
+    "source": "auto_report_generation",
+    "registrant": {
+      "studentName": "",
+      "contact": "",
+      "email": "",
+      "role": "未补充联系方式",
+      "note": ""
+    },
+    "assessment": {
+      "createdAt": "2026-04-24T09:29:26.637Z",
+      "currentStage": "重点补强阶段",
+      "background": {
+        "level": "T3",
+        "score": 67,
+        "schoolTier": "T4",
+        "schoolTierLabel": "未填写学校",
+        "schoolScore": 65,
+        "rankingScore": null,
+        "rankingConfidence": null
+      },
+      "profile": {
+        "undergradSchool": "",
+        "undergradMajor": "",
+        "undergradMajorType": "其他或暂不确定",
+        "gradSchool": "",
+        "gradMajor": "",
+        "gradMajorType": "无研究生学历",
+        "phdSchool": "",
+        "phdMajor": "",
+        "phdMajorType": "无研究生学历",
+        "internship": "80",
+        "projects": [],
+        "interests": [
+          "互联网产品/用户增长"
+        ],
+        "primaryInterest": "互联网产品/用户增长"
+      },
+      "capabilities": {
+        "analytical": 67,
+        "communication": 67,
+        "execution": 67,
+        "creativity": 67,
+        "stability": 67,
+        "business": 67
+      },
+      "personality": {
+        "决策风格": {
+          "label": "兼顾逻辑与感受",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "社交能量": {
+          "label": "协作与独立都可适应",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "风险偏好": {
+          "label": "接受变化但会看边界",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "工作方式偏好": {
+          "label": "目标清楚、方法可灵活",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        }
+      },
+      "recommendations": {
+        "main": {
+          "title": "主推荐路径",
+          "direction": "互联网产品/用户增长",
+          "match": 68,
+          "entryDifficulty": "中高",
+          "majorScore": 62,
+          "jobs": "产品运营、用户增长、商业运营、数据分析"
+        },
+        "stretch": {
+          "title": "冲刺路径",
+          "direction": "战略/管理咨询",
+          "match": 67,
+          "entryDifficulty": "高",
+          "majorScore": 62,
+          "jobs": "咨询顾问、PTA、战略实习、商业分析实习"
+        },
+        "backup": {
+          "title": "保底路径",
+          "direction": "人力资源/组织发展",
+          "match": 68,
+          "entryDifficulty": "中",
+          "majorScore": 62,
+          "jobs": "HRBP助理、招聘、组织发展、培训发展、雇主品牌"
+        }
+      }
+    },
+    "feishuSync": {
+      "ok": true,
+      "skipped": false,
+      "syncedAt": "2026-04-25T02:34:32.840Z",
+      "recordId": "recvhLzli0IppB",
+      "error": ""
+    }
+  },
+  {
+    "id": "26e73e41-9e5a-4834-bf5d-cc6faf95e781",
+    "createdAt": "2026-04-24T09:48:10.514Z",
+    "source": "auto_report_generation",
+    "registrant": {
+      "studentName": "",
+      "contact": "",
+      "email": "",
+      "role": "学生本人",
+      "note": ""
+    },
+    "assessment": {
+      "createdAt": "2026-04-24T09:48:10.511Z",
+      "registrant": {
+        "studentName": "",
+        "contact": "",
+        "email": "",
+        "role": "学生本人",
+        "note": ""
+      },
+      "currentStage": "重点补强阶段",
+      "background": {
+        "level": "T3",
+        "score": 67,
+        "schoolTier": "T4",
+        "schoolTierLabel": "未填写学校",
+        "schoolScore": 65,
+        "rankingScore": null,
+        "rankingConfidence": null
+      },
+      "profile": {
+        "undergradSchool": "",
+        "undergradMajor": "",
+        "undergradMajorType": "其他或暂不确定",
+        "gradSchool": "",
+        "gradMajor": "",
+        "gradMajorType": "无研究生学历",
+        "phdSchool": "",
+        "phdMajor": "",
+        "phdMajorType": "无研究生学历",
+        "internship": "80",
+        "projects": [],
+        "interests": [
+          "互联网产品/用户增长"
+        ],
+        "primaryInterest": "互联网产品/用户增长"
+      },
+      "capabilities": {
+        "analytical": 67,
+        "communication": 67,
+        "execution": 67,
+        "creativity": 67,
+        "stability": 67,
+        "business": 67
+      },
+      "personality": {
+        "决策风格": {
+          "label": "兼顾逻辑与感受",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "社交能量": {
+          "label": "协作与独立都可适应",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "风险偏好": {
+          "label": "接受变化但会看边界",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "工作方式偏好": {
+          "label": "目标清楚、方法可灵活",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        }
+      },
+      "recommendations": {
+        "main": {
+          "title": "主推荐路径",
+          "direction": "互联网产品/用户增长",
+          "match": 68,
+          "entryDifficulty": "中高",
+          "majorScore": 62,
+          "jobs": "产品运营、用户增长、商业运营、数据分析"
+        },
+        "stretch": {
+          "title": "冲刺路径",
+          "direction": "战略/管理咨询",
+          "match": 67,
+          "entryDifficulty": "高",
+          "majorScore": 62,
+          "jobs": "咨询顾问、PTA、战略实习、商业分析实习"
+        },
+        "backup": {
+          "title": "保底路径",
+          "direction": "人力资源/组织发展",
+          "match": 68,
+          "entryDifficulty": "中",
+          "majorScore": 62,
+          "jobs": "HRBP助理、招聘、组织发展、培训发展、雇主品牌"
+        }
+      }
+    },
+    "feishuSync": {
+      "ok": true,
+      "skipped": false,
+      "syncedAt": "2026-04-25T02:34:34.090Z",
+      "recordId": "recvhLzlC6nz6j",
+      "error": ""
+    }
+  },
+  {
+    "id": "dfc2ad3b-1fcc-4ad6-b501-eef140d5ede5",
+    "createdAt": "2026-04-24T09:52:11.522Z",
+    "source": "auto_report_generation",
+    "registrant": {
+      "studentName": "",
+      "contact": "",
+      "email": "",
+      "role": "学生本人",
+      "note": ""
+    },
+    "assessment": {
+      "createdAt": "2026-04-24T09:52:11.520Z",
+      "registrant": {
+        "studentName": "",
+        "contact": "",
+        "email": "",
+        "role": "学生本人",
+        "note": ""
+      },
+      "currentStage": "重点补强阶段",
+      "background": {
+        "level": "T3",
+        "score": 67,
+        "schoolTier": "T4",
+        "schoolTierLabel": "未填写学校",
+        "schoolScore": 65,
+        "rankingScore": null,
+        "rankingConfidence": null
+      },
+      "profile": {
+        "undergradSchool": "",
+        "undergradMajor": "",
+        "undergradMajorType": "其他或暂不确定",
+        "gradSchool": "",
+        "gradMajor": "",
+        "gradMajorType": "无研究生学历",
+        "phdSchool": "",
+        "phdMajor": "",
+        "phdMajorType": "无研究生学历",
+        "internship": "80",
+        "projects": [],
+        "interests": [
+          "互联网产品/用户增长"
+        ],
+        "primaryInterest": "互联网产品/用户增长"
+      },
+      "capabilities": {
+        "analytical": 67,
+        "communication": 67,
+        "execution": 67,
+        "creativity": 67,
+        "stability": 67,
+        "business": 67
+      },
+      "personality": {
+        "决策风格": {
+          "label": "兼顾逻辑与感受",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "社交能量": {
+          "label": "协作与独立都可适应",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "风险偏好": {
+          "label": "接受变化但会看边界",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "工作方式偏好": {
+          "label": "目标清楚、方法可灵活",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        }
+      },
+      "recommendations": {
+        "main": {
+          "title": "主推荐路径",
+          "direction": "互联网产品/用户增长",
+          "match": 68,
+          "entryDifficulty": "中高",
+          "majorScore": 62,
+          "jobs": "产品运营、用户增长、商业运营、数据分析"
+        },
+        "stretch": {
+          "title": "冲刺路径",
+          "direction": "战略/管理咨询",
+          "match": 67,
+          "entryDifficulty": "高",
+          "majorScore": 62,
+          "jobs": "咨询顾问、PTA、战略实习、商业分析实习"
+        },
+        "backup": {
+          "title": "保底路径",
+          "direction": "人力资源/组织发展",
+          "match": 68,
+          "entryDifficulty": "中",
+          "majorScore": 62,
+          "jobs": "HRBP助理、招聘、组织发展、培训发展、雇主品牌"
+        }
+      }
+    },
+    "feishuSync": {
+      "ok": true,
+      "skipped": false,
+      "syncedAt": "2026-04-25T02:34:35.400Z",
+      "recordId": "recvhLzlWrS4JG",
+      "error": ""
+    }
+  },
+  {
+    "id": "3766fbd0-9cf7-4de4-9b45-44f181624dcc",
+    "createdAt": "2026-04-24T09:58:51.249Z",
+    "source": "auto_report_generation",
+    "registrant": {
+      "studentName": "",
+      "contact": "",
+      "email": "",
+      "role": "学生本人",
+      "note": ""
+    },
+    "assessment": {
+      "createdAt": "2026-04-24T09:58:51.246Z",
+      "registrant": {
+        "studentName": "",
+        "contact": "",
+        "email": "",
+        "role": "学生本人",
+        "note": ""
+      },
+      "currentStage": "重点补强阶段",
+      "background": {
+        "level": "T3",
+        "score": 66,
+        "schoolTier": "T4",
+        "schoolTierLabel": "未进入层级库，按中性分处理",
+        "schoolScore": 62,
+        "rankingScore": null,
+        "rankingConfidence": null
+      },
+      "profile": {
+        "undergradSchool": "",
+        "undergradMajor": "",
+        "undergradMajorType": "其他或暂不确定",
+        "gradSchool": "wind",
+        "gradMajor": "",
+        "gradMajorType": "商科/管理/市场",
+        "phdSchool": "",
+        "phdMajor": "",
+        "phdMajorType": "无研究生学历",
+        "internship": "80",
+        "projects": [],
+        "interests": [
+          "互联网产品/用户增长"
+        ],
+        "primaryInterest": "互联网产品/用户增长"
+      },
+      "capabilities": {
+        "analytical": 67,
+        "communication": 67,
+        "execution": 67,
+        "creativity": 67,
+        "stability": 67,
+        "business": 67
+      },
+      "personality": {
+        "决策风格": {
+          "label": "兼顾逻辑与感受",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "社交能量": {
+          "label": "协作与独立都可适应",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "风险偏好": {
+          "label": "接受变化但会看边界",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        },
+        "工作方式偏好": {
+          "label": "目标清楚、方法可灵活",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        }
+      },
+      "recommendations": {
+        "main": {
+          "title": "主推荐路径",
+          "direction": "互联网产品/用户增长",
+          "match": 71,
+          "entryDifficulty": "中高",
+          "majorScore": 82,
+          "jobs": "产品运营、用户增长、商业运营、数据分析"
+        },
+        "stretch": {
+          "title": "冲刺路径",
+          "direction": "战略/管理咨询",
+          "match": 69,
+          "entryDifficulty": "高",
+          "majorScore": 82,
+          "jobs": "咨询顾问、PTA、战略实习、商业分析实习"
+        },
+        "backup": {
+          "title": "保底路径",
+          "direction": "人力资源/组织发展",
+          "match": 71,
+          "entryDifficulty": "中",
+          "majorScore": 82,
+          "jobs": "HRBP助理、招聘、组织发展、培训发展、雇主品牌"
+        }
+      }
+    },
+    "feishuSync": {
+      "ok": true,
+      "skipped": false,
+      "syncedAt": "2026-04-25T02:34:36.616Z",
+      "recordId": "recvhLzmgYdnLF",
+      "error": ""
+    }
+  },
+  {
+    "id": "0a63c855-c861-46aa-9387-49d35e758585",
+    "createdAt": "2026-04-25T02:24:33.874Z",
+    "feishuSync": {
+      "ok": true,
+      "skipped": false,
+      "syncedAt": "2026-04-25T02:34:37.911Z",
+      "recordId": "recvhLzmB8Q4Eu",
+      "error": ""
+    },
+    "source": "manual_connectivity_test",
+    "registrant": {
+      "studentName": "联通测试",
+      "contact": "test-contact",
+      "email": "",
+      "role": "学生本人",
+      "note": ""
+    },
+    "assessment": {
+      "currentStage": "联通测试",
+      "background": {
+        "level": "T1",
+        "score": 88,
+        "schoolTier": "tier1",
+        "schoolTierLabel": "T1",
+        "schoolScore": 88,
+        "rankingScore": 90,
+        "rankingConfidence": "high"
+      },
+      "profile": {
+        "undergradSchool": "Test University",
+        "undergradMajor": "Test Major",
+        "undergradMajorType": "测试专业",
+        "gradSchool": "",
+        "gradMajor": "",
+        "gradMajorType": "",
+        "phdSchool": "",
+        "phdMajor": "",
+        "phdMajorType": "",
+        "internship": "",
+        "projects": [],
+        "interests": [
+          "测试方向"
+        ],
+        "primaryInterest": "测试方向"
+      },
+      "capabilities": {
+        "analytical": 80,
+        "communication": 78,
+        "execution": 82,
+        "creativity": 70,
+        "stability": 76,
+        "business": 74
+      },
+      "personality": {
+        "决策风格": {
+          "label": "兼顾逻辑与感受",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        }
+      },
+      "recommendations": {
+        "main": {
+          "title": "主推荐路径",
+          "direction": "测试方向",
+          "match": 85,
+          "entryDifficulty": "中",
+          "majorScore": 80,
+          "jobs": "测试岗位"
+        },
+        "stretch": {
+          "title": "冲刺路径",
+          "direction": "测试冲刺",
+          "match": 72,
+          "entryDifficulty": "高",
+          "majorScore": 70,
+          "jobs": "测试岗位"
+        },
+        "backup": {
+          "title": "保底路径",
+          "direction": "测试保底",
+          "match": 65,
+          "entryDifficulty": "低",
+          "majorScore": 75,
+          "jobs": "测试岗位"
+        }
+      }
+    }
+  },
+  {
+    "id": "2c85c859-cea5-45e3-8296-c4faa0f3a5b6",
+    "createdAt": "2026-04-25T02:33:29.017Z",
+    "feishuSync": {
+      "ok": true,
+      "skipped": false,
+      "syncedAt": "2026-04-25T02:34:39.204Z",
+      "recordId": "recvhLzmWxz1IH",
+      "error": ""
+    },
+    "source": "post_restart_test",
+    "registrant": {
+      "studentName": "重启后测试",
+      "contact": "contact-2",
+      "email": "",
+      "role": "学生本人",
+      "note": ""
+    },
+    "assessment": {
+      "currentStage": "重点补强阶段",
+      "background": {
+        "level": "T3",
+        "score": 66,
+        "schoolTier": "T4",
+        "schoolTierLabel": "T4",
+        "schoolScore": 62,
+        "rankingScore": "",
+        "rankingConfidence": ""
+      },
+      "profile": {
+        "undergradSchool": "",
+        "undergradMajor": "",
+        "undergradMajorType": "其他或暂不确定",
+        "gradSchool": "",
+        "gradMajor": "",
+        "gradMajorType": "",
+        "phdSchool": "",
+        "phdMajor": "",
+        "phdMajorType": "",
+        "internship": "",
+        "projects": [],
+        "interests": [
+          "互联网产品/用户增长"
+        ],
+        "primaryInterest": "互联网产品/用户增长"
+      },
+      "capabilities": {
+        "analytical": 67,
+        "communication": 67,
+        "execution": 67,
+        "creativity": 67,
+        "stability": 67,
+        "business": 67
+      },
+      "personality": {
+        "决策风格": {
+          "label": "兼顾逻辑与感受",
+          "leftRatio": 50,
+          "dominant": "neutral"
+        }
+      },
+      "recommendations": {
+        "main": {
+          "title": "主推荐路径",
+          "direction": "互联网产品/用户增长",
+          "match": 71,
+          "entryDifficulty": "中高",
+          "majorScore": 82,
+          "jobs": "产品运营"
+        },
+        "stretch": {
+          "title": "冲刺路径",
+          "direction": "战略/管理咨询",
+          "match": 69,
+          "entryDifficulty": "高",
+          "majorScore": 82,
+          "jobs": "咨询顾问"
+        },
+        "backup": {
+          "title": "保底路径",
+          "direction": "人力资源/组织发展",
+          "match": 71,
+          "entryDifficulty": "中",
+          "majorScore": 82,
+          "jobs": "招聘"
+        }
+      }
+    }
+  }
+]

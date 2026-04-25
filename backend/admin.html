@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>测评结果后台查看</title>
+    <link rel="stylesheet" href="./admin.css" />
+  </head>
+  <body>
+    <main class="admin-shell">
+      <header class="admin-head">
+        <div>
+          <p class="eyebrow">Assessment Admin</p>
+          <h1>测评结果后台查看</h1>
+          <p>这里会展示已经提交登记的测评用户结果，便于后续筛选和跟进。</p>
+        </div>
+        <button id="refreshBtn" type="button">刷新数据</button>
+      </header>
+
+      <section class="admin-summary" id="summaryCards">
+        <article class="summary-card">
+          <span>总登记数</span>
+          <strong id="totalCount">0</strong>
+        </article>
+        <article class="summary-card">
+          <span>最近更新时间</span>
+          <strong id="latestTime">-</strong>
+        </article>
+      </section>
+
+      <section class="admin-actions">
+        <article class="action-card">
+          <div>
+            <h2>飞书同步状态</h2>
+            <p id="feishuStatusText" class="small-note">正在检查飞书配置...</p>
+          </div>
+          <button id="checkFeishuBtn" type="button">检查状态</button>
+        </article>
+        <article class="action-card">
+          <div>
+            <h2>历史记录补同步</h2>
+            <p id="backfillStatusText" class="small-note">可将尚未进入飞书的历史记录补推一次。</p>
+          </div>
+          <button id="backfillBtn" type="button">补同步到飞书</button>
+        </article>
+      </section>
+
+      <section class="admin-table-wrap">
+        <div class="status-text" id="statusText">正在加载后台登记结果...</div>
+        <div id="recordList" class="record-list"></div>
+      </section>
+    </main>
+
+    <script src="./admin.js"></script>
+  </body>
+</html>

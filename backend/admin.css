@@ -1,0 +1,169 @@
+:root {
+  --ink: #182026;
+  --muted: #6b7280;
+  --line: #dce4ea;
+  --paper: #ffffff;
+  --green: #0f766e;
+  --bg: #eef3f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.admin-shell {
+  width: min(1200px, calc(100% - 32px));
+  margin: 24px auto;
+}
+
+.admin-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+h1,
+h3,
+p {
+  margin-top: 0;
+}
+
+button {
+  min-width: 112px;
+  min-height: 42px;
+  padding: 10px 16px;
+  color: #fff;
+  font-weight: 800;
+  background: var(--green);
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin: 16px 0;
+}
+
+.admin-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin: 0 0 16px;
+}
+
+.summary-card,
+.action-card,
+.record-card {
+  padding: 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.action-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.action-card h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.summary-card span,
+.small-note,
+.status-text {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.summary-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 28px;
+}
+
+.record-list {
+  display: grid;
+  gap: 14px;
+}
+
+.record-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.record-head strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.record-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 6px 10px;
+  color: #12343b;
+  font-size: 12px;
+  font-weight: 800;
+  background: #e7f4f2;
+  border: 1px solid #c9e6e1;
+  border-radius: 999px;
+}
+
+@media (max-width: 840px) {
+  .admin-shell {
+    width: min(100% - 20px, 1200px);
+    margin: 12px auto;
+  }
+
+  .admin-head,
+  .admin-summary,
+  .admin-actions,
+  .record-grid {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .action-card {
+    display: grid;
+  }
+}
