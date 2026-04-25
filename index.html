@@ -83,21 +83,9 @@
 
         <form class="grid-form" id="profileForm">
           <div class="form-note full-span">
-            <span>基础信息</span>
-            <p>以下信息用于保存测评结果并便于后续查看与沟通。系统会在你点击“生成报告”时自动登记本次测评结果。带 <strong>*</strong> 的字段为必填项。</p>
+            <span>身份信息</span>
+            <p>请先选择本次测评的填写身份，系统会据此调整后续结果登记信息。</p>
           </div>
-          <label>
-            <span>姓名 / 称呼 <em class="required-mark">*</em></span>
-            <input name="studentName" placeholder="如：张同学 / 李家长" required />
-          </label>
-          <label>
-            <span>手机号 / 微信号 <em class="required-mark">*</em></span>
-            <input name="contact" placeholder="如：138xxxx / wechat_id" required />
-          </label>
-          <label>
-            <span>邮箱（选填）</span>
-            <input name="email" placeholder="如：name@example.com" />
-          </label>
           <label>
             <span>身份 <em class="required-mark">*</em></span>
             <select name="role" required>
@@ -279,6 +267,20 @@
           <h2>职业规划报告</h2>
           <p>结果会根据你的背景、能力和性格自动生成。</p>
         </div>
+        <form class="grid-form report-registrant-form" id="registrantForm">
+          <div class="form-note full-span">
+            <span>生成报告前填写</span>
+            <p>以下信息用于保存测评结果并便于后续查看与沟通。系统会在你点击“生成报告”时自动登记本次测评结果。带 <strong>*</strong> 的字段为必填项。</p>
+          </div>
+          <label>
+            <span>姓名 / 称呼 <em class="required-mark">*</em></span>
+            <input name="studentName" placeholder="如：张同学 / 李家长" required />
+          </label>
+          <label>
+            <span>手机号 / 微信号（选填）</span>
+            <input name="contact" placeholder="如：138xxxx / wechat_id" />
+          </label>
+        </form>
         <div id="reportRoot" class="report-empty">
           完成前面测评后，点击“生成报告”查看结果。
         </div>

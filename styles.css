@@ -254,6 +254,10 @@ h3 {
   grid-column: 1 / -1;
 }
 
+.report-registrant-form {
+  margin-bottom: 18px;
+}
+
 .intro-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

@@ -394,6 +394,7 @@ function initTabs() {
       currentStep = Number(tab.dataset.step);
       if (currentStep === 2) refreshCapabilityQuestions();
       if (currentStep === 4) {
+        if (!validateRequiredRegistrantFields()) return;
         await ensureReportDataLoaded();
         generateReport();
       }
@@ -444,27 +445,30 @@ function updateStep() {
 }
 
 function getFormData() {
-  const form = document.getElementById("profileForm");
-  const data = Object.fromEntries(new FormData(form).entries());
-  data.interests = Array.from(form.querySelectorAll('input[name="interest"]:checked')).map((item) => item.value);
+  const profileForm = document.getElementById("profileForm");
+  const registrantForm = document.getElementById("registrantForm");
+  const data = {
+    ...Object.fromEntries(new FormData(profileForm).entries()),
+    ...Object.fromEntries(new FormData(registrantForm).entries())
+  };
+  data.interests = Array.from(profileForm.querySelectorAll('input[name="interest"]:checked')).map((item) => item.value);
   if (!data.interests.length) data.interests = ["internet"];
   if (!data.primaryInterest || !data.interests.includes(data.primaryInterest)) data.primaryInterest = data.interests[0];
-  data.projects = Array.from(form.querySelectorAll('input[name="projects"]:checked')).map((item) => item.value);
+  data.projects = Array.from(profileForm.querySelectorAll('input[name="projects"]:checked')).map((item) => item.value);
   return data;
 }
 
 function validateRequiredRegistrantFields() {
   const requiredFields = [
-    { name: "studentName", label: "姓名 / 称呼" },
-    { name: "contact", label: "手机号 / 微信号" },
-    { name: "role", label: "身份" }
+    { name: "studentName", label: "姓名 / 称呼", formId: "registrantForm", step: 4 },
+    { name: "role", label: "身份", formId: "profileForm", step: 1 }
   ];
-  const form = document.getElementById("profileForm");
   for (const field of requiredFields) {
+    const form = document.getElementById(field.formId);
     const input = form.querySelector(`[name="${field.name}"]`);
     const value = String(input?.value || "").trim();
     if (!value) {
-      currentStep = 1;
+      currentStep = field.step;
       updateStep();
       requestAnimationFrame(() => {
         input?.focus();
@@ -1501,7 +1505,6 @@ function buildAssessmentRegistrationPayload(profile, capabilities, personality, 
     registrant: {
       studentName: profile.studentName || "",
       contact: profile.contact || "",
-      email: profile.email || "",
       role: profile.role || "学生本人",
       note: ""
     },
