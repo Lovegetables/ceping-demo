@@ -18,6 +18,14 @@ function renderRecords(records) {
   list.innerHTML = records.map((record) => {
     const registrant = record.registrant || {};
     const assessment = record.assessment || {};
+    const feishuSync = record.feishuSync || {};
+    const syncText = feishuSync.ok
+      ? `已同步到飞书${feishuSync.recordId ? `（记录 ${feishuSync.recordId}）` : ""}`
+      : feishuSync.skipped
+        ? "未启用飞书同步"
+        : feishuSync.error
+          ? `飞书同步失败：${feishuSync.error}`
+          : "飞书同步中";
     return `
       <article class="record-card">
         <div class="record-head">
@@ -50,9 +58,44 @@ function renderRecords(records) {
           </div>
         </div>
         <p class="small-note">邮箱：${registrant.email || "未填写"}${registrant.note ? ` ｜ 备注：${registrant.note}` : ""}</p>
+        <p class="small-note">飞书同步：${syncText}</p>
       </article>
     `;
   }).join("");
+}
+
+async function loadFeishuStatus() {
+  const node = document.getElementById("feishuStatusText");
+  node.textContent = "正在检查飞书配置...";
+  try {
+    const response = await fetch(`${API_BASE}/feishu/status`);
+    const data = await response.json();
+    if (!data.enabled) {
+      node.textContent = "当前未配置飞书同步。请先在 backend/.env 中填写飞书参数并重启本地服务。";
+      return;
+    }
+    node.textContent = `飞书同步已启用，当前目标为 ${data.baseUrl}，多维表参数已配置。`;
+  } catch (error) {
+    console.error(error);
+    node.textContent = "飞书状态检查失败，请确认本地后台服务正在运行。";
+  }
+}
+
+async function runFeishuBackfill() {
+  const node = document.getElementById("backfillStatusText");
+  node.textContent = "正在补同步历史记录到飞书...";
+  try {
+    const response = await fetch(`${API_BASE}/feishu/backfill`, { method: "POST" });
+    const data = await response.json();
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || `HTTP ${response.status}`);
+    }
+    node.textContent = `补同步完成：成功 ${data.synced} 条，失败 ${data.failed} 条。`;
+    loadRecords();
+  } catch (error) {
+    console.error(error);
+    node.textContent = `补同步失败：${error.message || "请检查飞书配置"}`;
+  }
 }
 
 async function loadRecords() {
@@ -69,4 +112,7 @@ async function loadRecords() {
 }
 
 document.getElementById("refreshBtn").addEventListener("click", loadRecords);
+document.getElementById("checkFeishuBtn").addEventListener("click", loadFeishuStatus);
+document.getElementById("backfillBtn").addEventListener("click", runFeishuBackfill);
 loadRecords();
+loadFeishuStatus();

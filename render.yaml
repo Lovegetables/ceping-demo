@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: career-assessment-h5
+    env: node
+    plan: free
+    buildCommand: ""
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: FEISHU_BASE_URL
+        value: https://open.feishu.cn
+      - key: FEISHU_APP_ID
+        sync: false
+      - key: FEISHU_APP_SECRET
+        sync: false
+      - key: FEISHU_BITABLE_APP_TOKEN
+        sync: false
+      - key: FEISHU_BITABLE_TABLE_ID
+        sync: false

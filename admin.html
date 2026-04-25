@@ -28,6 +28,23 @@
         </article>
       </section>
 
+      <section class="admin-actions">
+        <article class="action-card">
+          <div>
+            <h2>飞书同步状态</h2>
+            <p id="feishuStatusText" class="small-note">正在检查飞书配置...</p>
+          </div>
+          <button id="checkFeishuBtn" type="button">检查状态</button>
+        </article>
+        <article class="action-card">
+          <div>
+            <h2>历史记录补同步</h2>
+            <p id="backfillStatusText" class="small-note">可将尚未进入飞书的历史记录补推一次。</p>
+          </div>
+          <button id="backfillBtn" type="button">补同步到飞书</button>
+        </article>
+      </section>
+
       <section class="admin-table-wrap">
         <div class="status-text" id="statusText">正在加载后台登记结果...</div>
         <div id="recordList" class="record-list"></div>

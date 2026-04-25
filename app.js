@@ -16,7 +16,7 @@ const dimensions = {
 };
 
 const ASSESSMENT_API_BASE = typeof window !== "undefined"
-  ? (window.ASSESSMENT_API_BASE || "http://127.0.0.1:8787")
+  ? (window.ASSESSMENT_API_BASE || (window.location?.protocol === "file:" ? "http://127.0.0.1:8787" : window.location.origin))
   : "http://127.0.0.1:8787";
 
 let latestAssessmentResult = null;
@@ -1371,7 +1371,17 @@ async function autoRegisterLatestAssessmentResult() {
     const result = await response.json();
     latestAssessmentSignature = signature;
     latestAutoRecordId = result.recordId;
-    if (status) status.textContent = `系统已自动登记本次报告，记录编号 ${result.recordId}。后台现在可以直接查看本次测评结果。`;
+    if (status) {
+      if (result.feishuSync?.ok) {
+        status.textContent = `系统已自动登记本次报告，并已同步到飞书多维表格。记录编号 ${result.recordId}。`;
+      } else if (result.feishuSync?.skipped) {
+        status.textContent = `系统已自动登记本次报告，记录编号 ${result.recordId}。当前尚未配置飞书同步。`;
+      } else if (result.feishuSync?.error) {
+        status.textContent = `系统已自动登记本次报告，记录编号 ${result.recordId}。飞书同步暂未成功：${result.feishuSync.error}`;
+      } else {
+        status.textContent = `系统已自动登记本次报告，记录编号 ${result.recordId}。后台现在可以直接查看本次测评结果。`;
+      }
+    }
   } catch (error) {
     console.error(error);
     if (status) status.textContent = `自动登记失败：当前未连接后台服务，请先启动本地登记服务（${ASSESSMENT_API_BASE}）。`;
