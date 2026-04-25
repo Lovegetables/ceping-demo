@@ -22,6 +22,27 @@ const ASSESSMENT_API_BASE = typeof window !== "undefined"
 let latestAssessmentResult = null;
 let latestAssessmentSignature = null;
 let latestAutoRecordId = null;
+let schoolAutocompleteActiveIndex = -1;
+
+const majorTypeDefinitions = {
+  management: "管理/工商管理/组织管理",
+  marketing: "市场营销/品牌/消费研究",
+  finance: "金融/投资/经济学",
+  accounting: "会计/审计/税务/财务",
+  data: "数据科学/统计/数学/商业分析",
+  cs: "计算机/软件/AI/信息系统",
+  engineering: "工程/电子/机械/自动化",
+  supplychain: "供应链/物流/工业工程/运营管理",
+  lawpolicy: "法律/法学/公共政策/公共管理",
+  socialscience: "国际关系/政治学/社会学/社会科学",
+  media: "传媒/传播/新闻/广告/语言",
+  humanities: "文学/历史/哲学/人文",
+  arts: "艺术/设计/影视/创意",
+  science: "生物/化学/医学/药学/自然科学",
+  education: "教育/心理",
+  other: "其他或暂不确定",
+  none: "无该阶段学历"
+};
 
 const schoolDirectory = [
   { name: "University College London", aliases: ["ucl", "伦敦大学学院"] },
@@ -217,7 +238,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "extrovert", risk: "adventurous", structure: "free" },
     gate: "高",
     jobs: "咨询顾问、PTA、战略实习、商业分析实习",
-    majors: ["business", "finance", "data", "engineering", "social"]
+    majors: ["management", "marketing", "finance", "accounting", "data", "cs", "engineering", "supplychain", "lawpolicy", "socialscience"]
   },
   finance: {
     name: "金融投行/行研/投资",
@@ -225,7 +246,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "adventurous", structure: "rule" },
     gate: "高",
     jobs: "投行分析师、行研助理、投资实习、交易咨询",
-    majors: ["finance", "data", "business", "science"]
+    majors: ["finance", "accounting", "data", "cs", "management", "science"]
   },
   internet: {
     name: "互联网产品/用户增长",
@@ -233,7 +254,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "adventurous", structure: "free" },
     gate: "中高",
     jobs: "产品运营、用户增长、商业运营、数据分析",
-    majors: ["data", "business", "engineering", "media"]
+    majors: ["data", "cs", "management", "marketing", "engineering", "media"]
   },
   fmcg: {
     name: "快消/消费品品牌市场",
@@ -241,7 +262,7 @@ const jobProfiles = {
     traits: { decision: "neutral", social: "extrovert", risk: "neutral", structure: "free" },
     gate: "中高",
     jobs: "品牌市场、消费者洞察、Trade Marketing、管培生",
-    majors: ["business", "media", "social", "arts"]
+    majors: ["management", "marketing", "media", "socialscience", "arts", "humanities"]
   },
   soe: {
     name: "国央企/事业单位",
@@ -249,7 +270,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "conservative", structure: "rule" },
     gate: "中高",
     jobs: "管培、综合管理、财务法务、项目管理",
-    majors: ["social", "business", "finance", "engineering"]
+    majors: ["lawpolicy", "socialscience", "management", "finance", "accounting", "engineering"]
   },
   creative: {
     name: "文娱/策展/内容创意",
@@ -257,7 +278,7 @@ const jobProfiles = {
     traits: { decision: "emotional", social: "neutral", risk: "adventurous", structure: "free" },
     gate: "中",
     jobs: "内容策划、策展助理、品牌内容、项目统筹",
-    majors: ["arts", "media", "social", "business"]
+    majors: ["arts", "media", "humanities", "socialscience", "marketing", "management"]
   },
   ba: {
     name: "数据分析/商业分析",
@@ -265,7 +286,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "introvert", risk: "neutral", structure: "rule" },
     gate: "中高",
     jobs: "商业分析、数据分析、经营分析、策略分析",
-    majors: ["data", "finance", "business", "engineering"]
+    majors: ["data", "cs", "finance", "accounting", "management", "engineering", "supplychain"]
   },
   policy: {
     name: "政策/公共事务",
@@ -273,7 +294,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "extrovert", risk: "conservative", structure: "rule" },
     gate: "中高",
     jobs: "公共事务、政策研究、国际组织项目、政府关系",
-    majors: ["social", "media", "business", "education"]
+    majors: ["lawpolicy", "socialscience", "media", "management", "education", "humanities"]
   },
   financial_services: {
     name: "银行/资管/保险/金融中后台",
@@ -281,7 +302,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "conservative", structure: "rule" },
     gate: "中高",
     jobs: "银行管培、资管产品、风险管理、金融科技、运营管理",
-    majors: ["finance", "business", "data", "social"]
+    majors: ["finance", "accounting", "management", "data", "cs", "lawpolicy"]
   },
   big4: {
     name: "四大/审计/税务/风险咨询",
@@ -289,7 +310,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "neutral", structure: "rule" },
     gate: "中高",
     jobs: "审计、税务、风险咨询、交易咨询、管理咨询助理",
-    majors: ["finance", "business", "data", "social"]
+    majors: ["finance", "accounting", "management", "data", "cs", "lawpolicy"]
   },
   hr: {
     name: "人力资源/组织发展",
@@ -297,7 +318,7 @@ const jobProfiles = {
     traits: { decision: "neutral", social: "extrovert", risk: "conservative", structure: "rule" },
     gate: "中",
     jobs: "HRBP助理、招聘、组织发展、培训发展、雇主品牌",
-    majors: ["business", "social", "media", "education"]
+    majors: ["management", "marketing", "socialscience", "media", "education", "humanities"]
   },
   supply_chain: {
     name: "供应链/采购/物流",
@@ -305,7 +326,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "neutral", risk: "conservative", structure: "rule" },
     gate: "中",
     jobs: "供应链管培、采购、物流计划、需求预测、运营管理",
-    majors: ["engineering", "business", "data", "science"]
+    majors: ["engineering", "supplychain", "management", "data", "science", "cs"]
   },
   legal_compliance: {
     name: "法务/合规/风控",
@@ -313,7 +334,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "introvert", risk: "conservative", structure: "rule" },
     gate: "中高",
     jobs: "法务助理、合规、内控、风控、数据合规",
-    majors: ["social", "finance", "business", "data"]
+    majors: ["lawpolicy", "socialscience", "finance", "accounting", "management", "data", "cs"]
   },
   academic: {
     name: "科研/学术/博士发展",
@@ -321,7 +342,7 @@ const jobProfiles = {
     traits: { decision: "rational", social: "introvert", risk: "neutral", structure: "free" },
     gate: "高",
     jobs: "研究助理、博士申请、科研项目、实验室/课题组、智库研究",
-    majors: ["science", "data", "engineering", "social", "media", "education"]
+    majors: ["science", "data", "cs", "engineering", "lawpolicy", "socialscience", "media", "education", "humanities"]
   },
   crossborder: {
     name: "跨境电商/海外市场/国际商务",
@@ -329,7 +350,7 @@ const jobProfiles = {
     traits: { decision: "neutral", social: "extrovert", risk: "adventurous", structure: "free" },
     gate: "中",
     jobs: "海外市场、跨境运营、国际商务、渠道拓展、品牌出海",
-    majors: ["business", "media", "social", "finance", "data"]
+    majors: ["management", "marketing", "media", "socialscience", "finance", "data", "cs", "humanities"]
   }
 };
 
@@ -379,6 +400,28 @@ function initTabs() {
       updateStep();
     });
   });
+  const tabs = document.getElementById("stepTabs");
+  tabs?.addEventListener("scroll", updateStepTabsScrollThumb, { passive: true });
+  window.addEventListener("resize", updateStepTabsScrollThumb);
+  updateStepTabsScrollThumb();
+}
+
+function updateStepTabsScrollThumb() {
+  const tabs = document.getElementById("stepTabs");
+  const thumb = document.getElementById("stepTabsScrollThumb");
+  if (!tabs || !thumb) return;
+  const maxScroll = Math.max(tabs.scrollWidth - tabs.clientWidth, 0);
+  const trackWidth = tabs.clientWidth;
+  if (trackWidth <= 0) return;
+  const thumbWidth = Math.max(trackWidth * 0.32, 36);
+  thumb.style.width = `${thumbWidth}px`;
+  if (maxScroll <= 0) {
+    thumb.style.transform = "translateX(0)";
+    return;
+  }
+  const travel = Math.max(trackWidth - thumbWidth, 0);
+  const ratio = tabs.scrollLeft / maxScroll;
+  thumb.style.transform = `translateX(${travel * ratio}px)`;
 }
 
 function updateStep() {
@@ -393,6 +436,7 @@ function updateStep() {
   });
   document.getElementById("progressBar").style.width = `${((currentStep + 1) / steps.length) * 100}%`;
   document.getElementById("stepBadge").textContent = `${currentStep + 1} / ${steps.length}`;
+  updateStepTabsScrollThumb();
   document.getElementById("prevBtn").disabled = currentStep === 0;
   document.getElementById("nextBtn").textContent = currentStep === steps.length - 1 ? "重新生成报告" : currentStep === steps.length - 2 ? "生成报告" : "下一步";
   document.getElementById("exportBtn").classList.toggle("visible", currentStep === steps.length - 1);
@@ -475,6 +519,31 @@ function renderSchoolOptions() {
     .join("");
 }
 
+function schoolMatchLabel(school) {
+  return [school.region || school.country, ...(school.aliases || []).slice(0, 2)].filter(Boolean).join(" / ");
+}
+
+function searchSchools(query, limit = 8) {
+  const raw = String(query || "").trim().toLowerCase();
+  if (!raw) return [];
+  return allSchoolDirectory
+    .map((school) => {
+      const haystacks = [school.name, ...(school.aliases || [])].map((item) => String(item).toLowerCase());
+      let score = -1;
+      haystacks.forEach((item) => {
+        if (item === raw) score = Math.max(score, 100);
+        else if (item.startsWith(raw)) score = Math.max(score, 80);
+        else if (item.includes(raw)) score = Math.max(score, 60);
+        else if (raw.includes(item)) score = Math.max(score, 40);
+      });
+      return score > -1 ? { school, score } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.score - a.score || a.school.name.localeCompare(b.school.name))
+    .slice(0, limit)
+    .map((item) => item.school);
+}
+
 async function ensureSchoolDirectoryLoaded() {
   if (typeof window !== "undefined" && Array.isArray(window.externalSchoolDirectory) && window.externalSchoolDirectory.length) {
     allSchoolDirectory = mergeSchoolDirectories(schoolDirectory, window.externalSchoolDirectory);
@@ -517,8 +586,78 @@ function setupSchoolAutocomplete() {
   document.querySelectorAll('input[name="undergradSchool"], input[name="gradSchool"], input[name="phdSchool"]').forEach((input) => {
     const preload = () => ensureSchoolDirectoryLoaded();
     input.addEventListener("focus", preload, { once: true });
+
+    const panel = document.createElement("div");
+    panel.className = "school-suggestion-panel";
+    panel.setAttribute("role", "listbox");
+    input.parentElement?.appendChild(panel);
+
+    const hidePanel = () => {
+      panel.classList.remove("visible");
+      panel.innerHTML = "";
+      schoolAutocompleteActiveIndex = -1;
+    };
+
+    const chooseSchool = (schoolName) => {
+      input.value = schoolName;
+      hidePanel();
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    };
+
+    const renderPanel = async () => {
+      await ensureSchoolDirectoryLoaded();
+      const matches = searchSchools(input.value);
+      if (!matches.length) {
+        hidePanel();
+        return;
+      }
+      schoolAutocompleteActiveIndex = -1;
+      panel.innerHTML = matches.map((school, index) => `
+        <button type="button" class="school-suggestion-item" data-index="${index}" data-name="${school.name}">
+          <strong>${school.name}</strong>
+          <span>${schoolMatchLabel(school)}</span>
+        </button>
+      `).join("");
+      panel.classList.add("visible");
+      panel.querySelectorAll(".school-suggestion-item").forEach((button) => {
+        button.addEventListener("mousedown", (event) => {
+          event.preventDefault();
+          chooseSchool(button.dataset.name || "");
+        });
+      });
+    };
+
+    input.addEventListener("input", renderPanel);
+    input.addEventListener("focus", renderPanel);
     input.addEventListener("blur", () => {
-      input.value = normalizeSchoolName(input.value);
+      window.setTimeout(() => {
+        input.value = normalizeSchoolName(input.value);
+        hidePanel();
+      }, 120);
+    });
+    input.addEventListener("keydown", async (event) => {
+      if (!panel.classList.contains("visible") && ["ArrowDown", "Enter"].includes(event.key)) {
+        await renderPanel();
+      }
+      const items = Array.from(panel.querySelectorAll(".school-suggestion-item"));
+      if (!items.length) return;
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        schoolAutocompleteActiveIndex = (schoolAutocompleteActiveIndex + 1) % items.length;
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        schoolAutocompleteActiveIndex = (schoolAutocompleteActiveIndex - 1 + items.length) % items.length;
+      } else if (event.key === "Enter" && schoolAutocompleteActiveIndex >= 0) {
+        event.preventDefault();
+        chooseSchool(items[schoolAutocompleteActiveIndex].dataset.name || "");
+        return;
+      } else if (event.key === "Escape") {
+        hidePanel();
+        return;
+      } else {
+        return;
+      }
+      items.forEach((item, index) => item.classList.toggle("active", index === schoolAutocompleteActiveIndex));
     });
   });
 }
@@ -563,16 +702,43 @@ function setupSelectableStates() {
 }
 
 const majorTypeRules = [
-  ["finance", ["finance", "financial", "fintech", "economics", "economy", "accounting", "audit", "tax", "banking", "investment", "asset", "保险", "金融", "经济", "会计", "审计", "税务", "财务", "财政", "投资", "银行", "保险"]],
-  ["data", ["data", "computer", "computing", "software", "ai", "artificial intelligence", "machine learning", "statistics", "statistical", "math", "mathematics", "information system", "mis", "analytics", "business analytics", "cs", "计算机", "软件", "数据", "人工智能", "统计", "数学", "信息系统", "商业分析", "算法"]],
-  ["engineering", ["engineering", "industrial", "mechanical", "electrical", "electronic", "automation", "manufacturing", "supply chain", "logistics", "operations", "civil", "material", "建筑", "工程", "制造", "机械", "电子", "自动化", "土木", "工业工程", "供应链", "物流", "运营管理", "材料"]],
-  ["social", ["law", "legal", "public policy", "public administration", "politics", "political", "international relations", "sociology", "social policy", "governance", "法学", "法律", "公共政策", "公共管理", "国际关系", "政治学", "社会学", "社会政策"]],
-  ["media", ["media", "communication", "journalism", "advertising", "language", "linguistics", "translation", "literature", "history", "philosophy", "传播", "传媒", "新闻", "广告", "语言", "翻译", "文学", "历史", "哲学", "人文"]],
+  ["accounting", ["accounting", "audit", "tax", "taxation", "assurance", "会计", "审计", "税务", "财务管理"]],
+  ["finance", ["finance", "financial", "fintech", "economics", "economy", "banking", "investment", "asset", "保险", "金融", "经济", "财政", "投资", "银行", "保险"]],
+  ["data", ["data science", "statistics", "statistical", "math", "mathematics", "analytics", "business analytics", "operations research", "quant", "biostatistics", "数据", "统计", "数学", "商业分析", "精算", "量化"]],
+  ["cs", ["computer", "computing", "software", "ai", "artificial intelligence", "machine learning", "information system", "mis", "cs", "计算机", "软件", "人工智能", "信息系统", "算法", "网络安全"]],
+  ["supplychain", ["supply chain", "logistics", "operations", "operation management", "industrial engineering", "procurement", "供应链", "物流", "运营管理", "采购", "工业工程"]],
+  ["engineering", ["engineering", "mechanical", "electrical", "electronic", "automation", "manufacturing", "civil", "material", "建筑", "工程", "制造", "机械", "电子", "自动化", "土木", "材料"]],
+  ["lawpolicy", ["law", "legal", "public policy", "public administration", "public management", "法学", "法律", "公共政策", "公共管理", "行政管理"]],
+  ["socialscience", ["politics", "political", "international relations", "sociology", "social policy", "governance", "anthropology", "political science", "国际关系", "政治学", "社会学", "社会政策", "人类学"]],
+  ["media", ["media", "communication", "journalism", "advertising", "language", "linguistics", "translation", "传播", "传媒", "新闻", "广告", "语言", "翻译", "口译"]],
+  ["humanities", ["literature", "history", "philosophy", "culture", "classics", "文学", "历史", "哲学", "文化", "人文"]],
   ["arts", ["design", "art", "arts", "creative", "film", "visual", "fashion", "interaction", "architecture design", "设计", "艺术", "创意", "影视", "视觉", "服装", "交互"]],
-  ["science", ["biology", "biological", "chemistry", "chemical", "physics", "biomedical", "medicine", "medical", "pharmacy", "pharmaceutical", "public health", "environmental science", "生物", "化学", "物理", "医学", "药学", "公共卫生", "自然科学", "环境科学"]],
+  ["science", ["biology", "biological", "chemistry", "chemical", "physics", "biomedical", "medicine", "medical", "pharmacy", "pharmaceutical", "public health", "environmental science", "nursing", "生物", "化学", "物理", "医学", "药学", "公共卫生", "自然科学", "环境科学", "护理"]],
   ["education", ["education", "teaching", "psychology", "counselling", "learning", "教育", "心理", "心理学", "教学", "辅导"]],
-  ["business", ["business", "management", "marketing", "commerce", "mba", "human resource", "hr", "entrepreneurship", "strategy", "brand", "consumer", "工商管理", "管理", "市场营销", "品牌", "人力资源", "创业", "战略", "消费者"]],
+  ["marketing", ["marketing", "brand", "consumer", "digital marketing", "commerce", "market research", "市场营销", "品牌", "消费者", "电商", "市场研究"]],
+  ["management", ["business", "management", "mba", "human resource", "hr", "entrepreneurship", "strategy", "工商管理", "管理", "人力资源", "创业", "战略", "组织行为"]]
 ];
+
+const majorTypeOptionsByDegree = {
+  undergrad: ["management", "marketing", "finance", "accounting", "data", "cs", "engineering", "supplychain", "lawpolicy", "socialscience", "media", "humanities", "arts", "science", "education", "other"],
+  grad: ["none", "management", "marketing", "finance", "accounting", "data", "cs", "engineering", "supplychain", "lawpolicy", "socialscience", "media", "humanities", "arts", "science", "education", "other"],
+  phd: ["none", "management", "marketing", "finance", "accounting", "data", "cs", "engineering", "supplychain", "lawpolicy", "socialscience", "media", "humanities", "arts", "science", "education", "other"]
+};
+
+function populateMajorTypeSelects() {
+  const config = [
+    ["undergradMajorType", "undergrad"],
+    ["gradMajorType", "grad"],
+    ["phdMajorType", "phd"]
+  ];
+  config.forEach(([name, group]) => {
+    const select = document.querySelector(`[name="${name}"]`);
+    if (!select) return;
+    select.innerHTML = majorTypeOptionsByDegree[group]
+      .map((value) => `<option value="${value}">${majorTypeDefinitions[value]}</option>`)
+      .join("");
+  });
+}
 
 function inferMajorTypeFromName(name, emptyValue = "other") {
   const raw = String(name || "").trim().toLowerCase();
@@ -584,6 +750,7 @@ function inferMajorTypeFromName(name, emptyValue = "other") {
 }
 
 function setupMajorTypeAutofill() {
+  populateMajorTypeSelects();
   [
     ["undergradMajor", "undergradMajorType", "other"],
     ["gradMajor", "gradMajorType", "none"],
@@ -1158,46 +1325,72 @@ function reportStage(topJob, background) {
   if (topJob.match >= 82 && background.score >= 75) {
     return {
       key: "sprint",
-      title: "重点冲刺阶段",
+      title: "重点冲刺",
       text: `你的主线方向已经比较清楚，${topJob.name}可以进入重点投递和冲刺机会的准备阶段。`
     };
   }
   if (topJob.match >= 74) {
     return {
       key: "prepare",
-      title: "集中准备阶段",
+      title: "集中准备",
       text: `你已经具备比较明确的主申请方向，下一步重点是围绕${topJob.name}集中准备简历、面试和投递节奏。`
     };
   }
   if (topJob.match >= 66) {
     return {
       key: "strengthen",
-      title: "重点补强阶段",
+      title: "重点补强",
       text: `你的主方向基本明确，但相关经历和能力证据还需要继续补强，当前最适合先围绕${topJob.name}补项目、补实习、补表达。`
     };
   }
   if (topJob.match >= 58) {
     return {
       key: "clarify",
-      title: "方向初步明确阶段",
+      title: "方向明确",
       text: `你已经出现了相对清晰的兴趣方向，但还需要继续验证${topJob.name}是否适合作为真正的主线申请方向。`
     };
   }
   return {
     key: "explore",
-    title: "起步探索阶段",
+    title: "起步探索",
     text: `你目前更适合先做方向筛选和岗位认知，再决定是否把${topJob.name}作为后续重点投入方向。`
   };
 }
 
 function allReportStages() {
   return [
-    { key: "explore", title: "起步探索阶段", hint: "先看方向和岗位认知" },
-    { key: "clarify", title: "方向初步明确阶段", hint: "开始验证适合的主线" },
-    { key: "strengthen", title: "重点补强阶段", hint: "优先补项目、实习和证据" },
-    { key: "prepare", title: "集中准备阶段", hint: "集中准备简历、面试和投递" },
-    { key: "sprint", title: "重点冲刺阶段", hint: "重点冲目标机会，提高命中率" }
+    { key: "explore", title: "起步探索", hint: "先看方向和岗位认知" },
+    { key: "clarify", title: "方向明确", hint: "开始验证适合的主线" },
+    { key: "strengthen", title: "重点补强", hint: "优先补项目、实习和证据" },
+    { key: "prepare", title: "集中准备", hint: "集中准备简历、面试和投递" },
+    { key: "sprint", title: "重点冲刺", hint: "重点冲目标机会，提高命中率" }
   ];
+}
+
+function stageDetail(stageKey) {
+  const map = {
+    explore: {
+      current: "你现在更适合先缩小方向范围，补足对岗位的真实理解，再决定后续主线。",
+      next: "先完成目标方向筛选、JD拆解和岗位认知，再进入方向验证。"
+    },
+    clarify: {
+      current: "你已经出现了相对清晰的兴趣方向，但还需要验证这条主线是否真的适合长期投入。",
+      next: "下一步重点是通过项目、实习和真实投递反馈，确认主线方向。"
+    },
+    strengthen: {
+      current: "你的方向基本明确，但履历里的项目、实习和能力证据还不够支撑更高匹配度岗位。",
+      next: "优先补相关项目、实习经历和表达素材，尽快形成可展示证据。"
+    },
+    prepare: {
+      current: "你已经具备相对明确的主线方向，可以把精力集中放在简历、面试和投递节奏上。",
+      next: "下一步是提升投递效率和面试命中率，建立稳定的申请闭环。"
+    },
+    sprint: {
+      current: "你的主线方向和背景基础都比较清楚，可以进入重点投递和冲刺机会阶段。",
+      next: "继续集中火力冲核心目标岗位，同时保留相邻机会作为策略补位。"
+    }
+  };
+  return map[stageKey] || map.explore;
 }
 
 function reportPriorityAction(topJob, weak, leadSignals) {
@@ -1406,6 +1599,11 @@ function generateReport() {
   const leadSignals = activeCapabilityQuestions
     .filter((q) => q.lead && selectedValue(q.id) !== null && q.options[selectedValue(q.id)][1] <= 2)
     .map((q) => q.title);
+  const stages = allReportStages();
+  const currentStageIndex = Math.max(stages.findIndex((item) => item.key === stage.key), 0);
+  const currentStageMeta = stages[currentStageIndex];
+  const nextStageMeta = stages[Math.min(currentStageIndex + 1, stages.length - 1)];
+  const stageInfo = stageDetail(stage.key);
   latestAssessmentResult = buildAssessmentRegistrationPayload(profile, capabilities, personality, background, recommendations, stage);
   document.getElementById("reportRoot").className = "report-grid report-v2";
   document.getElementById("reportRoot").innerHTML = `
@@ -1421,14 +1619,42 @@ function generateReport() {
           <span class="tag">目标方向：${profile.interests.map((key) => jobProfiles[key].name).join("、")}</span>
         </div>
       </div>
-      <div class="stage-track" aria-label="求职阶段">
-        ${allReportStages().map((item, index) => `
-          <article class="stage-node ${item.key === stage.key ? "active" : ""}">
-            <span class="stage-index">${index + 1}</span>
-            <strong>${item.title}</strong>
-            <p>${item.hint}</p>
+      <div class="stage-progress" aria-label="求职阶段进度">
+        <div class="stage-progress-head">
+          <span class="summary-label">阶段进度</span>
+          <span class="stage-progress-hint">你当前在第 ${currentStageIndex + 1} / ${stages.length} 阶段</span>
+        </div>
+        <div class="stage-progress-line" aria-hidden="true">
+          <span style="width:${((currentStageIndex + 1) / stages.length) * 100}%"></span>
+        </div>
+        <div class="stage-track">
+          ${stages.map((item, index) => `
+            <article class="stage-node ${item.key === stage.key ? "active" : ""} ${index < currentStageIndex ? "done" : ""}">
+              <span class="stage-index">${index + 1}</span>
+              <strong>${item.title}</strong>
+              <p>${item.hint}</p>
+            </article>
+          `).join("")}
+        </div>
+      </div>
+      <div class="stage-detail-card">
+        <div class="stage-detail-head">
+          <div>
+            <span class="summary-label">当前阶段说明</span>
+            <h4>${currentStageMeta.title}</h4>
+          </div>
+          <span class="stage-detail-badge">你当前在这里</span>
+        </div>
+        <div class="stage-detail-grid">
+          <article class="stage-detail-item">
+            <span class="summary-label">阶段解读</span>
+            <p>${stageInfo.current}</p>
           </article>
-        `).join("")}
+          <article class="stage-detail-item emphasis">
+            <span class="summary-label">下一步重点</span>
+            <p>${nextStageMeta.key === stage.key ? stageInfo.next : `下一阶段是“${nextStageMeta.title}”。${stageInfo.next}`}</p>
+          </article>
+        </div>
       </div>
       <div class="summary-grid">
         <article class="summary-card">
@@ -1458,19 +1684,25 @@ function generateReport() {
       <div class="profile-grid">
         <article class="profile-card">
           <span class="summary-label">背景定位</span>
-          <p>${snapshot.backgroundText}</p>
-          <p class="small-note">学校层级：${background.schoolTier} · ${background.schoolTierLabel}；学校分 ${background.schoolScore}/100；校园项目加成 ${background.projectBoost} 分。</p>
-          ${background.rankingScore ? `<p class="small-note">四榜综合分 ${background.rankingScore}/100，数据置信度 ${background.rankingConfidence}。QS ${background.rankingRefs.qs || "-"} / THE ${background.rankingRefs.the || "-"} / U.S. News ${background.rankingRefs.usnews || "-"} / ARWU ${background.rankingRefs.arwu || "-"}。</p>` : ""}
+          <p class="profile-lead">${snapshot.backgroundText}</p>
+          <div class="profile-meta">
+            <p class="small-note">学校层级：${background.schoolTier} · ${background.schoolTierLabel}；学校分 ${background.schoolScore}/100；校园项目加成 ${background.projectBoost} 分。</p>
+            ${background.rankingScore ? `<p class="small-note">四榜综合分 ${background.rankingScore}/100，数据置信度 ${background.rankingConfidence}。QS ${background.rankingRefs.qs || "-"} / THE ${background.rankingRefs.the || "-"} / U.S. News ${background.rankingRefs.usnews || "-"} / ARWU ${background.rankingRefs.arwu || "-"}。</p>` : ""}
+          </div>
         </article>
         <article class="profile-card">
           <span class="summary-label">能力特点</span>
-          <p>${snapshot.abilityText}</p>
-          <p class="small-note">${industryAbilityNote(top[0], strong, weak)}</p>
+          <p class="profile-lead">${snapshot.abilityText}</p>
+          <div class="profile-meta">
+            <p class="small-note">${industryAbilityNote(top[0], strong, weak)}</p>
+          </div>
         </article>
         <article class="profile-card">
           <span class="summary-label">工作方式</span>
-          <p>${snapshot.workStyleText}。</p>
-          <p class="small-note">${profileNarrative(profile, background, top[0])}</p>
+          <p class="profile-lead">${snapshot.workStyleText}。</p>
+          <div class="profile-meta">
+            <p class="small-note">${profileNarrative(profile, background, top[0])}</p>
+          </div>
         </article>
       </div>
     </section>
@@ -1481,7 +1713,7 @@ function generateReport() {
           <article class="path-card ${kind}">
             <div class="path-head">
               <div>
-                <strong>${item.title}</strong>
+                <span class="path-type">${item.title}</span>
                 <span class="path-job">${item.job.name}</span>
               </div>
               <div class="score-orb" style="--score:${item.job.match}">
@@ -1503,10 +1735,22 @@ function generateReport() {
               </div>
             </div>
             <div class="path-notes">
-              <p><strong>为什么推荐：</strong>${item.summary}</p>
-              <p><strong>当前优势：</strong>${pathAdvantageText(item.job, strong)}</p>
-              <p><strong>主要风险：</strong>${pathRiskText(item.job)}</p>
-              <p><strong>下一步动作：</strong>${item.nextStep}</p>
+              <div class="path-note-item">
+                <span class="path-note-label">为什么推荐</span>
+                <p>${item.summary}</p>
+              </div>
+              <div class="path-note-item">
+                <span class="path-note-label">当前优势</span>
+                <p>${pathAdvantageText(item.job, strong)}</p>
+              </div>
+              <div class="path-note-item">
+                <span class="path-note-label">主要风险</span>
+                <p>${pathRiskText(item.job)}</p>
+              </div>
+              <div class="path-note-item emphasis">
+                <span class="path-note-label">下一步动作</span>
+                <p>${item.nextStep}</p>
+              </div>
             </div>
             <p class="small-note">适合岗位：${item.job.jobs}</p>
           </article>
@@ -1530,7 +1774,13 @@ function generateReport() {
         `).join("")}
       </div>
       <div class="insight-list">
-        ${Object.entries(capabilities).map(([key, val]) => `<div class="insight-item"><strong>${dimensions[key]}</strong><p>${abilityExplain(key, val)}</p></div>`).join("")}
+        ${Object.entries(capabilities).map(([key, val]) => `
+          <div class="insight-item">
+            <span class="insight-kicker">企业视角</span>
+            <strong>${dimensions[key]}</strong>
+            <p>${abilityExplain(key, val)}</p>
+          </div>
+        `).join("")}
       </div>
     </section>
     <section class="report-block wide">
@@ -1563,7 +1813,12 @@ function generateReport() {
       <div class="split-card">
         <h3>测评结果解读</h3>
         <div class="insight-list">
-          ${studentResultInsights(profile, background, top).map((text) => `<div class="insight-item">${text}</div>`).join("")}
+          ${studentResultInsights(profile, background, top).map((text) => `
+            <div class="insight-item narrative">
+              <span class="insight-kicker">结果说明</span>
+              <p>${text}</p>
+            </div>
+          `).join("")}
         </div>
       </div>
     </section>
@@ -1689,19 +1944,7 @@ function studentResultInsights(profile, background, topJobs) {
 }
 
 function majorTypeName(type) {
-  return {
-    business: "商科/管理/市场",
-    finance: "金融/经济/会计",
-    data: "数据/计算机/数学",
-    engineering: "工程/制造/供应链",
-    social: "法律/公共政策/社科",
-    media: "传媒/语言/人文",
-    arts: "艺术/设计/创意",
-    science: "医药/生物/自然科学",
-    education: "教育/心理",
-    other: "其他或暂不确定",
-    none: "无研究生学历"
-  }[type] || "未填写";
+  return majorTypeDefinitions[type] || "未填写";
 }
 
 function conflictAdviceByJob(key) {
