@@ -4,7 +4,7 @@
   "private": true,
   "description": "Career assessment H5 with registration API, admin dashboard, and Feishu Bitable sync",
   "scripts": {
-    "start": "node backend/server.js"
+    "start": "node server.js"
   },
   "engines": {
     "node": ">=18"
