@@ -1,4 +1,29 @@
 const API_BASE = `${window.location.origin}/api`;
+const ADMIN_TOKEN_KEY = "careerAssessmentAdminToken";
+
+function adminToken() {
+  return sessionStorage.getItem(ADMIN_TOKEN_KEY) || "";
+}
+
+function adminHeaders(extra = {}) {
+  return {
+    ...extra,
+    Authorization: `Bearer ${adminToken()}`
+  };
+}
+
+function setAdminVisible(isVisible) {
+  document.getElementById("loginCard").classList.toggle("hidden", isVisible);
+  document.getElementById("adminContent").classList.toggle("hidden", !isVisible);
+  document.getElementById("refreshBtn").disabled = !isVisible;
+  document.getElementById("logoutBtn").disabled = !isVisible;
+}
+
+function handleAuthFailure(message = "登录已失效，请重新输入后台访问密码。") {
+  sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+  setAdminVisible(false);
+  document.getElementById("loginStatus").textContent = message;
+}
 
 function formatTime(value) {
   if (!value) return "-";
@@ -68,8 +93,14 @@ async function loadFeishuStatus() {
   const node = document.getElementById("feishuStatusText");
   node.textContent = "正在检查飞书配置...";
   try {
-    const response = await fetch(`${API_BASE}/feishu/status`);
+    const response = await fetch(`${API_BASE}/feishu/status`, {
+      headers: adminHeaders()
+    });
     const data = await response.json();
+    if (response.status === 401 || response.status === 503) {
+      handleAuthFailure(data.error);
+      return;
+    }
     if (!data.enabled) {
       node.textContent = "当前未配置飞书同步。请先在 backend/.env 中填写飞书参数并重启本地服务。";
       return;
@@ -85,8 +116,15 @@ async function runFeishuBackfill() {
   const node = document.getElementById("backfillStatusText");
   node.textContent = "正在补同步历史记录到飞书...";
   try {
-    const response = await fetch(`${API_BASE}/feishu/backfill`, { method: "POST" });
+    const response = await fetch(`${API_BASE}/feishu/backfill`, {
+      method: "POST",
+      headers: adminHeaders()
+    });
     const data = await response.json();
+    if (response.status === 401 || response.status === 503) {
+      handleAuthFailure(data.error);
+      return;
+    }
     if (!response.ok || !data.ok) {
       throw new Error(data.error || `HTTP ${response.status}`);
     }
@@ -102,17 +140,63 @@ async function loadRecords() {
   const statusText = document.getElementById("statusText");
   statusText.textContent = "正在加载后台登记结果...";
   try {
-    const response = await fetch(`${API_BASE}/assessment-records`);
+    const response = await fetch(`${API_BASE}/assessment-records`, {
+      headers: adminHeaders()
+    });
     const data = await response.json();
+    if (response.status === 401 || response.status === 503) {
+      handleAuthFailure(data.error);
+      return;
+    }
+    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
     renderRecords(data.records || []);
   } catch (error) {
     console.error(error);
-    statusText.textContent = "加载失败，请先确认本地后台服务已经启动。";
+    statusText.textContent = `加载失败：${error.message || "请确认后台服务正在运行"}`;
+  }
+}
+
+async function loginAdmin(password) {
+  const status = document.getElementById("loginStatus");
+  status.textContent = "正在验证后台密码...";
+  try {
+    const response = await fetch(`${API_BASE}/admin/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password })
+    });
+    const data = await response.json();
+    if (!response.ok || !data.ok || !data.token) {
+      throw new Error(data.error || "登录失败");
+    }
+    sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+    status.textContent = "";
+    setAdminVisible(true);
+    await Promise.all([loadRecords(), loadFeishuStatus()]);
+  } catch (error) {
+    console.error(error);
+    status.textContent = error.message || "登录失败，请稍后重试。";
   }
 }
 
 document.getElementById("refreshBtn").addEventListener("click", loadRecords);
 document.getElementById("checkFeishuBtn").addEventListener("click", loadFeishuStatus);
 document.getElementById("backfillBtn").addEventListener("click", runFeishuBackfill);
-loadRecords();
-loadFeishuStatus();
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  handleAuthFailure("已退出后台。");
+});
+document.getElementById("loginForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const password = document.getElementById("passwordInput").value.trim();
+  if (!password) {
+    document.getElementById("loginStatus").textContent = "请先输入后台访问密码。";
+    return;
+  }
+  loginAdmin(password);
+});
+
+setAdminVisible(Boolean(adminToken()));
+if (adminToken()) {
+  loadRecords();
+  loadFeishuStatus();
+}

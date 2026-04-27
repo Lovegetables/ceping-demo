@@ -1,7 +1,7 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const { randomUUID } = require("crypto");
+const { randomUUID, timingSafeEqual } = require("crypto");
 
 const APP_ROOT = fs.existsSync(path.join(__dirname, "index.html"))
   ? __dirname
@@ -39,6 +39,8 @@ const FEISHU_APP_ID = process.env.FEISHU_APP_ID || "";
 const FEISHU_APP_SECRET = process.env.FEISHU_APP_SECRET || "";
 const FEISHU_BITABLE_APP_TOKEN = process.env.FEISHU_BITABLE_APP_TOKEN || "";
 const FEISHU_BITABLE_TABLE_ID = process.env.FEISHU_BITABLE_TABLE_ID || "";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
+const ADMIN_TOKEN = randomUUID();
 
 let feishuTokenCache = {
   token: "",
@@ -63,11 +65,43 @@ function writeRecords(records) {
 function sendJson(res, statusCode, payload) {
   res.writeHead(statusCode, {
     "Content-Type": "application/json; charset=utf-8",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type"
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
   });
   res.end(JSON.stringify(payload));
+}
+
+function safeEqualText(a, b) {
+  const left = Buffer.from(String(a || ""));
+  const right = Buffer.from(String(b || ""));
+  if (left.length !== right.length) return false;
+  return timingSafeEqual(left, right);
+}
+
+function adminAuthEnabled() {
+  return Boolean(ADMIN_PASSWORD);
+}
+
+function isAdminRequest(req) {
+  const auth = req.headers.authorization || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  return Boolean(token && safeEqualText(token, ADMIN_TOKEN));
+}
+
+function requireAdmin(req, res) {
+  if (!adminAuthEnabled()) {
+    sendJson(res, 503, {
+      ok: false,
+      error: "后台访问密码尚未配置，请在 Render 环境变量中设置 ADMIN_PASSWORD 后重新部署。"
+    });
+    return false;
+  }
+  if (!isAdminRequest(req)) {
+    sendJson(res, 401, { ok: false, error: "需要后台访问权限" });
+    return false;
+  }
+  return true;
 }
 
 function sendFile(res, filePath, contentType = "text/html; charset=utf-8") {
@@ -288,13 +322,36 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === "POST" && url.pathname === "/api/admin/login") {
+    try {
+      if (!adminAuthEnabled()) {
+        sendJson(res, 503, {
+          ok: false,
+          error: "后台访问密码尚未配置，请在 Render 环境变量中设置 ADMIN_PASSWORD 后重新部署。"
+        });
+        return;
+      }
+      const payload = await parseBody(req);
+      if (!safeEqualText(payload.password, ADMIN_PASSWORD)) {
+        sendJson(res, 401, { ok: false, error: "后台密码不正确" });
+        return;
+      }
+      sendJson(res, 200, { ok: true, token: ADMIN_TOKEN });
+    } catch (error) {
+      sendJson(res, 400, { ok: false, error: error.message || "Invalid payload" });
+    }
+    return;
+  }
+
   if (req.method === "GET" && url.pathname === "/api/assessment-records") {
+    if (!requireAdmin(req, res)) return;
     const records = readRecords().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     sendJson(res, 200, { total: records.length, records });
     return;
   }
 
   if (req.method === "GET" && url.pathname === "/api/feishu/status") {
+    if (!requireAdmin(req, res)) return;
     sendJson(res, 200, {
       enabled: hasFeishuConfig(),
       baseUrl: FEISHU_BASE_URL,
@@ -346,6 +403,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === "POST" && url.pathname === "/api/feishu/backfill") {
+    if (!requireAdmin(req, res)) return;
     if (!hasFeishuConfig()) {
       sendJson(res, 400, { ok: false, error: "Feishu config missing" });
       return;

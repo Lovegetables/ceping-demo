@@ -17,3 +17,5 @@ services:
         sync: false
       - key: FEISHU_BITABLE_TABLE_ID
         sync: false
+      - key: ADMIN_PASSWORD
+        sync: false

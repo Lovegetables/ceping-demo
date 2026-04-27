@@ -48,6 +48,7 @@ Render 需要从 Git 仓库拉代码，所以先把当前项目放到 GitHub 仓
 - `FEISHU_APP_SECRET`
 - `FEISHU_BITABLE_APP_TOKEN`
 - `FEISHU_BITABLE_TABLE_ID`
+- `ADMIN_PASSWORD`：后台查看页访问密码，用于保护 `/admin.html` 和后台查询接口
 
 不需要再设置 `HOST`，代码已默认兼容公网部署。
 
