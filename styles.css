@@ -197,13 +197,44 @@ h3 {
 }
 
 .section-head {
-  max-width: 780px;
+  max-width: 920px;
   margin-bottom: 22px;
+  min-width: 0;
 }
 
 .section-head p:last-child {
   color: var(--muted);
   line-height: 1.7;
+}
+
+.section-head p,
+.browser-tip p,
+.disclaimer-note p,
+.intro-grid li,
+.form-note p,
+.field-tip,
+.section-tip,
+.small-note,
+.report-lead,
+.profile-card p,
+.path-note-item p {
+  overflow-wrap: break-word;
+  word-break: normal;
+  text-wrap: pretty;
+}
+
+.intro-grid article,
+.form-note,
+.degree-card,
+.summary-card,
+.profile-card,
+.path-card,
+.timeline-card,
+.split-card,
+.insight-item,
+.priority-diagnosis-card,
+.stage-detail-card {
+  min-width: 0;
 }
 
 .browser-tip {
@@ -226,6 +257,28 @@ h3 {
   color: #5f4930;
   font-size: 14px;
   line-height: 1.6;
+}
+
+.disclaimer-note {
+  display: grid;
+  gap: 6px;
+  margin: -8px 0 22px;
+  padding: 13px 14px;
+  background: #f6f9fb;
+  border: 1px solid #d9e5eb;
+  border-radius: 8px;
+}
+
+.disclaimer-note strong {
+  color: #354556;
+  font-size: 14px;
+}
+
+.disclaimer-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
 }
 
 .grid-form {

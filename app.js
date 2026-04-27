@@ -146,8 +146,53 @@ const schoolDirectory = [
   { name: "Sun Yat-sen University", aliases: ["中山大学", "sysu"] }
 ];
 
+const malaysiaSchoolDirectory = [
+  { name: "Universiti Malaya (UM)", country: "Malaysia", region: "马来西亚", aliases: ["university of malaya", "universiti malaya", "um", "malaya", "马来亚大学", "马大"] },
+  { name: "Universiti Kebangsaan Malaysia (UKM)", country: "Malaysia", region: "马来西亚", aliases: ["national university of malaysia", "ukm", "马来西亚国民大学", "国民大学"] },
+  { name: "Universiti Putra Malaysia (UPM)", country: "Malaysia", region: "马来西亚", aliases: ["putra university malaysia", "upm", "马来西亚博特拉大学", "博特拉大学"] },
+  { name: "Universiti Sains Malaysia (USM)", country: "Malaysia", region: "马来西亚", aliases: ["university of science malaysia", "usm", "马来西亚理科大学", "理科大学"] },
+  { name: "Universiti Teknologi Malaysia (UTM)", country: "Malaysia", region: "马来西亚", aliases: ["university of technology malaysia", "utm", "马来西亚理工大学", "理工大学"] },
+  { name: "Universiti Teknologi PETRONAS (UTP)", country: "Malaysia", region: "马来西亚", aliases: ["petronas university of technology", "utp", "马来西亚石油科技大学", "石油科技大学"] },
+  { name: "Universiti Teknologi MARA (UiTM)", country: "Malaysia", region: "马来西亚", aliases: ["mara university of technology", "uitm", "玛拉工艺大学", "玛拉大学"] },
+  { name: "Universiti Utara Malaysia (UUM)", country: "Malaysia", region: "马来西亚", aliases: ["northern university of malaysia", "uum", "马来西亚北方大学", "北方大学"] },
+  { name: "International Islamic University Malaysia (IIUM)", country: "Malaysia", region: "马来西亚", aliases: ["iium", "马来西亚国际伊斯兰大学", "国际伊斯兰大学"] },
+  { name: "Universiti Malaysia Sabah (UMS)", country: "Malaysia", region: "马来西亚", aliases: ["ums", "马来西亚沙巴大学", "沙巴大学"] },
+  { name: "Universiti Malaysia Sarawak (UNIMAS)", country: "Malaysia", region: "马来西亚", aliases: ["unimas", "马来西亚砂拉越大学", "砂拉越大学"] },
+  { name: "Universiti Tunku Abdul Rahman (UTAR)", country: "Malaysia", region: "马来西亚", aliases: ["utar", "拉曼大学", "东姑阿都拉曼大学"] },
+  { name: "Tunku Abdul Rahman University of Management and Technology", country: "Malaysia", region: "马来西亚", aliases: ["tar umt", "tarc", "拉曼理工大学", "拉曼管理与工艺大学"] },
+  { name: "Taylor's University (Malaysia)", country: "Malaysia", region: "马来西亚", aliases: ["taylors university", "taylor's university", "taylor university malaysia", "泰莱大学", "泰勒大学"] },
+  { name: "Sunway University", country: "Malaysia", region: "马来西亚", aliases: ["sunway", "双威大学"] },
+  { name: "UCSI University", country: "Malaysia", region: "马来西亚", aliases: ["ucsi", "思特雅大学"] },
+  { name: "Asia Pacific University of Technology and Innovation", country: "Malaysia", region: "马来西亚", aliases: ["apu", "asia pacific university", "亚太科技大学"] },
+  { name: "Management and Science University", country: "Malaysia", region: "马来西亚", aliases: ["msu", "管理与科学大学"] },
+  { name: "Multimedia University", country: "Malaysia", region: "马来西亚", aliases: ["mmu", "多媒体大学"] },
+  { name: "HELP University", country: "Malaysia", region: "马来西亚", aliases: ["help", "精英大学"] },
+  { name: "INTI International University", country: "Malaysia", region: "马来西亚", aliases: ["inti", "英迪国际大学", "英迪大学"] },
+  { name: "SEGi University", country: "Malaysia", region: "马来西亚", aliases: ["segi", "世纪大学"] },
+  { name: "Limkokwing University of Creative Technology", country: "Malaysia", region: "马来西亚", aliases: ["limkokwing", "林国荣创意科技大学", "林国荣大学"] },
+  { name: "Monash University Malaysia", country: "Malaysia", region: "马来西亚", aliases: ["monash malaysia", "莫纳什大学马来西亚校区", "蒙纳士大学马来西亚校区"] },
+  { name: "University of Nottingham Malaysia", country: "Malaysia", region: "马来西亚", aliases: ["nottingham malaysia", "诺丁汉大学马来西亚校区", "诺丁汉马来西亚"] },
+  { name: "Xiamen University Malaysia", country: "Malaysia", region: "马来西亚", aliases: ["xmu malaysia", "厦门大学马来西亚分校", "厦大马来西亚"] },
+  { name: "Curtin University Malaysia", country: "Malaysia", region: "马来西亚", aliases: ["curtin malaysia", "科廷大学马来西亚校区", "科廷马来西亚"] },
+  { name: "Swinburne University of Technology Sarawak Campus", country: "Malaysia", region: "马来西亚", aliases: ["swinburne sarawak", "swinburne malaysia", "斯威本科技大学砂拉越校区"] },
+  { name: "University of Southampton Malaysia", country: "Malaysia", region: "马来西亚", aliases: ["southampton malaysia", "南安普顿大学马来西亚校区"] },
+  { name: "Heriot-Watt University Malaysia", country: "Malaysia", region: "马来西亚", aliases: ["heriot watt malaysia", "赫瑞瓦特大学马来西亚校区"] },
+  { name: "University of Reading Malaysia", country: "Malaysia", region: "马来西亚", aliases: ["reading malaysia", "雷丁大学马来西亚校区"] },
+  { name: "Newcastle University Medicine Malaysia", country: "Malaysia", region: "马来西亚", aliases: ["numed malaysia", "newcastle malaysia", "纽卡斯尔大学马来西亚医学院"] },
+  { name: "Universiti Kuala Lumpur (UniKL)", country: "Malaysia", region: "马来西亚", aliases: ["unikl", "马来西亚吉隆坡大学", "吉隆坡大学"] },
+  { name: "Universiti Tenaga Nasional (UNITEN)", country: "Malaysia", region: "马来西亚", aliases: ["uniten", "马来西亚国能大学", "国能大学"] },
+  { name: "Universiti Pendidikan Sultan Idris (UPSI)", country: "Malaysia", region: "马来西亚", aliases: ["upsi", "苏丹依德理斯教育大学"] },
+  { name: "Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA)", country: "Malaysia", region: "马来西亚", aliases: ["umpsa", "ump", "马来西亚彭亨大学", "彭亨大学"] },
+  { name: "Universiti Malaysia Perlis (UniMAP)", country: "Malaysia", region: "马来西亚", aliases: ["unimap", "马来西亚玻璃市大学", "玻璃市大学"] },
+  { name: "Universiti Malaysia Terengganu (UMT)", country: "Malaysia", region: "马来西亚", aliases: ["umt", "马来西亚登嘉楼大学", "登嘉楼大学"] },
+  { name: "Universiti Tun Hussein Onn Malaysia (UTHM)", country: "Malaysia", region: "马来西亚", aliases: ["uthm", "敦胡先翁大学"] },
+  { name: "Universiti Sains Islam Malaysia (USIM)", country: "Malaysia", region: "马来西亚", aliases: ["usim", "马来西亚伊斯兰科学大学"] },
+  { name: "Universiti Sultan Zainal Abidin (UniSZA)", country: "Malaysia", region: "马来西亚", aliases: ["unisza", "苏丹再纳阿比丁大学"] },
+  { name: "MAHSA University", country: "Malaysia", region: "马来西亚", aliases: ["mahsa", "玛莎大学"] }
+];
+
 let allSchoolDirectory = mergeSchoolDirectories(
-  schoolDirectory,
+  [...schoolDirectory, ...malaysiaSchoolDirectory],
   typeof window !== "undefined" ? window.externalSchoolDirectory || [] : []
 );
 let schoolDirectoryLoadPromise = null;
@@ -201,7 +246,15 @@ const capabilityQuestions = [
   ["execution", "供应链交付异常", "供应商延期导致新品上线可能受影响，你需要协调解决。", [["确认影响、替代方案和新时间表", 3], ["先催供应商尽快完成交付", 1], ["优先通知销售和市场延期", 2], ["等待采购负责人统一处理", 1]], ["supply_chain"]],
   ["analytical", "合规政策解读", "公司准备上线一个新业务，你需要判断其中的数据或合同风险。", [["拆流程、规则、风险和调整方案", 3], ["先查类似公司的公开案例", 2], ["直接建议暂缓上线避免风险", 1], ["把问题交给外部律师判断", 1]], ["legal_compliance"]],
   ["creativity", "科研选题推进", "你准备申请博士或研究助理，需要确定一个研究选题。", [["看文献缺口、方法和数据来源", 3], ["选择自己最感兴趣的话题", 2], ["沿用导师课题，降低风险", 2], ["先大量阅读，不急着定题", 1]], ["academic"], true],
-  ["business", "海外市场进入", "你要判断一个中国品牌是否适合进入某个海外市场。", [["看需求、渠道、竞品和获客成本", 3], ["先看当地社媒是否讨论该品类", 2], ["先找海外达人做小规模投放", 2], ["国内卖得好，海外也有机会", 1]], ["crossborder", "fmcg"]]
+  ["business", "海外市场进入", "你要判断一个中国品牌是否适合进入某个海外市场。", [["看需求、渠道、竞品和获客成本", 3], ["先看当地社媒是否讨论该品类", 2], ["先找海外达人做小规模投放", 2], ["国内卖得好，海外也有机会", 1]], ["crossborder", "fmcg"]],
+  ["analytical", "算法方案选择", "你需要为一个推荐场景选择初版算法方案，但数据量和业务目标还不完全清楚。", [["先明确指标、数据特征和基线方案", 3], ["先试复杂模型，看效果是否更好", 2], ["先参考成熟开源方案快速复现", 2], ["先等业务方给出更明确需求", 1]], ["software_dev", "ai_ml"]],
+  ["execution", "线上问题排查", "你负责的接口上线后出现偶发超时，需要尽快定位问题。", [["先看日志、监控和复现路径", 3], ["先回滚版本，之后再慢慢分析", 2], ["先问同学或同事是否遇到过", 1], ["先猜测是服务器资源不够", 1]], ["software_dev"]],
+  ["analytical", "模型效果评估", "一个AI模型离线指标不错，但真实用户反馈一般。你会如何判断问题？", [["比较训练数据、线上分布和业务指标", 3], ["继续调参提升离线指标", 2], ["先看用户是否理解模型结果", 2], ["认为模型还不够大，需要换模型", 1]], ["ai_ml", "ba"]],
+  ["stability", "AI结果风险", "你参与一个AI应用项目，发现模型在部分样本上输出不稳定。", [["标注失败样本，评估风险和兜底策略", 3], ["先上线小流量，边跑边观察", 2], ["只要整体准确率高就可以接受", 1], ["把问题交给算法同学处理", 1]], ["ai_ml", "legal_compliance"]],
+  ["analytical", "机器人异常定位", "机器人样机在测试中偶尔无法按路径完成动作。", [["拆传感、控制、环境和机械误差", 3], ["先重新跑几次，看是否偶发", 1], ["先调整控制参数尝试改善", 2], ["先怀疑硬件装配存在问题", 2]], ["robotics"]],
+  ["execution", "硬件项目协同", "机器人项目临近演示，机械、控制和软件模块都有未完成项。", [["列风险清单，锁定最小可演示版本", 3], ["先催各模块负责人尽快交付", 1], ["优先做自己负责的模块", 2], ["推迟演示，避免现场失败", 1]], ["robotics", "engineering"]],
+  ["analytical", "临床数据判断", "你参与一个医药或生物医疗项目，需要初步判断某项研究结果是否可靠。", [["看样本、终点、统计方法和偏倚", 3], ["先看结论是否显著和正向", 2], ["先查是否有权威机构背书", 2], ["先看媒体报道是否积极", 1]], ["biomed", "academic"]],
+  ["stability", "医疗合规边界", "你在医疗健康产品项目中发现宣传文案可能存在合规风险。", [["核对法规边界，提出替代表达", 3], ["先按营销效果好的版本上线", 1], ["提醒团队注意，但不深入判断", 2], ["直接删除所有可能有风险内容", 2]], ["biomed", "legal_compliance"]]
 ].map((q, index) => ({ id: `C${index + 1}`, dimension: q[0], title: q[1], scene: q[2], options: q[3], tags: q[4] || ["all"], lead: Boolean(q[5]) }));
 
 let activeCapabilityQuestions = capabilityQuestions.slice(0, 24);
@@ -256,6 +309,38 @@ const jobProfiles = {
     gate: "中高",
     jobs: "产品运营、用户增长、商业运营、数据分析",
     majors: ["data", "cs", "management", "marketing", "engineering", "media"]
+  },
+  software_dev: {
+    name: "算法/软件开发",
+    weights: { analytical: 5, communication: 2, execution: 5, creativity: 3, stability: 4, business: 2 },
+    traits: { decision: "rational", social: "introvert", risk: "neutral", structure: "rule" },
+    gate: "中高",
+    jobs: "算法工程师、后端开发、前端开发、软件工程师、测试开发",
+    majors: ["cs", "data", "engineering", "science", "supplychain", "finance"]
+  },
+  ai_ml: {
+    name: "人工智能/机器学习",
+    weights: { analytical: 5, communication: 3, execution: 4, creativity: 4, stability: 4, business: 2 },
+    traits: { decision: "rational", social: "introvert", risk: "adventurous", structure: "free" },
+    gate: "高",
+    jobs: "机器学习工程师、算法研究员、AI产品技术、NLP/CV工程师",
+    majors: ["cs", "data", "engineering", "science", "finance"]
+  },
+  robotics: {
+    name: "机器人/智能制造",
+    weights: { analytical: 5, communication: 3, execution: 5, creativity: 4, stability: 4, business: 2 },
+    traits: { decision: "rational", social: "neutral", risk: "neutral", structure: "rule" },
+    gate: "中高",
+    jobs: "机器人工程师、自动化工程师、控制算法、智能制造项目",
+    majors: ["engineering", "cs", "data", "science", "supplychain"]
+  },
+  biomed: {
+    name: "生物医疗/医药健康",
+    weights: { analytical: 5, communication: 3, execution: 4, creativity: 3, stability: 5, business: 2 },
+    traits: { decision: "rational", social: "neutral", risk: "conservative", structure: "rule" },
+    gate: "中高",
+    jobs: "医药研发、临床研究、医学事务、医疗数据、生物技术项目",
+    majors: ["science", "data", "cs", "engineering", "lawpolicy", "management"]
   },
   fmcg: {
     name: "快消/消费品品牌市场",
@@ -592,13 +677,13 @@ function searchSchools(query, limit = 8) {
 
 async function ensureSchoolDirectoryLoaded() {
   if (typeof window !== "undefined" && Array.isArray(window.externalSchoolDirectory) && window.externalSchoolDirectory.length) {
-    allSchoolDirectory = mergeSchoolDirectories(schoolDirectory, window.externalSchoolDirectory);
+    allSchoolDirectory = mergeSchoolDirectories([...schoolDirectory, ...malaysiaSchoolDirectory], window.externalSchoolDirectory);
     return allSchoolDirectory;
   }
   if (!schoolDirectoryLoadPromise) {
     schoolDirectoryLoadPromise = loadScriptOnce("./schools-data.js")
       .then(() => {
-        allSchoolDirectory = mergeSchoolDirectories(schoolDirectory, window.externalSchoolDirectory || []);
+        allSchoolDirectory = mergeSchoolDirectories([...schoolDirectory, ...malaysiaSchoolDirectory], window.externalSchoolDirectory || []);
         renderSchoolOptions();
         return allSchoolDirectory;
       })
@@ -1233,15 +1318,24 @@ function difficulty(job, backgroundLevel) {
 
 function buildStrategicRecommendations(ranked, capabilities, background, profile) {
   const enriched = ranked.map((job) => enrichJobForStrategy(job, capabilities, background, profile));
+  const priorityJob = profile.primaryInterest && profile.primaryInterest !== "undecided"
+    ? enriched.find((job) => job.key === profile.primaryInterest)
+    : null;
+  const surfacePriority = shouldSurfacePriorityDirection(priorityJob);
   const mainPool = enriched
     .filter((job) => job.canMain)
     .sort((a, b) => b.strategyScore - a.strategyScore);
-  const mainJob = mainPool[0] || enriched.slice().sort((a, b) => b.lowRiskScore - a.lowRiskScore)[0];
+  let mainJob = mainPool[0] || enriched.slice().sort((a, b) => b.lowRiskScore - a.lowRiskScore)[0];
+  if (surfacePriority && priorityJob.canMain && priorityJob.strategyScore >= mainJob.strategyScore - 8) {
+    mainJob = priorityJob;
+  }
 
   const stretchPool = enriched
     .filter((job) => job.key !== mainJob.key && job.canStretch)
     .sort((a, b) => b.stretchScore - a.stretchScore);
-  const stretchJob = stretchPool[0] || enriched.filter((job) => job.key !== mainJob.key).sort((a, b) => b.match - a.match)[0];
+  const stretchJob = surfacePriority && priorityJob.key !== mainJob.key
+    ? priorityJob
+    : stretchPool[0] || enriched.filter((job) => job.key !== mainJob.key).sort((a, b) => b.match - a.match)[0];
 
   const backupPool = enriched
     .filter((job) => job.key !== mainJob.key && job.key !== stretchJob.key && job.canBackup)
@@ -1271,6 +1365,13 @@ function buildStrategicRecommendations(ranked, capabilities, background, profile
       nextStep: backupJob.nextSteps.backup
     }
   };
+}
+
+function shouldSurfacePriorityDirection(job) {
+  if (!job || job.key === "undecided") return false;
+  if (job.match >= 58) return true;
+  if (job.majorScore >= 72 && job.capabilityScore >= 55) return true;
+  return false;
 }
 
 function primaryDirectionDiagnosis(profile, ranked, recommendations, capabilities, background) {
@@ -1371,6 +1472,10 @@ function enrichJobForStrategy(job, capabilities, background, profile) {
 function backupValue(key) {
   return {
     internet: 10,
+    software_dev: 8,
+    ai_ml: 5,
+    robotics: 7,
+    biomed: 7,
     ba: 9,
     fmcg: 7,
     financial_services: 8,
@@ -1417,6 +1522,26 @@ function nextStepsByJob(key) {
       main: "完成1份产品分析或用户增长复盘，申请产品/运营实习。",
       stretch: "补SQL、漏斗分析和产品面试案例，冲刺头部互联网。",
       backup: "先从产品运营、内容运营、商业运营拿到相关履历。"
+    },
+    software_dev: {
+      main: "完成1-2个可展示代码项目，准备算法题和项目复盘。",
+      stretch: "补系统设计、开源项目或高质量实习，冲刺大厂技术岗。",
+      backup: "先从测试开发、内部工具、外包研发或技术支持型岗位切入。"
+    },
+    ai_ml: {
+      main: "完成1个模型项目，说明数据、指标、误差分析和上线价值。",
+      stretch: "补论文复现、竞赛或科研经历，冲刺AI算法/研究岗位。",
+      backup: "先从数据分析、AI产品技术支持或模型应用项目切入。"
+    },
+    robotics: {
+      main: "完成1个控制、感知或自动化项目复盘，突出工程落地。",
+      stretch: "补硬件联调、仿真或实验室项目，冲刺机器人/智能制造岗位。",
+      backup: "先从自动化测试、制造工程、设备工程或项目助理切入。"
+    },
+    biomed: {
+      main: "整理科研、实验、临床或数据项目，形成医学/生物方向简历。",
+      stretch: "冲刺药企研发、临床研究、医学事务或医疗AI相关岗位。",
+      backup: "先从研究助理、临床项目助理、医学数据或注册事务切入。"
     },
     fmcg: {
       main: "准备1份品牌campaign复盘，申请品牌/市场实习。",
@@ -1800,6 +1925,10 @@ function generateReport(options = {}) {
         <p class="report-kicker">Report Summary</p>
         <h3>你的职业规划结论</h3>
         <p class="report-lead">${stage.text}</p>
+        <div class="disclaimer-note">
+          <strong>结果说明</strong>
+          <p>以下结果为职业规划参考建议，实际求职结果还会受到招聘批次、岗位开放数量、实习经历、面试表现和个人选择等因素影响。</p>
+        </div>
         <div class="tag-row">
           <span class="tag">主推荐方向：${top[0].name}</span>
           <span class="tag">当前阶段：${stage.title}</span>
@@ -2059,6 +2188,12 @@ function generateReport(options = {}) {
         <p class="small-note">${leadSignals.length ? `本次测评识别到的重点提醒：${leadSignals.join("、")}。` : "本次没有明显的高风险提醒，建议先按主线方向推进，并定期复盘投递反馈。"}</p>
       </div>
     </section>
+    <section class="report-block wide">
+      <div class="disclaimer-note">
+        <strong>参考边界说明</strong>
+        <p>本报告仅用于职业方向探索和求职准备参考，不构成录取承诺、就业保证或升学/求职决策的唯一依据。建议结合个人兴趣、家庭规划、市场变化、招聘要求和专业意见综合判断。</p>
+      </div>
+    </section>
     <p class="small-note hidden-status" id="registrationStatus" aria-live="polite"></p>
   `;
   if (autoRegister) scheduleAutoRegisterLatestAssessmentResult();
@@ -2147,6 +2282,26 @@ function identityContextByJob(key, majorType = "") {
       titles: ["数据决策官", "商业洞察分析师", "增长分析专家", "数据产品专家"],
       keywords: ["分析", "模型", "决策支持"],
       titleByMajor: { data: 0, cs: 3, finance: 1, accounting: 1, management: 1, engineering: 3, supplychain: 2 }
+    },
+    software_dev: {
+      titles: ["技术问题解决工程师", "系统研发工程师", "算法工程实践者", "代码产品构建者"],
+      keywords: ["代码", "工程", "系统能力"],
+      titleByMajor: { cs: 1, data: 2, engineering: 0, science: 2, supplychain: 0, finance: 2 }
+    },
+    ai_ml: {
+      titles: ["AI模型训练师", "机器学习工程师", "智能算法探索者", "AI应用构建者"],
+      keywords: ["模型", "数据", "智能应用"],
+      titleByMajor: { cs: 1, data: 1, engineering: 2, science: 2, finance: 3 }
+    },
+    robotics: {
+      titles: ["机器人系统工程师", "智能制造推动者", "自动化方案设计师", "工程落地实践者"],
+      keywords: ["控制", "硬件协同", "工程落地"],
+      titleByMajor: { engineering: 0, cs: 2, data: 2, science: 3, supplychain: 1 }
+    },
+    biomed: {
+      titles: ["生物医药研究者", "医疗数据分析师", "临床项目推动者", "健康科技实践者"],
+      keywords: ["生命科学", "临床", "严谨验证"],
+      titleByMajor: { science: 0, data: 1, cs: 3, engineering: 3, lawpolicy: 2, management: 2 }
     },
     fmcg: {
       titles: ["品牌增长经理", "市场策略操盘手", "消费者洞察专家", "品牌营销主理人"],
@@ -2264,6 +2419,34 @@ function conflictAdviceByJob(key) {
       major: "可通过竞品分析、用户调研和SQL/Excel项目证明迁移能力。",
       ability: "建议补用户路径、漏斗分析和需求优先级判断。",
       neutral: "可先从产品运营、商业运营、用户增长中选择一个主线。"
+    },
+    software_dev: {
+      good: "下一步应补代码项目、算法题训练和工程化项目复盘。",
+      background: "技术岗更看重专业、项目和代码能力，学校短板可用高质量项目弥补一部分。",
+      major: "非计算机背景需要用课程、项目、代码仓库或实习证明技术转向不是临时兴趣。",
+      ability: "建议补算法基础、系统设计、工程交付和问题排查案例。",
+      neutral: "可作为技术主线，但需要明确是研发、算法、测试开发还是技术支持切入。"
+    },
+    ai_ml: {
+      good: "下一步应补模型项目、论文复现、竞赛或科研经历。",
+      background: "AI算法岗位门槛较高，通常看重数学、编程、研究/项目和实习质量。",
+      major: "非CS/数据背景需要用机器学习项目、论文复现或医疗/金融等垂直场景补关联。",
+      ability: "建议补模型评估、误差分析、数据处理和实验复盘能力。",
+      neutral: "可作为冲刺方向，同时配置数据分析、AI产品技术或模型应用岗位。"
+    },
+    robotics: {
+      good: "下一步应补控制、感知、自动化或硬件联调项目。",
+      background: "机器人方向看重工程项目和实验室经历，纯理论背景需要补落地证据。",
+      major: "机械、电子、自动化、计算机更容易解释，其他专业需要具体项目连接。",
+      ability: "建议补工程拆解、跨模块协同、测试验证和现场问题排查。",
+      neutral: "适合作为理工科落地方向，也可连接智能制造、自动化和工业软件。"
+    },
+    biomed: {
+      good: "下一步应整理科研、临床、实验或医学数据项目证据。",
+      background: "生物医疗看重专业连续性、科研/临床经历和合规意识，转向需要提前补证据。",
+      major: "生命科学、医学、药学、公共卫生更匹配；数据/计算机背景可切医疗数据或AI医疗。",
+      ability: "建议补研究方法、数据严谨性、合规边界和项目执行能力。",
+      neutral: "适合作为专业相关主线，也可连接药企、CRO、医疗器械和医疗科技岗位。"
     },
     fmcg: {
       good: "下一步应准备品牌案例、消费者洞察和英文群面表达。",
