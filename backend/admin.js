@@ -30,7 +30,7 @@ function formatTime(value) {
   return new Date(value).toLocaleString("zh-CN", { hour12: false });
 }
 
-function renderRecords(records) {
+function renderRecords(records, meta = {}) {
   const list = document.getElementById("recordList");
   const totalCount = document.getElementById("totalCount");
   const latestTime = document.getElementById("latestTime");
@@ -38,7 +38,10 @@ function renderRecords(records) {
 
   totalCount.textContent = String(records.length);
   latestTime.textContent = records.length ? formatTime(records[0].createdAt) : "-";
-  statusText.textContent = records.length ? "已加载最新登记结果。" : "当前还没有已登记的测评结果。";
+  const sourceText = meta.source === "feishu" ? "飞书多维表格" : "本地缓存";
+  statusText.textContent = records.length
+    ? `已加载最新登记结果。数据来源：${sourceText}${meta.warning ? `（${meta.warning}）` : ""}`
+    : `当前还没有已登记的测评结果。数据来源：${sourceText}${meta.warning ? `（${meta.warning}）` : ""}`;
 
   list.innerHTML = records.map((record) => {
     const registrant = record.registrant || {};
@@ -149,7 +152,7 @@ async function loadRecords() {
       return;
     }
     if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
-    renderRecords(data.records || []);
+    renderRecords(data.records || [], { source: data.source, warning: data.warning });
   } catch (error) {
     console.error(error);
     statusText.textContent = `加载失败：${error.message || "请确认后台服务正在运行"}`;

@@ -303,6 +303,124 @@ async function syncRecordToFeishu(record) {
   };
 }
 
+function normalizeFeishuValue(value) {
+  if (value === null || value === undefined) return "";
+  if (Array.isArray(value)) {
+    return value.map((item) => {
+      if (item === null || item === undefined) return "";
+      if (typeof item === "object") return item.text || item.name || item.value || "";
+      return String(item);
+    }).filter(Boolean).join("");
+  }
+  if (typeof value === "object") return value.text || value.name || value.value || JSON.stringify(value);
+  return String(value);
+}
+
+function parseFeishuAssessment(fields) {
+  const rawJson = normalizeFeishuValue(fields["完整结果JSON"]);
+  if (rawJson) {
+    try {
+      return JSON.parse(rawJson);
+    } catch (error) {
+      console.warn("Failed to parse Feishu assessment JSON:", error.message);
+    }
+  }
+
+  return {
+    currentStage: normalizeFeishuValue(fields["当前阶段"]),
+    background: {
+      level: normalizeFeishuValue(fields["背景等级"]),
+      score: Number(normalizeFeishuValue(fields["背景分"])) || null,
+      schoolTierLabel: normalizeFeishuValue(fields["学校层级"]),
+      schoolScore: Number(normalizeFeishuValue(fields["学校得分"])) || null,
+      rankingScore: Number(normalizeFeishuValue(fields["排名得分"])) || null
+    },
+    profile: {
+      interests: normalizeFeishuValue(fields["目标方向"]),
+      primaryInterest: normalizeFeishuValue(fields["优先方向"]),
+      undergradSchool: normalizeFeishuValue(fields["本科院校"]),
+      undergradMajor: normalizeFeishuValue(fields["本科专业"]),
+      undergradMajorType: normalizeFeishuValue(fields["本科专业类型"]),
+      gradSchool: normalizeFeishuValue(fields["研究生院校"]),
+      gradMajor: normalizeFeishuValue(fields["研究生专业"]),
+      gradMajorType: normalizeFeishuValue(fields["研究生专业类型"]),
+      phdSchool: normalizeFeishuValue(fields["博士院校"]),
+      phdMajor: normalizeFeishuValue(fields["博士专业"]),
+      phdMajorType: normalizeFeishuValue(fields["博士专业类型"]),
+      internship: normalizeFeishuValue(fields["实习经历"]),
+      projects: normalizeFeishuValue(fields["项目经历"])
+    },
+    recommendations: {
+      main: {
+        direction: normalizeFeishuValue(fields["主推荐路径"]),
+        match: Number(normalizeFeishuValue(fields["主推荐匹配度"])) || null
+      },
+      stretch: {
+        direction: normalizeFeishuValue(fields["冲刺路径"]),
+        match: Number(normalizeFeishuValue(fields["冲刺匹配度"])) || null
+      },
+      backup: {
+        direction: normalizeFeishuValue(fields["保底路径"]),
+        match: Number(normalizeFeishuValue(fields["保底匹配度"])) || null
+      }
+    }
+  };
+}
+
+function feishuItemToRecord(item) {
+  const fields = item.fields || {};
+  const assessment = parseFeishuAssessment(fields);
+  return {
+    id: normalizeFeishuValue(fields["记录ID"]) || item.record_id,
+    createdAt: normalizeFeishuValue(fields["提交时间"]) || item.created_time || "",
+    source: normalizeFeishuValue(fields["来源"]) || "feishu",
+    registrant: {
+      studentName: normalizeFeishuValue(fields["姓名/称呼"]),
+      contact: normalizeFeishuValue(fields["联系方式"]),
+      email: normalizeFeishuValue(fields["邮箱"]),
+      role: normalizeFeishuValue(fields["身份"]),
+      note: ""
+    },
+    assessment,
+    feishuSync: {
+      ok: true,
+      skipped: false,
+      syncedAt: "",
+      recordId: item.record_id || null,
+      error: ""
+    }
+  };
+}
+
+async function fetchRecordsFromFeishu() {
+  if (!hasFeishuConfig()) return null;
+  const tenantAccessToken = await getFeishuTenantAccessToken();
+  const allItems = [];
+  let pageToken = "";
+
+  do {
+    const query = new URLSearchParams({ page_size: "100" });
+    if (pageToken) query.set("page_token", pageToken);
+    const response = await fetch(
+      `${FEISHU_BASE_URL}/open-apis/bitable/v1/apps/${FEISHU_BITABLE_APP_TOKEN}/tables/${FEISHU_BITABLE_TABLE_ID}/records?${query.toString()}`,
+      {
+        method: "GET",
+        headers: { Authorization: `Bearer ${tenantAccessToken}` }
+      }
+    );
+    const result = await response.json();
+    if (!response.ok || result.code !== 0) {
+      throw new Error(result.msg || `Feishu records fetch failed: HTTP ${response.status}`);
+    }
+    allItems.push(...(result.data?.items || []));
+    pageToken = result.data?.page_token || "";
+  } while (pageToken);
+
+  return allItems
+    .map(feishuItemToRecord)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
 function updateRecordSyncMeta(recordId, feishuSync) {
   const records = readRecords();
   const next = records.map((item) => (item.id === recordId ? { ...item, feishuSync } : item));
@@ -345,8 +463,24 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "GET" && url.pathname === "/api/assessment-records") {
     if (!requireAdmin(req, res)) return;
-    const records = readRecords().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    sendJson(res, 200, { total: records.length, records });
+    try {
+      const recordsFromFeishu = await fetchRecordsFromFeishu();
+      const records = recordsFromFeishu || readRecords().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      sendJson(res, 200, {
+        total: records.length,
+        source: recordsFromFeishu ? "feishu" : "local",
+        records
+      });
+    } catch (error) {
+      console.error(error);
+      const records = readRecords().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      sendJson(res, 200, {
+        total: records.length,
+        source: "local",
+        warning: `飞书记录读取失败，已回退到本地缓存：${error.message || "Unknown error"}`,
+        records
+      });
+    }
     return;
   }
 
