@@ -206,6 +206,28 @@ h3 {
   line-height: 1.7;
 }
 
+.browser-tip {
+  display: grid;
+  gap: 6px;
+  margin: -4px 0 22px;
+  padding: 13px 14px;
+  background: #fff8ed;
+  border: 1px solid #f3d8a8;
+  border-radius: 8px;
+}
+
+.browser-tip strong {
+  color: #7c4a03;
+  font-size: 14px;
+}
+
+.browser-tip p {
+  margin: 0;
+  color: #5f4930;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 .grid-form {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

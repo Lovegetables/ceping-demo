@@ -1750,6 +1750,14 @@ function reportHasRendered() {
   return Boolean(latestAssessmentResult && document.querySelector("#reportRoot .report-block"));
 }
 
+function isWeChatBrowser() {
+  return /MicroMessenger/i.test(navigator.userAgent || "");
+}
+
+function showWeChatPdfTip() {
+  alert("微信内置浏览器暂不支持直接导出PDF。\n\n请点击右上角“...”菜单，选择“在浏览器打开”，再点击“导出PDF”。\n\n如果使用电脑浏览器打开，也可以直接导出或保存为PDF。");
+}
+
 function scheduleAutoRegisterLatestAssessmentResult() {
   runWhenIdle(() => autoRegisterLatestAssessmentResult(), 1800);
 }
@@ -2381,6 +2389,10 @@ document.getElementById("nextBtn").addEventListener("click", async () => {
 });
 
 document.getElementById("exportBtn").addEventListener("click", async () => {
+  if (isWeChatBrowser()) {
+    showWeChatPdfTip();
+    return;
+  }
   const exportBtn = document.getElementById("exportBtn");
   const originalText = exportBtn.textContent;
   exportBtn.disabled = true;
