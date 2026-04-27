@@ -508,16 +508,23 @@ select:focus {
   position: sticky;
   bottom: 0;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-top: 18px;
-  padding: 16px 0 0;
-  background: linear-gradient(180deg, transparent, #eef3f6 30%);
+  padding: 14px;
+  background: rgba(238, 243, 246, 0.92);
+  border: 1px solid rgba(207, 217, 225, 0.86);
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 -12px 28px rgba(25, 38, 52, 0.08);
+  backdrop-filter: blur(12px);
 }
 
 .action-group {
   display: flex;
+  justify-content: flex-end;
   gap: 12px;
+  flex: 1;
 }
 
 .export-btn {
@@ -1724,14 +1731,42 @@ ul {
     position: static;
     display: grid;
     gap: 10px;
-    padding-top: 14px;
-    background: transparent;
+    padding: 12px;
+    background: #f8fbfc;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .quick-scroll {
+    right: 12px;
+    bottom: 18px;
+  }
+
+  .quick-scroll button {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
   }
 
   .action-group {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+  }
+
+  .actions > .ghost {
+    grid-column: 1 / -1;
+  }
+
+  .action-group .primary {
+    grid-column: 1 / -1;
+  }
+
+  .action-group .export-btn.visible + .primary {
+    grid-column: auto;
   }
 
   button {
@@ -1785,6 +1820,7 @@ ul {
   .topbar,
   .progress-wrap,
   .actions,
+  .quick-scroll,
   .registration-form,
   #registrationStatus {
     display: none;

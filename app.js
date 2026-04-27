@@ -467,6 +467,7 @@ function updateStep() {
   document.getElementById("nextBtn").textContent = currentStep === steps.length - 1 ? "生成报告" : "下一步";
   document.getElementById("exportBtn").classList.toggle("visible", currentStep === steps.length - 1);
   window.scrollTo({ top: 0, behavior: "smooth" });
+  updateQuickScrollState();
 }
 
 function getFormData() {
@@ -2416,11 +2417,63 @@ window.addEventListener("afterprint", () => {
   }
 });
 
+function activePanel() {
+  return document.querySelector(".panel.active");
+}
+
+function activePanelBounds() {
+  const panel = activePanel();
+  const actions = document.querySelector(".actions");
+  if (!panel) return { top: 0, bottom: document.documentElement.scrollHeight };
+  const panelRect = panel.getBoundingClientRect();
+  const actionsRect = actions?.getBoundingClientRect();
+  const top = panelRect.top + window.scrollY;
+  const bottomFromPanel = panelRect.bottom + window.scrollY;
+  const bottomFromActions = actionsRect ? actionsRect.bottom + window.scrollY : bottomFromPanel;
+  return {
+    top: Math.max(top - 12, 0),
+    bottom: Math.max(bottomFromPanel, bottomFromActions) - window.innerHeight + 18
+  };
+}
+
+function updateQuickScrollState() {
+  const quickScroll = document.getElementById("quickScroll");
+  const topBtn = document.getElementById("scrollTopBtn");
+  const bottomBtn = document.getElementById("scrollBottomBtn");
+  if (!quickScroll || !topBtn || !bottomBtn) return;
+  const { top, bottom } = activePanelBounds();
+  const currentY = window.scrollY;
+  const canScroll = document.documentElement.scrollHeight > window.innerHeight + 260;
+  const pastTop = currentY > top + 180;
+  const nearBottom = currentY >= bottom - 80;
+  quickScroll.classList.toggle("visible", canScroll && (pastTop || !nearBottom));
+  topBtn.disabled = !pastTop;
+  bottomBtn.disabled = nearBottom;
+}
+
+function setupQuickScroll() {
+  const topBtn = document.getElementById("scrollTopBtn");
+  const bottomBtn = document.getElementById("scrollBottomBtn");
+  if (!topBtn || !bottomBtn) return;
+  topBtn.addEventListener("click", () => {
+    const { top } = activePanelBounds();
+    window.scrollTo({ top, behavior: "smooth" });
+  });
+  bottomBtn.addEventListener("click", () => {
+    const { bottom } = activePanelBounds();
+    window.scrollTo({ top: Math.max(bottom, 0), behavior: "smooth" });
+  });
+  window.addEventListener("scroll", updateQuickScrollState, { passive: true });
+  window.addEventListener("resize", updateQuickScrollState);
+  updateQuickScrollState();
+}
+
 setupSchoolAutocomplete();
 setupPrimaryInterestSelector();
 setupMajorTypeAutofill();
 refreshCapabilityQuestions();
 renderQuestions("personalityQuestions", personalityQuestions, "personality");
 setupSelectableStates();
+setupQuickScroll();
 initTabs();
 updateStep();
