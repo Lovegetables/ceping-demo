@@ -178,6 +178,24 @@ button:disabled {
   margin-bottom: 12px;
 }
 
+.record-head-side {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.mini-btn {
+  min-width: auto;
+  min-height: 32px;
+  padding: 7px 10px;
+  color: var(--green);
+  font-size: 12px;
+  background: #e7f4f2;
+  border: 1px solid #c9e6e1;
+}
+
 .record-head strong {
   display: block;
   margin-bottom: 6px;
@@ -226,9 +244,14 @@ button:disabled {
   }
 
   .admin-head-actions,
+  .record-head,
   .login-form {
     grid-template-columns: 1fr;
     display: grid;
+  }
+
+  .record-head-side {
+    justify-items: start;
   }
 
   .login-form button,

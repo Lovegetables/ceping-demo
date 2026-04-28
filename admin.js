@@ -1,5 +1,6 @@
 const API_BASE = `${window.location.origin}/api`;
 const ADMIN_TOKEN_KEY = "careerAssessmentAdminToken";
+let currentRecords = [];
 
 function adminToken() {
   return sessionStorage.getItem(ADMIN_TOKEN_KEY) || "";
@@ -30,7 +31,23 @@ function formatTime(value) {
   return new Date(value).toLocaleString("zh-CN", { hour12: false });
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function textValue(value, fallback = "-") {
+  if (Array.isArray(value)) return value.length ? value.join("、") : fallback;
+  if (value === null || value === undefined || value === "") return fallback;
+  return String(value);
+}
+
 function renderRecords(records, meta = {}) {
+  currentRecords = records;
   const list = document.getElementById("recordList");
   const totalCount = document.getElementById("totalCount");
   const latestTime = document.getElementById("latestTime");
@@ -61,7 +78,10 @@ function renderRecords(records, meta = {}) {
             <strong>${registrant.studentName || "未填写姓名"}</strong>
             <p>${registrant.role || "未填写身份"} · ${registrant.contact || "未填写联系方式"}</p>
           </div>
-          <span>${formatTime(record.createdAt)}</span>
+          <div class="record-head-side">
+            <span>${formatTime(record.createdAt)}</span>
+            <button class="mini-btn" type="button" data-export-record="${escapeHtml(record.id)}">导出此报告</button>
+          </div>
         </div>
         <div class="tag-row">
           <span class="tag">${assessment.currentStage || "未生成阶段"}</span>
@@ -90,6 +110,198 @@ function renderRecords(records, meta = {}) {
       </article>
     `;
   }).join("");
+}
+
+function openPrintableReport(records, statusNode = null) {
+  const win = window.open("", "_blank");
+  if (!win) {
+    if (statusNode) statusNode.textContent = "浏览器拦截了新窗口，请允许弹窗后重试。";
+    return;
+  }
+  win.document.open();
+  win.document.write(buildPrintableReport(records));
+  win.document.close();
+  win.focus();
+  window.setTimeout(() => {
+    try {
+      win.print();
+      if (statusNode) statusNode.textContent = `已生成 ${records.length} 份报告打印页，可在新窗口保存为PDF。`;
+    } catch (error) {
+      console.error(error);
+      if (statusNode) statusNode.textContent = "打印窗口已打开，请在新窗口点击“保存为PDF”。";
+    }
+  }, 500);
+}
+
+function buildPrintableReport(records) {
+  const now = new Date().toLocaleString("zh-CN", { hour12: false });
+  const reportCards = records.map((record, index) => {
+    const registrant = record.registrant || {};
+    const assessment = record.assessment || {};
+    const profile = assessment.profile || {};
+    const background = assessment.background || {};
+    const recommendations = assessment.recommendations || {};
+    const capabilities = assessment.capabilities || {};
+    const personality = assessment.personality || {};
+    const futureIdentity = assessment.futureIdentity || {};
+    const recommendationItems = [
+      ["主推荐路径", recommendations.main],
+      ["冲刺路径", recommendations.stretch],
+      ["保底路径", recommendations.backup]
+    ];
+    const capabilityItems = Object.entries(capabilities);
+    const personalityItems = Object.entries(personality);
+
+    return `
+      <section class="report-page">
+        <header class="report-title">
+          <p>职业测评与规划报告</p>
+          <h1>${escapeHtml(registrant.studentName || `测评用户${index + 1}`)}</h1>
+          <div class="meta-line">
+            <span>提交时间：${escapeHtml(formatTime(record.createdAt))}</span>
+            <span>身份：${escapeHtml(registrant.role || "-")}</span>
+            <span>联系方式：${escapeHtml(registrant.contact || "-")}</span>
+          </div>
+        </header>
+        <div class="summary-strip">
+          <div><span>当前阶段</span><strong>${escapeHtml(assessment.currentStage || "-")}</strong></div>
+          <div><span>背景等级</span><strong>${escapeHtml(background.level || "-")}</strong></div>
+          <div><span>背景分</span><strong>${escapeHtml(textValue(background.score))}</strong></div>
+          <div><span>优先方向</span><strong>${escapeHtml(profile.primaryInterest || "-")}</strong></div>
+        </div>
+        ${futureIdentity.title ? `
+          <article class="block accent">
+            <span>未来身份标签</span>
+            <h2>${escapeHtml(futureIdentity.title)}</h2>
+            <p>${escapeHtml(futureIdentity.description || "")}</p>
+            <p class="tags">${(futureIdentity.keywords || []).map((item) => `<b>${escapeHtml(item)}</b>`).join("")}</p>
+          </article>
+        ` : ""}
+        <article class="block">
+          <h2>背景信息</h2>
+          <div class="info-grid">
+            <p><span>本科</span>${escapeHtml(textValue(profile.undergradSchool))}｜${escapeHtml(textValue(profile.undergradMajor))}｜${escapeHtml(textValue(profile.undergradMajorType))}</p>
+            <p><span>研究生</span>${escapeHtml(textValue(profile.gradSchool))}｜${escapeHtml(textValue(profile.gradMajor))}｜${escapeHtml(textValue(profile.gradMajorType))}</p>
+            <p><span>博士</span>${escapeHtml(textValue(profile.phdSchool))}｜${escapeHtml(textValue(profile.phdMajor))}｜${escapeHtml(textValue(profile.phdMajorType))}</p>
+            <p><span>目标方向</span>${escapeHtml(textValue(profile.interests))}</p>
+            <p><span>校园项目</span>${escapeHtml(textValue(profile.projects))}</p>
+            <p><span>学校评估</span>${escapeHtml(textValue(background.schoolTierLabel || background.schoolTier))}｜学校分 ${escapeHtml(textValue(background.schoolScore))}</p>
+          </div>
+        </article>
+        <article class="block">
+          <h2>职业路径推荐</h2>
+          <div class="path-grid">
+            ${recommendationItems.map(([label, item]) => `
+              <div class="path-card">
+                <span>${escapeHtml(label)}</span>
+                <strong>${escapeHtml(item?.direction || "-")}</strong>
+                <p>岗位综合匹配度：${escapeHtml(textValue(item?.match))}/100</p>
+                <p>进入难度：${escapeHtml(textValue(item?.entryDifficulty))}</p>
+                <p>专业匹配度：${escapeHtml(textValue(item?.majorScore))}/100</p>
+                <p>适合岗位：${escapeHtml(textValue(item?.jobs))}</p>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+        <div class="two-col">
+          <article class="block">
+            <h2>能力画像</h2>
+            ${capabilityItems.length ? capabilityItems.map(([key, score]) => `
+              <div class="score-row"><span>${escapeHtml(key)}</span><b>${escapeHtml(score)}/100</b></div>
+            `).join("") : "<p>暂无能力画像数据。</p>"}
+          </article>
+          <article class="block">
+            <h2>性格画像</h2>
+            ${personalityItems.length ? personalityItems.map(([key, item]) => `
+              <div class="score-row"><span>${escapeHtml(key)}</span><b>${escapeHtml(item?.label || item?.dominant || "-")}</b></div>
+            `).join("") : "<p>暂无性格画像数据。</p>"}
+          </article>
+        </div>
+        <footer class="disclaimer">
+          本报告仅用于职业方向探索和求职准备参考，不构成录取承诺、就业保证或升学/求职决策的唯一依据。建议结合个人兴趣、家庭规划、市场变化、招聘要求和专业意见综合判断。
+        </footer>
+      </section>
+    `;
+  }).join("");
+
+  return `<!doctype html>
+    <html lang="zh-CN">
+      <head>
+        <meta charset="UTF-8" />
+        <title>批量测评报告导出</title>
+        <style>
+          * { box-sizing: border-box; }
+          body { margin: 0; color: #182026; font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; background: #eef3f6; }
+          .toolbar { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 22px; background: #fff; border-bottom: 1px solid #dce4ea; }
+          .toolbar p { margin: 0; color: #66727f; font-size: 13px; }
+          .toolbar button { min-height: 40px; padding: 9px 16px; color: #fff; font-weight: 800; background: #0f766e; border: 0; border-radius: 8px; cursor: pointer; }
+          .report-page { width: min(960px, calc(100% - 32px)); margin: 18px auto; padding: 28px; background: #fff; border: 1px solid #dce4ea; border-radius: 8px; page-break-after: always; }
+          .report-page:last-child { page-break-after: auto; }
+          .report-title { margin-bottom: 18px; padding-bottom: 16px; border-bottom: 2px solid #dce4ea; }
+          .report-title p { margin: 0 0 6px; color: #0f766e; font-size: 12px; font-weight: 900; text-transform: uppercase; }
+          .report-title h1 { margin: 0 0 10px; font-size: 30px; line-height: 1.2; }
+          .meta-line { display: flex; flex-wrap: wrap; gap: 8px 18px; color: #66727f; font-size: 13px; }
+          .summary-strip, .path-grid, .two-col { display: grid; gap: 12px; }
+          .summary-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 14px; }
+          .summary-strip div, .block, .path-card { padding: 14px; background: #f8fbfc; border: 1px solid #dce4ea; border-radius: 8px; }
+          .summary-strip span, .block > span, .path-card span, .info-grid span { display: block; margin-bottom: 6px; color: #66727f; font-size: 12px; font-weight: 800; }
+          .summary-strip strong { font-size: 18px; }
+          .block { margin-top: 14px; }
+          .block h2 { margin: 0 0 10px; font-size: 18px; }
+          .block p { margin: 6px 0; color: #354556; font-size: 14px; line-height: 1.65; }
+          .accent { background: #eef7f5; border-color: #c9e6e1; }
+          .accent h2 { font-size: 24px; }
+          .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+          .tags b { padding: 6px 9px; color: #12343b; font-size: 12px; background: #fff; border: 1px solid #c9e6e1; border-radius: 999px; }
+          .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; }
+          .path-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+          .path-card strong { display: block; margin-bottom: 8px; font-size: 17px; line-height: 1.35; }
+          .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .score-row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #e8eef2; font-size: 14px; }
+          .score-row:last-child { border-bottom: 0; }
+          .disclaimer { margin-top: 16px; padding: 12px; color: #66727f; font-size: 12px; line-height: 1.7; background: #f6f9fb; border: 1px solid #d9e5eb; border-radius: 8px; }
+          @media print {
+            @page { size: A4; margin: 12mm; }
+            body { background: #fff; }
+            .toolbar { display: none; }
+            .report-page { width: 100%; margin: 0; padding: 0; border: 0; border-radius: 0; }
+            .block, .path-card, .summary-strip div, .disclaimer { break-inside: avoid; }
+          }
+          @media (max-width: 760px) {
+            .summary-strip, .path-grid, .two-col, .info-grid { grid-template-columns: 1fr; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="toolbar">
+          <p>共 ${records.length} 份测评报告｜生成时间：${escapeHtml(now)}。点击右侧按钮后，在打印窗口选择“保存为PDF”。</p>
+          <button onclick="window.print()">保存为PDF</button>
+        </div>
+        ${reportCards}
+      </body>
+    </html>`;
+}
+
+function exportBatchReports() {
+  const status = document.getElementById("exportReportsStatusText");
+  if (!currentRecords.length) {
+    status.textContent = "当前没有可导出的测评记录，请先刷新数据。";
+    return;
+  }
+  status.textContent = `正在生成 ${currentRecords.length} 份报告打印页...`;
+  openPrintableReport(currentRecords, status);
+}
+
+function exportSingleReport(recordId) {
+  const status = document.getElementById("statusText");
+  const record = currentRecords.find((item) => item.id === recordId);
+  if (!record) {
+    status.textContent = "没有找到这条测评记录，请刷新后重试。";
+    return;
+  }
+  const name = record.registrant?.studentName || "该测试者";
+  status.textContent = `正在生成${name}的PDF报告打印页...`;
+  openPrintableReport([record], status);
 }
 
 async function loadFeishuStatus() {
@@ -185,6 +397,12 @@ async function loginAdmin(password) {
 document.getElementById("refreshBtn").addEventListener("click", loadRecords);
 document.getElementById("checkFeishuBtn").addEventListener("click", loadFeishuStatus);
 document.getElementById("backfillBtn").addEventListener("click", runFeishuBackfill);
+document.getElementById("exportReportsBtn").addEventListener("click", exportBatchReports);
+document.getElementById("recordList").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-export-record]");
+  if (!button) return;
+  exportSingleReport(button.dataset.exportRecord);
+});
 document.getElementById("logoutBtn").addEventListener("click", () => {
   handleAuthFailure("已退出后台。");
 });
