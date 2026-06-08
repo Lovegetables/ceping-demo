@@ -195,11 +195,13 @@ function buildFeishuFields(record) {
   const background = assessment.background || {};
   const profile = assessment.profile || {};
   const recommendations = assessment.recommendations || {};
+  const userSubmittedAt = record.userSubmittedAt || assessment.createdAt || record.createdAt || "";
 
   return {
     "文本": `${registrant.studentName || "未命名用户"}｜${assessment.currentStage || "未生成阶段"}｜${recommendations.main?.direction || "未生成推荐"}`,
     "记录ID": record.id,
     "提交时间": record.createdAt,
+    "用户提交时间": userSubmittedAt,
     "来源": record.source || "unknown",
     "姓名/称呼": registrant.studentName || "",
     "联系方式": registrant.contact || "",
@@ -370,9 +372,12 @@ function parseFeishuAssessment(fields) {
 function feishuItemToRecord(item) {
   const fields = item.fields || {};
   const assessment = parseFeishuAssessment(fields);
+  const createdAt = normalizeFeishuValue(fields["提交时间"]) || item.created_time || "";
+  const userSubmittedAt = normalizeFeishuValue(fields["用户提交时间"]) || assessment.createdAt || createdAt;
   return {
     id: normalizeFeishuValue(fields["记录ID"]) || item.record_id,
-    createdAt: normalizeFeishuValue(fields["提交时间"]) || item.created_time || "",
+    createdAt,
+    userSubmittedAt,
     source: normalizeFeishuValue(fields["来源"]) || "feishu",
     registrant: {
       studentName: normalizeFeishuValue(fields["姓名/称呼"]),
@@ -498,14 +503,18 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "POST" && url.pathname === "/api/assessment-records") {
     try {
       const payload = await parseBody(req);
+      const receivedAt = new Date().toISOString();
+      const userSubmittedAt = payload.userSubmittedAt || payload.assessment?.createdAt || receivedAt;
       const record = {
         id: randomUUID(),
-        createdAt: new Date().toISOString(),
+        createdAt: receivedAt,
+        userSubmittedAt,
         feishuSync: hasFeishuConfig()
           ? { ok: false, skipped: false, syncedAt: null, recordId: null, error: "pending" }
           : { ok: false, skipped: true, syncedAt: null, recordId: null, error: "Feishu config missing" },
         ...payload
       };
+      record.userSubmittedAt = record.userSubmittedAt || userSubmittedAt;
       const records = readRecords();
       records.push(record);
       writeRecords(records);

@@ -31,6 +31,10 @@ function formatTime(value) {
   return new Date(value).toLocaleString("zh-CN", { hour12: false });
 }
 
+function recordSubmittedAt(record) {
+  return record.userSubmittedAt || record.createdAt;
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -54,7 +58,7 @@ function renderRecords(records, meta = {}) {
   const statusText = document.getElementById("statusText");
 
   totalCount.textContent = String(records.length);
-  latestTime.textContent = records.length ? formatTime(records[0].createdAt) : "-";
+  latestTime.textContent = records.length ? formatTime(recordSubmittedAt(records[0])) : "-";
   const sourceText = meta.source === "feishu" ? "飞书多维表格" : "本地缓存";
   statusText.textContent = records.length
     ? `已加载最新登记结果。数据来源：${sourceText}${meta.warning ? `（${meta.warning}）` : ""}`
@@ -79,7 +83,7 @@ function renderRecords(records, meta = {}) {
             <p>${registrant.role || "未填写身份"} · ${registrant.contact || "未填写联系方式"}</p>
           </div>
           <div class="record-head-side">
-            <span>${formatTime(record.createdAt)}</span>
+            <span>${formatTime(recordSubmittedAt(record))}</span>
             <button class="mini-btn" type="button" data-export-record="${escapeHtml(record.id)}">导出此报告</button>
           </div>
         </div>
@@ -167,7 +171,7 @@ function buildPrintableReport(records) {
           <p>职业测评与规划报告</p>
           <h1>${escapeHtml(registrant.studentName || `测评用户${index + 1}`)}</h1>
           <div class="meta-line">
-            <span>提交时间：${escapeHtml(formatTime(record.createdAt))}</span>
+            <span>提交时间：${escapeHtml(formatTime(recordSubmittedAt(record)))}</span>
             <span>身份：${escapeHtml(registrant.role || "-")}</span>
             <span>联系方式：${escapeHtml(registrant.contact || "-")}</span>
           </div>

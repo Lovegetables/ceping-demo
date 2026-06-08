@@ -1846,6 +1846,7 @@ async function autoRegisterLatestAssessmentResult() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         source: "auto_report_generation",
+        userSubmittedAt: latestAssessmentResult.createdAt,
         registrant: latestAssessmentResult.registrant,
         assessment: latestAssessmentResult
       })
