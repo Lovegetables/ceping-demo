@@ -176,6 +176,38 @@ function compactText(value) {
   return String(value);
 }
 
+function formatChinaDateTime(value) {
+  if (!value) return "";
+  const text = String(value);
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(text)) return text;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return text;
+  const parts = new Intl.DateTimeFormat("zh-CN", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  }).formatToParts(date).reduce((result, part) => {
+    result[part.type] = part.value;
+    return result;
+  }, {});
+  return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
+}
+
+function timeSortValue(value) {
+  if (!value) return 0;
+  const text = String(value);
+  const normalized = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(text)
+    ? `${text.replace(" ", "T")}+08:00`
+    : text;
+  const time = new Date(normalized).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
 function formatCapabilities(capabilities = {}) {
   return Object.entries(capabilities)
     .sort((a, b) => b[1] - a[1])
@@ -200,8 +232,8 @@ function buildFeishuFields(record) {
   return {
     "文本": `${registrant.studentName || "未命名用户"}｜${assessment.currentStage || "未生成阶段"}｜${recommendations.main?.direction || "未生成推荐"}`,
     "记录ID": record.id,
-    "提交时间": record.createdAt,
-    "用户提交时间": userSubmittedAt,
+    "提交时间": formatChinaDateTime(record.createdAt),
+    "用户提交时间": formatChinaDateTime(userSubmittedAt),
     "来源": record.source || "unknown",
     "姓名/称呼": registrant.studentName || "",
     "联系方式": registrant.contact || "",
@@ -423,7 +455,7 @@ async function fetchRecordsFromFeishu() {
 
   return allItems
     .map(feishuItemToRecord)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    .sort((a, b) => timeSortValue(b.createdAt) - timeSortValue(a.createdAt));
 }
 
 function updateRecordSyncMeta(recordId, feishuSync) {
@@ -470,7 +502,7 @@ const server = http.createServer(async (req, res) => {
     if (!requireAdmin(req, res)) return;
     try {
       const recordsFromFeishu = await fetchRecordsFromFeishu();
-      const records = recordsFromFeishu || readRecords().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const records = recordsFromFeishu || readRecords().sort((a, b) => timeSortValue(b.createdAt) - timeSortValue(a.createdAt));
       sendJson(res, 200, {
         total: records.length,
         source: recordsFromFeishu ? "feishu" : "local",
@@ -478,7 +510,7 @@ const server = http.createServer(async (req, res) => {
       });
     } catch (error) {
       console.error(error);
-      const records = readRecords().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const records = readRecords().sort((a, b) => timeSortValue(b.createdAt) - timeSortValue(a.createdAt));
       sendJson(res, 200, {
         total: records.length,
         source: "local",

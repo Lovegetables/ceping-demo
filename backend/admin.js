@@ -28,7 +28,11 @@ function handleAuthFailure(message = "登录已失效，请重新输入后台访
 
 function formatTime(value) {
   if (!value) return "-";
-  return new Date(value).toLocaleString("zh-CN", { hour12: false });
+  const text = String(value);
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(text)) return text;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return text;
+  return date.toLocaleString("zh-CN", { timeZone: "Asia/Shanghai", hour12: false });
 }
 
 function recordSubmittedAt(record) {
