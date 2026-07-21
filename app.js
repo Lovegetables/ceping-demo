@@ -80,7 +80,18 @@ const schoolDirectory = [
   { name: "Northwestern University", aliases: ["northwestern", "西北大学"] },
   { name: "Johns Hopkins University", aliases: ["johns hopkins", "jhu", "约翰霍普金斯"] },
   { name: "Carnegie Mellon University", aliases: ["cmu", "carnegie mellon", "卡内基梅隆"] },
-  { name: "University of Michigan, Ann Arbor", aliases: ["umich", "michigan", "密歇根大学安娜堡", "密歇根大学"] },
+  {
+    name: "University of Michigan, Ann Arbor",
+    aliases: [
+      "University of Michigan - Ann Arbor",
+      "University of Michigan-Ann Arbor",
+      "umich",
+      "michigan",
+      "密歇根大学安娜堡",
+      "密歇根大学安娜堡分校",
+      "密歇根大学"
+    ]
+  },
   { name: "New York University", aliases: ["nyu", "纽约大学"] },
   { name: "University of California, Los Angeles", aliases: ["ucla", "加州大学洛杉矶分校"] },
   { name: "University of Southern California", aliases: ["usc", "南加大", "南加州大学"] },
@@ -934,14 +945,39 @@ function setupMajorTypeAutofill() {
   });
 }
 
+function schoolIdentityKey(value) {
+  return String(value || "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/\band\b/g, "")
+    .replace(/[^a-z0-9\u00c0-\u024f\u3400-\u9fff]+/g, "");
+}
+
+function exactSchoolMatches(directory, query) {
+  const lowerQuery = query.toLowerCase();
+  const identityQuery = schoolIdentityKey(query);
+  return directory.filter((school) => {
+    const values = [school.name, ...(school.aliases || [])];
+    return values.some((value) => {
+      const text = String(value);
+      return text.toLowerCase() === lowerQuery || schoolIdentityKey(text) === identityQuery;
+    });
+  });
+}
+
 function normalizeSchoolName(value) {
   const raw = value.trim();
   if (!raw || ["无", "none", "n/a", "na"].includes(raw.toLowerCase())) return raw;
   const query = raw.toLowerCase();
-  const exact = allSchoolDirectory.find((school) =>
-    school.name.toLowerCase() === query || school.aliases.some((alias) => alias.toLowerCase() === query)
-  );
-  if (exact) return exact.name;
+  // Prefer the curated directory so an external duplicate/format variant cannot
+  // shadow a canonical school and fall through to the neutral-score fallback.
+  const curatedMatches = exactSchoolMatches([...schoolDirectory, ...malaysiaSchoolDirectory], raw);
+  if (curatedMatches.length === 1) return curatedMatches[0].name;
+  if (curatedMatches.length > 1) return raw;
+  const exactMatches = exactSchoolMatches(allSchoolDirectory, raw);
+  if (exactMatches.length === 1) return exactMatches[0].name;
+  if (exactMatches.length > 1) return raw;
   const matches = allSchoolDirectory.filter((school) =>
     school.name.toLowerCase().includes(query) || school.aliases.some((alias) => alias.toLowerCase().includes(query) || query.includes(alias.toLowerCase()))
   );
@@ -1167,6 +1203,15 @@ function inferSchoolScore(schools) {
 }
 
 function scoreSingleSchool(rawName) {
+  const ambiguousMatches = exactSchoolMatches([...schoolDirectory, ...malaysiaSchoolDirectory], rawName);
+  if (ambiguousMatches.length > 1) {
+    return {
+      score: 62,
+      tier: "T4",
+      label: "学校简称存在歧义，请填写完整校名",
+      matchedSchool: rawName
+    };
+  }
   const name = normalizeSchoolName(rawName);
   if (!name || ["无", "none", "n/a", "na"].includes(name.toLowerCase())) return null;
   const rankingResult = scoreSchoolByRanking(name);
@@ -1195,8 +1240,32 @@ function scoreSchoolByRanking(rawName) {
   const rankingData = typeof window !== "undefined" ? window.schoolRankingData : null;
   if (!rankingData?.schools) return null;
   const canonical = rankingData.aliases?.[rawName] || rawName;
-  const school = rankingData.schools.find((item) => item.name === canonical || item.name === rawName);
-  if (!school) return null;
+  const identityKey = schoolIdentityKey(canonical);
+  const exactSchool = rankingData.schools.find((item) => item.name === canonical || item.name === rawName);
+  const equivalentSchools = rankingData.schools.filter((item) => schoolIdentityKey(item.name) === identityKey);
+  if (!equivalentSchools.length && !exactSchool) return null;
+  const rankingKeys = ["qs", "the", "usnews", "arwu"];
+  const hasConflictingRanks = rankingKeys.some((key) => {
+    const values = new Set(equivalentSchools.map((item) => Number(item[key])).filter(Boolean));
+    return values.size > 1;
+  });
+  const candidates = hasConflictingRanks && exactSchool ? [exactSchool] : equivalentSchools;
+  if (!candidates.length) return null;
+  const preferredSchool = candidates
+    .slice()
+    .sort((left, right) => {
+      const rightCount = rankingKeys.filter((key) => Number(right[key])).length;
+      const leftCount = rankingKeys.filter((key) => Number(left[key])).length;
+      return rightCount - leftCount;
+    })[0];
+  const school = {
+    ...preferredSchool,
+    labels: Array.from(new Set(candidates.flatMap((item) => item.labels || [])))
+  };
+  [...rankingKeys, "employer"].forEach((key) => {
+    const source = candidates.find((item) => Number(item[key]));
+    if (source) school[key] = source[key];
+  });
   const rankingParts = [
     ["qs", 0.3],
     ["the", 0.25],

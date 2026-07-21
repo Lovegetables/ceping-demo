@@ -4,6 +4,7 @@
   "private": true,
   "description": "Career assessment H5 with registration API, admin dashboard, and Feishu Bitable sync",
   "scripts": {
+    "check:schools": "node tools/check-school-identity.js",
     "start": "node server.js"
   },
   "engines": {
