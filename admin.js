@@ -28,7 +28,15 @@ function handleAuthFailure(message = "登录已失效，请重新输入后台访
 
 function formatTime(value) {
   if (!value) return "-";
-  return new Date(value).toLocaleString("zh-CN", { hour12: false });
+  const text = String(value);
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(text)) return text;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return text;
+  return date.toLocaleString("zh-CN", { timeZone: "Asia/Shanghai", hour12: false });
+}
+
+function recordSubmittedAt(record) {
+  return record.userSubmittedAt || record.createdAt;
 }
 
 function escapeHtml(value) {
@@ -54,7 +62,7 @@ function renderRecords(records, meta = {}) {
   const statusText = document.getElementById("statusText");
 
   totalCount.textContent = String(records.length);
-  latestTime.textContent = records.length ? formatTime(records[0].createdAt) : "-";
+  latestTime.textContent = records.length ? formatTime(recordSubmittedAt(records[0])) : "-";
   const sourceText = meta.source === "feishu" ? "飞书多维表格" : "本地缓存";
   statusText.textContent = records.length
     ? `已加载最新登记结果。数据来源：${sourceText}${meta.warning ? `（${meta.warning}）` : ""}`
@@ -75,38 +83,38 @@ function renderRecords(records, meta = {}) {
       <article class="record-card">
         <div class="record-head">
           <div>
-            <strong>${registrant.studentName || "未填写姓名"}</strong>
-            <p>${registrant.role || "未填写身份"} · ${registrant.contact || "未填写联系方式"}</p>
+            <strong>${escapeHtml(registrant.studentName || "未填写姓名")}</strong>
+            <p>${escapeHtml(registrant.role || "未填写身份")} · ${escapeHtml(registrant.contact || "未填写联系方式")}</p>
           </div>
           <div class="record-head-side">
-            <span>${formatTime(record.createdAt)}</span>
+            <span>${escapeHtml(formatTime(recordSubmittedAt(record)))}</span>
             <button class="mini-btn" type="button" data-export-record="${escapeHtml(record.id)}">导出此报告</button>
           </div>
         </div>
         <div class="tag-row">
-          <span class="tag">${assessment.currentStage || "未生成阶段"}</span>
-          <span class="tag">${assessment.background?.level || "未生成背景等级"}</span>
-          <span class="tag">${assessment.profile?.primaryInterest || "未填写主方向"}</span>
+          <span class="tag">${escapeHtml(assessment.currentStage || "未生成阶段")}</span>
+          <span class="tag">${escapeHtml(assessment.background?.level || "未生成背景等级")}</span>
+          <span class="tag">${escapeHtml(assessment.profile?.primaryInterest || "未填写主方向")}</span>
         </div>
         <div class="record-grid">
           <div>
             <h3>主推荐路径</h3>
-            <p>${assessment.recommendations?.main?.direction || "-"}</p>
-            <p class="small-note">匹配度 ${assessment.recommendations?.main?.match || "-"}/100</p>
+            <p>${escapeHtml(assessment.recommendations?.main?.direction || "-")}</p>
+            <p class="small-note">匹配度 ${escapeHtml(assessment.recommendations?.main?.match || "-")}/100</p>
           </div>
           <div>
             <h3>冲刺路径</h3>
-            <p>${assessment.recommendations?.stretch?.direction || "-"}</p>
-            <p class="small-note">匹配度 ${assessment.recommendations?.stretch?.match || "-"}/100</p>
+            <p>${escapeHtml(assessment.recommendations?.stretch?.direction || "-")}</p>
+            <p class="small-note">匹配度 ${escapeHtml(assessment.recommendations?.stretch?.match || "-")}/100</p>
           </div>
           <div>
             <h3>保底路径</h3>
-            <p>${assessment.recommendations?.backup?.direction || "-"}</p>
-            <p class="small-note">匹配度 ${assessment.recommendations?.backup?.match || "-"}/100</p>
+            <p>${escapeHtml(assessment.recommendations?.backup?.direction || "-")}</p>
+            <p class="small-note">匹配度 ${escapeHtml(assessment.recommendations?.backup?.match || "-")}/100</p>
           </div>
         </div>
-        <p class="small-note">邮箱：${registrant.email || "未填写"}${registrant.note ? ` ｜ 备注：${registrant.note}` : ""}</p>
-        <p class="small-note">飞书同步：${syncText}</p>
+        <p class="small-note">邮箱：${escapeHtml(registrant.email || "未填写")}${registrant.note ? ` ｜ 备注：${escapeHtml(registrant.note)}` : ""}</p>
+        <p class="small-note">飞书同步：${escapeHtml(syncText)}</p>
       </article>
     `;
   }).join("");
@@ -167,7 +175,7 @@ function buildPrintableReport(records) {
           <p>职业测评与规划报告</p>
           <h1>${escapeHtml(registrant.studentName || `测评用户${index + 1}`)}</h1>
           <div class="meta-line">
-            <span>提交时间：${escapeHtml(formatTime(record.createdAt))}</span>
+            <span>提交时间：${escapeHtml(formatTime(recordSubmittedAt(record)))}</span>
             <span>身份：${escapeHtml(registrant.role || "-")}</span>
             <span>联系方式：${escapeHtml(registrant.contact || "-")}</span>
           </div>

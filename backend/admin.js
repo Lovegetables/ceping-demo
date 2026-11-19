@@ -83,38 +83,38 @@ function renderRecords(records, meta = {}) {
       <article class="record-card">
         <div class="record-head">
           <div>
-            <strong>${registrant.studentName || "未填写姓名"}</strong>
-            <p>${registrant.role || "未填写身份"} · ${registrant.contact || "未填写联系方式"}</p>
+            <strong>${escapeHtml(registrant.studentName || "未填写姓名")}</strong>
+            <p>${escapeHtml(registrant.role || "未填写身份")} · ${escapeHtml(registrant.contact || "未填写联系方式")}</p>
           </div>
           <div class="record-head-side">
-            <span>${formatTime(recordSubmittedAt(record))}</span>
+            <span>${escapeHtml(formatTime(recordSubmittedAt(record)))}</span>
             <button class="mini-btn" type="button" data-export-record="${escapeHtml(record.id)}">导出此报告</button>
           </div>
         </div>
         <div class="tag-row">
-          <span class="tag">${assessment.currentStage || "未生成阶段"}</span>
-          <span class="tag">${assessment.background?.level || "未生成背景等级"}</span>
-          <span class="tag">${assessment.profile?.primaryInterest || "未填写主方向"}</span>
+          <span class="tag">${escapeHtml(assessment.currentStage || "未生成阶段")}</span>
+          <span class="tag">${escapeHtml(assessment.background?.level || "未生成背景等级")}</span>
+          <span class="tag">${escapeHtml(assessment.profile?.primaryInterest || "未填写主方向")}</span>
         </div>
         <div class="record-grid">
           <div>
             <h3>主推荐路径</h3>
-            <p>${assessment.recommendations?.main?.direction || "-"}</p>
-            <p class="small-note">匹配度 ${assessment.recommendations?.main?.match || "-"}/100</p>
+            <p>${escapeHtml(assessment.recommendations?.main?.direction || "-")}</p>
+            <p class="small-note">匹配度 ${escapeHtml(assessment.recommendations?.main?.match || "-")}/100</p>
           </div>
           <div>
             <h3>冲刺路径</h3>
-            <p>${assessment.recommendations?.stretch?.direction || "-"}</p>
-            <p class="small-note">匹配度 ${assessment.recommendations?.stretch?.match || "-"}/100</p>
+            <p>${escapeHtml(assessment.recommendations?.stretch?.direction || "-")}</p>
+            <p class="small-note">匹配度 ${escapeHtml(assessment.recommendations?.stretch?.match || "-")}/100</p>
           </div>
           <div>
             <h3>保底路径</h3>
-            <p>${assessment.recommendations?.backup?.direction || "-"}</p>
-            <p class="small-note">匹配度 ${assessment.recommendations?.backup?.match || "-"}/100</p>
+            <p>${escapeHtml(assessment.recommendations?.backup?.direction || "-")}</p>
+            <p class="small-note">匹配度 ${escapeHtml(assessment.recommendations?.backup?.match || "-")}/100</p>
           </div>
         </div>
-        <p class="small-note">邮箱：${registrant.email || "未填写"}${registrant.note ? ` ｜ 备注：${registrant.note}` : ""}</p>
-        <p class="small-note">飞书同步：${syncText}</p>
+        <p class="small-note">邮箱：${escapeHtml(registrant.email || "未填写")}${registrant.note ? ` ｜ 备注：${escapeHtml(registrant.note)}` : ""}</p>
+        <p class="small-note">飞书同步：${escapeHtml(syncText)}</p>
       </article>
     `;
   }).join("");

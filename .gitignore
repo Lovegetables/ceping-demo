@@ -1,0 +1,7 @@
+backend/.env
+.DS_Store
+backend/data/
+data/
+assessment-records.json
+.playwright-cli/
+output/

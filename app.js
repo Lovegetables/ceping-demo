@@ -15,8 +15,18 @@ const dimensions = {
   business: "商业敏感度"
 };
 
+function resolveAssessmentApiBase(location, configuredBase) {
+  if (configuredBase) return String(configuredBase).replace(/\/+$/, "");
+  if (!location || location.protocol === "file:") return "http://127.0.0.1:8787";
+  if (location.hostname === "lovegetables.github.io"
+    && /^\/ceping-demo(?:\/|$)/.test(location.pathname)) {
+    return "https://career-assessment-h5.onrender.com";
+  }
+  return location.origin;
+}
+
 const ASSESSMENT_API_BASE = typeof window !== "undefined"
-  ? (window.ASSESSMENT_API_BASE || (window.location?.protocol === "file:" ? "http://127.0.0.1:8787" : window.location.origin))
+  ? resolveAssessmentApiBase(window.location, window.ASSESSMENT_API_BASE)
   : "http://127.0.0.1:8787";
 
 let latestAssessmentResult = null;

@@ -9,7 +9,17 @@ const APP_ROOT = fs.existsSync(path.join(__dirname, "index.html"))
 const BACKEND_ROOT = fs.existsSync(path.join(APP_ROOT, "backend"))
   ? path.join(APP_ROOT, "backend")
   : APP_ROOT;
-const ROOT = APP_ROOT;
+// Only these browser assets may be served from the project directory.
+// Backend data, environment files, source code, and repository metadata stay private.
+const PUBLIC_ASSETS = new Map([
+  ["/", "index.html"],
+  ["/index.html", "index.html"],
+  ["/app.js", "app.js"],
+  ["/styles.css", "styles.css"],
+  ["/schools-data.js", "schools-data.js"],
+  ["/school-tier-data.js", "school-tier-data.js"],
+  ["/school-ranking-data.js", "school-ranking-data.js"]
+]);
 const ENV_FILE = path.join(BACKEND_ROOT, ".env");
 
 function loadEnvFile() {
@@ -133,11 +143,9 @@ function contentTypeFor(filePath) {
 }
 
 function trySendStaticAsset(res, pathname) {
-  const normalized = pathname === "/" ? "/index.html" : pathname;
-  const safePath = path.normalize(normalized).replace(/^(\.\.[/\\])+/, "");
-  const target = path.join(ROOT, safePath);
-
-  if (!target.startsWith(ROOT)) return false;
+  const publicFile = PUBLIC_ASSETS.get(pathname);
+  if (!publicFile) return false;
+  const target = path.join(APP_ROOT, publicFile);
   if (!fs.existsSync(target) || !fs.statSync(target).isFile()) return false;
 
   sendFile(res, target, contentTypeFor(target));
@@ -466,13 +474,16 @@ function updateRecordSyncMeta(recordId, feishuSync) {
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${HOST}:${PORT}`);
+  const isReadRequest = req.method === "GET" || req.method === "HEAD";
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
 
   if (req.method === "OPTIONS") {
     sendJson(res, 204, {});
     return;
   }
 
-  if (req.method === "GET" && url.pathname === "/api/health") {
+  if (isReadRequest && url.pathname === "/api/health") {
     sendJson(res, 200, { ok: true, service: "assessment-registration", port: PORT });
     return;
   }
@@ -614,22 +625,22 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (req.method === "GET" && url.pathname === "/admin.html") {
+  if (isReadRequest && url.pathname === "/admin.html") {
     sendFile(res, path.join(BACKEND_ROOT, "admin.html"));
     return;
   }
 
-  if (req.method === "GET" && url.pathname === "/admin.js") {
+  if (isReadRequest && url.pathname === "/admin.js") {
     sendFile(res, path.join(BACKEND_ROOT, "admin.js"), "application/javascript; charset=utf-8");
     return;
   }
 
-  if (req.method === "GET" && url.pathname === "/admin.css") {
+  if (isReadRequest && url.pathname === "/admin.css") {
     sendFile(res, path.join(BACKEND_ROOT, "admin.css"), "text/css; charset=utf-8");
     return;
   }
 
-  if (req.method === "GET" && trySendStaticAsset(res, url.pathname)) {
+  if (isReadRequest && trySendStaticAsset(res, url.pathname)) {
     return;
   }
 
